@@ -11,12 +11,17 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        // FIXED: Added `is` prefix and `=` for Kotlin DSL syntax
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+    // FIXED: Migrated from deprecated jvmTarget to compilerOptions
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     defaultConfig {
@@ -41,4 +46,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // FIXED: Upgraded desugar library version for Java 17 support
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

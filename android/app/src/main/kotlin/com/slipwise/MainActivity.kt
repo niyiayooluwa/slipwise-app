@@ -1,4 +1,4 @@
-package com.example.slipwise
+package com.slipwise
 
 import io.flutter.embedding.android.FlutterActivity
 
