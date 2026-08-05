@@ -1,10 +1,107 @@
 import 'package:dart_either/dart_either.dart';
 import 'package:dio/dio.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'package:slipwise/core/errors/error_mapper.dart';
+import 'package:slipwise/core/errors/failures.dart';
+import 'package:slipwise/core/server/dio_client.dart';
+
+import '../models/login.dart';
+import '../models/logout.dart';
+import '../models/message_response.dart';
+import '../models/oauth.dart';
+import '../models/refresh.dart';
+import '../models/register.dart';
+import '../models/resend_otp.dart';
+import '../models/verify.dart';
+
+part 'auth_remote.g.dart';
 
 class AuthRemote {
   final Dio _dio;
 
   AuthRemote(this._dio);
 
-  Future<Either<Failure, UserModel>> login () {}
+  Future<Either<Failure, LoginResponse>> login(LoginRequest request) async {
+    try {
+      final response = await _dio.post('/auth/login', data: request.toJson());
+      return Right(LoginResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, RegisterResponse>> signup(RegisterRequest request) async {
+    try {
+      final response = await _dio.post('/auth/signup', data: request.toJson());
+      return Right(RegisterResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, LoginResponse>> verifyOtp(VerifyRequest request) async {
+    try {
+      final response = await _dio.post('/auth/verify', data: request.toJson());
+      // The backend returns a TokenPairResponse (LoginResponse here) on verify
+      return Right(LoginResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, LoginResponse>> googleLogin(OAuthLoginRequest request) async {
+    try {
+      final response = await _dio.post('/auth/oauth/google', data: request.toJson());
+      return Right(LoginResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, LoginResponse>> refresh(RefreshRequest request) async {
+    try {
+      final response = await _dio.post('/auth/refresh', data: request.toJson());
+      return Right(LoginResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, MessageResponse>> logout(LogoutRequest request) async {
+    try {
+      final response = await _dio.post('/auth/logout', data: request.toJson());
+      return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, MessageResponse>> resendOtp(ResendOtpRequest request) async {
+    try {
+      final response = await _dio.post('/auth/resend-otp', data: request.toJson());
+      return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+}
+
+@riverpod
+AuthRemote authRemote(Ref ref) {
+  return AuthRemote(ref.watch(dioProvider));
 }

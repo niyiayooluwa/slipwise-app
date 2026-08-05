@@ -7,7 +7,14 @@ class AuthInterceptor extends Interceptor {
   // Instantiate directly — no Ref needed, SecureStorage has no dependencies.
   final _storage = SecureStorage();
 
-  static const _bypassEndpoints = ['/auth/login', '/auth/register', '/health', '/auth/google'];
+  static const _bypassEndpoints = [
+    '/auth/login',
+    '/auth/signup',
+    '/auth/oauth/google',
+    '/auth/verify',
+    '/auth/refresh',
+    '/auth/resend-otp',
+  ];
 
   @override
   void onRequest(
@@ -18,7 +25,7 @@ class AuthInterceptor extends Interceptor {
       return handler.next(options);
     }
 
-    final token = await _storage.getToken();
+    final token = await _storage.getAccessToken();
 
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
@@ -27,17 +34,17 @@ class AuthInterceptor extends Interceptor {
     handler.next(options);
   }
 
-  @override
+  /*@override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
       _storage.deleteToken();
       _storage.deleteRole();
-      
+
       final context = navigatorKey.currentContext;
       if (context != null && context.mounted) {
         GoRouter.of(context).go('/login');
       }
     }
     handler.next(err);
-  }
+  }*/
 }

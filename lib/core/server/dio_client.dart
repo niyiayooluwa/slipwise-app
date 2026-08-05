@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/core/constants/constants.dart';
 import 'package:slipwise/core/server/interceptors/auth_interceptor.dart';
+import 'package:slipwise/core/server/interceptors/logging_interceptor.dart';
 
 part 'dio_client.g.dart';
 
@@ -20,14 +21,7 @@ Dio dio(Ref ref) {
   );
 
   dio.interceptors.add(AuthInterceptor());
-  dio.interceptors.add(LogInterceptor(
-    request: true,
-    requestHeader: true,
-    requestBody: true,
-    responseHeader: true,
-    responseBody: true,
-    error: true,
-  ));
+  dio.interceptors.add(LoggingInterceptor());
 
   return dio;
 }
