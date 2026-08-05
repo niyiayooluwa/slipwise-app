@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/router/router.dart';
@@ -23,9 +24,21 @@ class MainApp extends ConsumerWidget {
     return ShadApp.router(
       title: 'SlipWise',
       themeMode: ThemeMode.system,
-      theme: ShadThemeData(colorScheme: const ShadBlueColorScheme.light()),
-      darkTheme: ShadThemeData(colorScheme: const ShadBlueColorScheme.dark()),
+      theme: ShadThemeData(
+        colorScheme: const ShadOrangeColorScheme.light(),
+        radius: BorderRadius.circular(24),
+      ),
+      darkTheme: ShadThemeData(colorScheme: const ShadOrangeColorScheme.dark()),
       routerConfig: router,
+      builder: (context, child) {
+        final brightness = Theme.of(context).brightness;
+        SystemChrome.setSystemUIOverlayStyle(
+          brightness == Brightness.dark
+              ? SystemUiOverlayStyle.light
+              : SystemUiOverlayStyle.dark,
+        );
+        return child!;
+      },
     );
   }
 }

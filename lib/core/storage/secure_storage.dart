@@ -39,5 +39,5 @@ class SecureStorage {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 SecureStorage secureStorage(Ref ref) => SecureStorage();
