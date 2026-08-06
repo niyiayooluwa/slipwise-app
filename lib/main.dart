@@ -26,14 +26,14 @@ class MainApp extends ConsumerWidget {
       title: 'SlipWise',
       themeMode: ThemeMode.system,
       theme: ShadThemeData(
-        colorScheme: const ShadBlueColorScheme.light(),
-        radius: BorderRadius.circular(16),
-        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.outfit),
+        colorScheme: const ShadOrangeColorScheme.light(),
+        radius: BorderRadius.circular(12),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.openSans),
       ),
       darkTheme: ShadThemeData(
-        colorScheme: const ShadBlueColorScheme.dark(),
-        radius: BorderRadius.circular(16),
-        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.outfit),
+        colorScheme: const ShadOrangeColorScheme.dark(),
+        radius: BorderRadius.circular(12),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
       ),
       routerConfig: router,
       builder: (context, child) {

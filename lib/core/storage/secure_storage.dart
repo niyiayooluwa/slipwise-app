@@ -11,14 +11,14 @@ class SecureStorage {
   String? _refreshTokenCache; // In-memory cache (instance variable)
   String? _accessTokenCache; // In-memory cache (instance variable)
 
-  Future<void> saveTokens(
-    String refreshTokenValue,
-    String accessTokenValue,
-  ) async {
-    _accessTokenCache = accessTokenValue;
-    _refreshTokenCache = refreshTokenValue;
-    await _storage.write(key: refreshTokenKey, value: refreshTokenValue);
-    await _storage.write(key: accessTokenKey, value: accessTokenValue);
+  Future<void> saveTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    _accessTokenCache = accessToken;
+    _refreshTokenCache = refreshToken;
+    await _storage.write(key: refreshTokenKey, value: refreshToken);
+    await _storage.write(key: accessTokenKey, value: accessToken);
   }
 
   Future<String?> getAccessToken() async {

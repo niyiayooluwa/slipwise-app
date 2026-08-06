@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/storage/settings_service.dart';
+import 'package:slipwise/modules/auth/providers/notifier/user_notifier.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
@@ -14,24 +16,44 @@ class SplashScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
       Future(() async {
-        // Run the 2-second timer and data reads concurrently
+        final storage = ref.read(secureStorageProvider);
+        // Run the 2-second timer and settings reads concurrently
         final results = await Future.wait([
           Future.delayed(const Duration(seconds: 2)),
           ref.read(settingsServiceProvider.future),
-          ref.read(secureStorageProvider).getAccessToken(),
         ]);
 
         if (!context.mounted) return;
 
         final settings = results[1] as SettingsService;
-        final accessToken = results[2] as String?;
-
+        
         if (!settings.hasCompletedOnboarding) {
           context.go('/onboarding');
-        } else if (accessToken != null) {
-          context.go('/home');
+          return;
+        }
+
+        final accessToken = await storage.getAccessToken();
+        
+        if (accessToken != null) {
+          // Attempt to fetch user
+          await ref.read(userProvider.notifier).fetch();
+          
+          if (!context.mounted) return;
+
+          final userState = ref.read(userProvider);
+          
+          if (userState.hasError || userState.value == null) {
+            // Token expired or invalid, clear it
+            await storage.clearTokens();
+            if (!context.mounted) return;
+            context.go('/login');
+          } else {
+            if (!context.mounted) return;
+            context.go('/home');
+          }
         } else {
-          context.go('/get-started');
+          if (!context.mounted) return;
+          context.go('/get_started');
         }
       });
 
@@ -39,14 +61,35 @@ class SplashScreen extends HookConsumerWidget {
     }, const []);
 
     return Scaffold(
-      backgroundColor: ShadTheme.of(context).colorScheme.primary,
-      body: Center(
-        child: SvgPicture.asset(
-          'assets/drawables/logo/white.svg',
-          height: 170,
-          width: 170,
-          semanticsLabel: 'Splash Screen Logo',
-        ),
+      //backgroundColor: ShadTheme.of(context).colorScheme.primary,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          SvgPicture.asset('assets/drawables/splash.svg', fit: BoxFit.cover),
+          Center(
+            child: SvgPicture.asset(
+              'assets/drawables/logo/white.svg',
+              height: 170,
+              width: 170,
+              semanticsLabel: 'Splash Screen Logo',
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 24),
+              child: Align(
+                alignment: AlignmentGeometry.bottomCenter,
+                child: Text(
+                  "StudioOne",
+                  style: ShadTheme.of(context).textTheme.h2.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

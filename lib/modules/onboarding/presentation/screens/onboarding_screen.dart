@@ -15,12 +15,7 @@ class OnboardingScreen extends HookConsumerWidget {
       children: [
         Container(color: theme.colorScheme.background),
 
-        Positioned.fill(
-          child: Opacity(
-            opacity: 1,
-            child: Image.asset('assets/image/onboard.jpg', fit: BoxFit.cover),
-          ),
-        ),
+        Image.asset('assets/image/onboard.jpg', fit: BoxFit.cover),
 
         Container(
           decoration: BoxDecoration(
@@ -61,7 +56,7 @@ class OnboardingScreen extends HookConsumerWidget {
                 SizedBox(height: 16),
 
                 Text(
-                  'Stop manually checking scores. Import your tickets instantly to get real-time status updates and deep betting insights all in one place.',
+                  'Import your tickets instantly to get real-time status updates and deep betting insights all in one place.',
                   style: theme.textTheme.p.copyWith(color: Colors.white70),
                 ),
                 SizedBox(height: 48),
@@ -70,13 +65,14 @@ class OnboardingScreen extends HookConsumerWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ShadButton(
+                    size: ShadButtonSize.lg,
                     trailing: Icon(LucideIcons.arrowRight),
                     onPressed: () async {
                       final settings = await ref.read(
                         settingsServiceProvider.future,
                       );
                       await settings.setHasCompletedOnboarding();
-                      if (context.mounted) context.go('/login');
+                      if (context.mounted) context.go('/get-started');
                     },
                     child: Text('Get Started'),
                   ),
