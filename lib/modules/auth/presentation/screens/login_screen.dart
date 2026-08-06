@@ -164,7 +164,7 @@ class LoginScreen extends HookConsumerWidget {
           ShadInputFormField(
             id: 'email',
             controller: form.emailController,
-            label: Text('EMAIL', style: dTheme.textTheme.labelMedium),
+            label: Text('EMAIL', style: dTheme.textTheme.labelSmall),
             placeholder: const Text('you@example.com'),
             keyboardType: TextInputType.emailAddress,
             validator: (value) => validateEmail(value),
@@ -178,7 +178,7 @@ class LoginScreen extends HookConsumerWidget {
               return ShadInputFormField(
                 id: 'password',
                 controller: form.passwordController,
-                label: Text('PASSWORD', style: dTheme.textTheme.labelMedium),
+                label: Text('PASSWORD', style: dTheme.textTheme.labelSmall),
                 placeholder: const Text('•••••••••'),
                 obscureText: !isVisible,
                 validator: (v) {

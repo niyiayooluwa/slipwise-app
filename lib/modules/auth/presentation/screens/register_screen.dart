@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/validators.dart';
 import 'package:slipwise/modules/auth/presentation/hooks/register_form_hook.dart';
 import 'package:slipwise/modules/auth/providers/notifier/register_notifier.dart';
 
@@ -11,8 +14,8 @@ class RegisterScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final form = useRegisterForm();
     final authState = ref.watch(registerProvider);
+    final isLoading = authState.isLoading;
 
     ref.listen(registerProvider, (previous, next) {
       if (next is AsyncError) {
@@ -36,75 +39,236 @@ class RegisterScreen extends HookConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            LucideIcons.arrowLeft,
-            color: theme.colorScheme.foreground,
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _top(context),
+              const SizedBox(height: 24),
+              _registerForm(context, ref, isLoading),
+              const SizedBox(height: 24),
+              Expanded(child: _bottom(context, isLoading)),
+            ],
           ),
-          onPressed: () => context.pop(),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: ShadForm(
-            key: form.formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('Create an account', style: theme.textTheme.h2),
-                const SizedBox(height: 8),
-                Text(
-                  'Join SlipWise to start tracking',
-                  style: theme.textTheme.p.copyWith(
-                    color: theme.colorScheme.mutedForeground,
+    );
+  }
+
+  Widget _top(BuildContext context) {
+    final theme = ShadTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 24),
+        Align(
+          alignment: Alignment.topLeft,
+          child: SvgPicture.asset(
+            'assets/drawables/logo/white.svg',
+            height: 40,
+            width: 40,
+            semanticsLabel: 'Splash Screen Logo',
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          'Create an account',
+          style: theme.textTheme.h2.copyWith(height: 0.7),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Join SlipWise to start tracking',
+          style: theme.textTheme.muted.copyWith(
+            color: theme.colorScheme.mutedForeground,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _bottom(BuildContext context, bool isLoading) {
+    final theme = ShadTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const Expanded(child: Divider()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Or continue with',
+                style: theme.textTheme.muted.copyWith(
+                  color: theme.colorScheme.mutedForeground,
+                ),
+              ),
+            ),
+            const Expanded(child: Divider()),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        ShadButton.outline(
+          width: double.infinity,
+          leading: SvgPicture.asset(
+            "assets/drawables/google.svg",
+            height: 18,
+            width: 18,
+          ),
+          onPressed: isLoading
+              ? null
+              : () {
+                  ShadToaster.of(context).show(
+                    const ShadToast(
+                      title: Text('Coming Soon'),
+                      description: Text(
+                        'Google Sign-In is not fully implemented yet.',
+                      ),
+                    ),
+                  );
+                },
+          child: const Text('Continue with Google'),
+        ),
+
+        const Spacer(),
+
+        Text.rich(
+          TextSpan(
+            text: "Already have an account? ",
+            style: theme.textTheme.muted.copyWith(
+              color: theme.colorScheme.mutedForeground,
+            ),
+            children: [
+              TextSpan(
+                text: 'Log In',
+                style: TextStyle(color: theme.colorScheme.primary),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    context.push('/login');
+                  },
+              ),
+            ],
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _registerForm(BuildContext context, WidgetRef ref, bool isLoading) {
+    final dTheme = Theme.of(context);
+    final form = useRegisterForm();
+
+    return ShadForm(
+      key: form.formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ShadInputFormField(
+                  id: 'firstName',
+                  controller: form.firstNameController,
+                  label: Text('FIRST NAME', style: dTheme.textTheme.labelSmall),
+                  placeholder: const Text('John'),
+                  validator: (v) => v.isEmpty ? 'Required' : null,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ShadInputFormField(
+                  id: 'lastName',
+                  controller: form.lastNameController,
+                  label: Text('LAST NAME', style: dTheme.textTheme.labelSmall),
+                  placeholder: const Text('Doe'),
+                  validator: (v) => v.isEmpty ? 'Required' : null,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          ShadInputFormField(
+            id: 'email',
+            controller: form.emailController,
+            label: Text('EMAIL', style: dTheme.textTheme.labelSmall),
+            placeholder: const Text('you@example.com'),
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) => validateEmail(value),
+          ),
+          const SizedBox(height: 16),
+
+          // Password field
+          ValueListenableBuilder(
+            valueListenable: form.isPasswordVisible,
+            builder: (context, isVisible, _) {
+              return ShadInputFormField(
+                id: 'password',
+                controller: form.passwordController,
+                label: Text('PASSWORD', style: dTheme.textTheme.labelSmall),
+                placeholder: const Text('•••••••••'),
+                obscureText: !isVisible,
+                validator: (value) => validatePassword(value),
+                trailing: GestureDetector(
+                  onTap: () => form.isPasswordVisible.value = !isVisible,
+                  child: Icon(
+                    isVisible ? Icons.visibility_off : Icons.visibility,
+                    size: 18,
                   ),
                 ),
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ShadInput(
-                        controller: form.firstNameController,
-                        placeholder: const Text('First Name'),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ShadInput(
-                        controller: form.lastNameController,
-                        placeholder: const Text('Last Name'),
-                      ),
-                    ),
-                  ],
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+
+          // Confirm Password field
+          ValueListenableBuilder(
+            valueListenable: form.isConfirmPasswordVisible,
+            builder: (context, isVisible, _) {
+              return ShadInputFormField(
+                id: 'confirmPassword',
+                controller: form.confirmPasswordController,
+                label: Text(
+                  'CONFIRM PASSWORD',
+                  style: dTheme.textTheme.labelSmall,
                 ),
-                const SizedBox(height: 16),
-                ShadInput(
-                  controller: form.emailController,
-                  placeholder: const Text('Email address'),
-                  keyboardType: TextInputType.emailAddress,
+                placeholder: const Text('•••••••••'),
+                obscureText: !isVisible,
+                validator: (v) {
+                  if (v.isEmpty) return 'Required';
+                  if (v != form.passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+                trailing: GestureDetector(
+                  onTap: () => form.isConfirmPasswordVisible.value = !isVisible,
+                  child: Icon(
+                    isVisible ? Icons.visibility_off : Icons.visibility,
+                    size: 18,
+                  ),
                 ),
-                const SizedBox(height: 16),
-                ShadInput(
-                  controller: form.passwordController,
-                  placeholder: const Text('Password'),
-                  obscureText: !form.isPasswordVisible.value,
-                ),
-                const SizedBox(height: 16),
-                ShadInput(
-                  controller: form.confirmPasswordController,
-                  placeholder: const Text('Confirm Password'),
-                  obscureText: !form.isConfirmPasswordVisible.value,
-                ),
-                const SizedBox(height: 32),
-                ShadButton(
-                  size: ShadButtonSize.lg,
-                  onPressed: (!form.isFormValid.value || authState.isLoading)
-                      ? null
-                      : () {
+              );
+            },
+          ),
+
+          const SizedBox(height: 24),
+
+          ValueListenableBuilder(
+            valueListenable: form.isFormValid,
+            builder: (context, isValid, _) {
+              return ShadButton(
+                enabled: isValid && !isLoading,
+                onPressed: isLoading || !isValid
+                    ? null
+                    : () {
+                        if (form.formKey.currentState!.saveAndValidate()) {
                           ref
                               .read(registerProvider.notifier)
                               .signUp(
@@ -113,22 +277,21 @@ class RegisterScreen extends HookConsumerWidget {
                                 email: form.emailController.text.trim(),
                                 password: form.passwordController.text,
                               );
-                        },
-                  child: authState.isLoading
-                      ? const SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text('Create Account'),
-                ),
-              ],
-            ),
+                        }
+                      },
+                width: double.infinity,
+                child: isLoading
+                    ? const SizedBox(
+                        child: SpinKitThreeBounce(
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text('Create Account'),
+              );
+            },
           ),
-        ),
+        ],
       ),
     );
   }
