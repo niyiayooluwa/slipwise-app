@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/modules/auth/presentation/screens/login_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/register_screen.dart';
+import 'package:slipwise/modules/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:slipwise/modules/onboarding/presentation/screens/get_started_screen.dart';
 import 'package:slipwise/modules/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:slipwise/modules/onboarding/presentation/screens/splash_screen.dart';
@@ -32,6 +33,7 @@ GoRouter router(Ref ref) {
         '/register',
         '/get_started',
         '/onboarding',
+        '/verify-otp',
       ].contains(state.uri.path);
 
       if (!isLoggedIn && !isAuthRoute) {
@@ -62,6 +64,13 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/verify-otp',
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return VerifyOtpScreen(email: email);
+        },
       ),
       GoRoute(
         path: '/home',

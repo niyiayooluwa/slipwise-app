@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_notifier.dart';
+part of 'verify_otp_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,33 +9,33 @@ part of 'login_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(LoginNotifier)
-const loginProvider = LoginNotifierProvider._();
+@ProviderFor(VerifyOtpNotifier)
+const verifyOtpProvider = VerifyOtpNotifierProvider._();
 
-final class LoginNotifierProvider
-    extends $AsyncNotifierProvider<LoginNotifier, void> {
-  const LoginNotifierProvider._()
+final class VerifyOtpNotifierProvider
+    extends $AsyncNotifierProvider<VerifyOtpNotifier, void> {
+  const VerifyOtpNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'loginProvider',
+        name: r'verifyOtpProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$loginNotifierHash();
+  String debugGetCreateSourceHash() => _$verifyOtpNotifierHash();
 
   @$internal
   @override
-  LoginNotifier create() => LoginNotifier();
+  VerifyOtpNotifier create() => VerifyOtpNotifier();
 }
 
-String _$loginNotifierHash() => r'a2b1c8a387e91866a4702f3edf695e79cb8349f0';
+String _$verifyOtpNotifierHash() => r'0c20e3c9062b8f287bdcd9d711ff694fafb962df';
 
-abstract class _$LoginNotifier extends $AsyncNotifier<void> {
+abstract class _$VerifyOtpNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();
   @$mustCallSuper
   @override

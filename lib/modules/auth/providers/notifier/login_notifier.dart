@@ -27,8 +27,9 @@ class LoginNotifier extends _$LoginNotifier {
       },
       ifRight: (response) async {
         // The token is already saved by AuthRepository.
-        // Fetch the user data using the new token.
-        await ref.read(userProvider.notifier).fetch();
+        // Invalidate userProvider to trigger a fresh build() which fetches the user.
+        ref.invalidate(userProvider);
+        await ref.read(userProvider.future);
         return const AsyncValue.data(null);
       },
     );

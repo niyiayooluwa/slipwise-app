@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/utils/validators.dart';
+import 'package:slipwise/core/errors/failures.dart';
 import 'package:slipwise/modules/auth/presentation/hooks/login_form_hook.dart';
 import 'package:slipwise/modules/auth/providers/notifier/login_notifier.dart';
 
@@ -14,16 +15,23 @@ class LoginScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
+    final form = useLoginForm();
 
     final vm = ref.watch(loginProvider);
     final isLoading = vm.isLoading;
 
     ref.listen(loginProvider, (previous, next) {
       if (next is AsyncError) {
+        final errorMsg = next.error.toString();
+        if (errorMsg == const EmailNotVerifiedFailure().message) {
+          context.push('/verify-otp', extra: form.emailController.text.trim());
+          return;
+        }
+
         ShadToaster.of(context).show(
           ShadToast.destructive(
             title: const Text('Login Failed'),
-            description: Text(next.error.toString()),
+            description: Text(errorMsg),
           ),
         );
       }
@@ -40,7 +48,7 @@ class LoginScreen extends HookConsumerWidget {
             children: [
               _top(context),
               const SizedBox(height: 24),
-              _loginForm(context, ref, isLoading),
+              _loginForm(context, ref, isLoading, form),
               const SizedBox(height: 24),
               Expanded(child: _bottom(context, isLoading)),
             ],
@@ -150,10 +158,9 @@ class LoginScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _loginForm(BuildContext context, WidgetRef ref, bool isLoading) {
+  Widget _loginForm(BuildContext context, WidgetRef ref, bool isLoading, LoginFormState form) {
     final dTheme = Theme.of(context);
     final theme = ShadTheme.of(context);
-    final form = useLoginForm();
 
     return ShadForm(
       key: form.formKey,

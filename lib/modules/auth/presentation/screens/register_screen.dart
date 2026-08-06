@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/utils/validators.dart';
+import 'package:slipwise/modules/auth/presentation/hooks/login_form_hook.dart';
 import 'package:slipwise/modules/auth/presentation/hooks/register_form_hook.dart';
 import 'package:slipwise/modules/auth/providers/notifier/register_notifier.dart';
 
@@ -16,6 +17,7 @@ class RegisterScreen extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
     final authState = ref.watch(registerProvider);
     final isLoading = authState.isLoading;
+    final form = useLoginForm();
 
     ref.listen(registerProvider, (previous, next) {
       if (next is AsyncError) {
@@ -28,12 +30,7 @@ class RegisterScreen extends HookConsumerWidget {
       } else if (next is AsyncData &&
           !next.isLoading &&
           previous?.isLoading == true) {
-        ShadToaster.of(context).show(
-          const ShadToast(
-            title: Text('Account Created'),
-            description: Text('Please check your email for an OTP.'),
-          ),
-        );
+        context.push('/verify-otp', extra: form.emailController.text.trim());
       }
     });
 

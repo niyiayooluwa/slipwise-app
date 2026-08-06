@@ -40,7 +40,7 @@ Failure mapDioException(DioException e) {
 
   // Status code as fallback
   if (status == 401) return const UnauthorizedFailure();
-  if (status == 403) return const UnauthorizedFailure('Access Forbidden.');
+  if (status == 403) return const EmailNotVerifiedFailure();
   if (status == 404) return const NotFoundFailure();
   if (status == 429) return const RateLimitFailure();
 
