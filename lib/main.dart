@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/router/router.dart';
@@ -25,10 +26,15 @@ class MainApp extends ConsumerWidget {
       title: 'SlipWise',
       themeMode: ThemeMode.system,
       theme: ShadThemeData(
-        colorScheme: const ShadOrangeColorScheme.light(),
-        radius: BorderRadius.circular(24),
+        colorScheme: const ShadBlueColorScheme.light(),
+        radius: BorderRadius.circular(16),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.outfit),
       ),
-      darkTheme: ShadThemeData(colorScheme: const ShadOrangeColorScheme.dark()),
+      darkTheme: ShadThemeData(
+        colorScheme: const ShadBlueColorScheme.dark(),
+        radius: BorderRadius.circular(16),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.outfit),
+      ),
       routerConfig: router,
       builder: (context, child) {
         final brightness = Theme.of(context).brightness;

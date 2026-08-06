@@ -31,7 +31,7 @@ class SplashScreen extends HookConsumerWidget {
         } else if (accessToken != null) {
           context.go('/home');
         } else {
-          context.go('/login');
+          context.go('/get-started');
         }
       });
 
