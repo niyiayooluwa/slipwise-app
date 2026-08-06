@@ -13,6 +13,7 @@ import '../models/refresh.dart';
 import '../models/register.dart';
 import '../models/resend_otp.dart';
 import '../models/verify.dart';
+import '../models/user_model.dart';
 
 part 'auth_repository.g.dart';
 
@@ -27,7 +28,10 @@ class AuthRepository {
 
     // If successful, save tokens to SecureStorage
     return result.map((response) {
-      _storage.saveTokens(response.refreshToken, response.accessToken);
+      _storage.saveTokens(
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
       return response;
     });
   }
@@ -46,7 +50,10 @@ class AuthRepository {
 
     // The backend returns tokens upon successful OTP verification
     return result.map((response) {
-      _storage.saveTokens(response.refreshToken, response.accessToken);
+      _storage.saveTokens(
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
       return response;
     });
   }
@@ -57,7 +64,10 @@ class AuthRepository {
     final result = await _remote.googleLogin(request);
 
     return result.map((response) {
-      _storage.saveTokens(response.refreshToken, response.accessToken);
+      _storage.saveTokens(
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
       return response;
     });
   }
@@ -66,7 +76,10 @@ class AuthRepository {
     final result = await _remote.refresh(request);
 
     return result.map((response) {
-      _storage.saveTokens(response.refreshToken, response.accessToken);
+      _storage.saveTokens(
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
       return response;
     });
   }
@@ -94,6 +107,10 @@ class AuthRepository {
     ResendOtpRequest request,
   ) async {
     return _remote.resendOtp(request);
+  }
+
+  Future<Either<Failure, UserModel>> getMe() async {
+    return _remote.getMe();
   }
 }
 

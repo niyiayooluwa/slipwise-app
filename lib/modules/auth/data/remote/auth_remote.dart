@@ -14,6 +14,7 @@ import '../models/refresh.dart';
 import '../models/register.dart';
 import '../models/resend_otp.dart';
 import '../models/verify.dart';
+import '../models/user_model.dart';
 
 part 'auth_remote.g.dart';
 
@@ -93,6 +94,17 @@ class AuthRemote {
     try {
       final response = await _dio.post('/auth/resend-otp', data: request.toJson());
       return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, UserModel>> getMe() async {
+    try {
+      final response = await _dio.get('/auth/me');
+      return Right(UserModel.fromJson(response.data));
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (e) {

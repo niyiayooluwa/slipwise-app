@@ -8,7 +8,9 @@ import 'package:slipwise/router/router.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthInterceptor extends Interceptor {
-  final _storage = SecureStorage();
+  final SecureStorage _storage;
+
+  AuthInterceptor(this._storage);
 
   // A bare Dio instance used exclusively for the refresh call.
   // No interceptors attached — avoids circular dependency with the main Dio instance.
@@ -99,28 +101,36 @@ class AuthInterceptor extends Interceptor {
       final newRefreshToken = response.data['refresh_token'] as String;
 
       // Save the fresh token pair
-      await _storage.saveTokens(newRefreshToken, newAccessToken);
+      await _storage.saveTokens(
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      );
 
       // Unblock all queued requests with the new token
       for (final completer in _pendingRequests) {
         completer.complete(newAccessToken);
       }
       _pendingRequests.clear();
+      _isRefreshing = false; // Release lock before retrying
 
       // Retry the original failed request with the new token
       final retryOptions = _buildRetry(err.requestOptions, newAccessToken);
-      final retryResponse = await _refreshDio.fetch(retryOptions);
-      return handler.resolve(retryResponse);
+      
+      try {
+        final retryResponse = await _refreshDio.fetch(retryOptions);
+        return handler.resolve(retryResponse);
+      } on DioException catch (retryErr) {
+        return handler.next(retryErr);
+      }
     } catch (_) {
       // Refresh failed — reject all queued requests and log the user out
       for (final completer in _pendingRequests) {
         completer.completeError('refresh_failed');
       }
       _pendingRequests.clear();
+      _isRefreshing = false;
       await _clearAndRedirect();
       return handler.next(err);
-    } finally {
-      _isRefreshing = false;
     }
   }
 
