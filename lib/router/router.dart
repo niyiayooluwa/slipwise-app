@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:slipwise/core/storage/secure_storage.dart';
+import 'package:slipwise/core/ui/empty_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/login_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/register_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/verify_otp_screen.dart';
@@ -26,7 +26,7 @@ GoRouter router(Ref ref) {
 
       final storage = ref.read(secureStorageProvider);
       final token = await storage.getAccessToken();
-      
+
       final bool isLoggedIn = token != null;
       final bool isAuthRoute = [
         '/login',
@@ -39,7 +39,7 @@ GoRouter router(Ref ref) {
       if (!isLoggedIn && !isAuthRoute) {
         return '/get_started';
       }
-      
+
       if (isLoggedIn && isAuthRoute) {
         return '/home';
       }
@@ -72,12 +72,7 @@ GoRouter router(Ref ref) {
           return VerifyOtpScreen(email: email);
         },
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Home Screen Placeholder')),
-        ),
-      ),
+      GoRoute(path: '/home', builder: (context, state) => EmptyScreen()),
     ],
   );
 }
