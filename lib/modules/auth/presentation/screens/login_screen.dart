@@ -8,6 +8,7 @@ import 'package:slipwise/core/utils/validators.dart';
 import 'package:slipwise/core/errors/failures.dart';
 import 'package:slipwise/modules/auth/presentation/hooks/login_form_hook.dart';
 import 'package:slipwise/modules/auth/providers/notifier/login_notifier.dart';
+import 'package:slipwise/modules/auth/providers/notifier/google_auth_notifier.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
@@ -19,6 +20,21 @@ class LoginScreen extends HookConsumerWidget {
 
     final vm = ref.watch(loginProvider);
     final isLoading = vm.isLoading;
+    final isGoogleLoading = ref.watch(googleAuthProvider).isLoading;
+    final isAnyLoading = isLoading || isGoogleLoading;
+
+    ref.listen(googleAuthProvider, (previous, next) {
+      if (next is AsyncError) {
+        ShadToaster.of(context).show(
+          ShadToast.destructive(
+            title: const Text('Google Sign-In Failed'),
+            description: Text(next.error.toString()),
+          ),
+        );
+      } else if (next is AsyncData && !next.isLoading && previous?.isLoading == true) {
+        context.go('/home');
+      }
+    });
 
     ref.listen(loginProvider, (previous, next) {
       if (next is AsyncError) {
@@ -48,9 +64,9 @@ class LoginScreen extends HookConsumerWidget {
             children: [
               _top(context),
               const SizedBox(height: 24),
-              _loginForm(context, ref, isLoading, form),
+              _loginForm(context, ref, isAnyLoading, form),
               const SizedBox(height: 24),
-              Expanded(child: _bottom(context, isLoading)),
+              Expanded(child: _bottom(context, ref, isAnyLoading)),
             ],
           ),
         ),
@@ -87,8 +103,9 @@ class LoginScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _bottom(BuildContext context, bool isLoading) {
+  Widget _bottom(BuildContext context, WidgetRef ref, bool isAnyLoading) {
     final theme = ShadTheme.of(context);
+    final isGoogleLoading = ref.watch(googleAuthProvider).isLoading;
     return Column(
       // FIX: Changed .stretch to CrossAxisAlignment.stretch
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,25 +129,24 @@ class LoginScreen extends HookConsumerWidget {
 
         ShadButton.outline(
           width: double.infinity,
-          leading: SvgPicture.asset(
+          leading: isGoogleLoading ? null : SvgPicture.asset(
             "assets/drawables/google.svg",
             height: 18,
             width: 18,
           ),
-          onPressed: isLoading
+          onPressed: isAnyLoading
               ? null
               : () {
-                  // ref.read(loginProvider.notifier).signInWithGoogle();
-                  ShadToaster.of(context).show(
-                    const ShadToast(
-                      title: Text('Coming Soon'),
-                      description: Text(
-                        'Google Sign-In is not fully implemented yet.',
-                      ),
-                    ),
-                  );
+                  ref.read(googleAuthProvider.notifier).signIn();
                 },
-          child: const Text('Continue with Google'),
+          child: isGoogleLoading
+              ? SizedBox(
+                  child: SpinKitThreeBounce(
+                    size: 16,
+                    color: theme.colorScheme.foreground,
+                  ),
+                )
+              : const Text('Continue with Google'),
         ),
 
         const Spacer(),

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:slipwise/modules/auth/providers/notifier/google_auth_notifier.dart';
+import 'package:slipwise/modules/auth/providers/notifier/user_notifier.dart';
 
 class GetStartedScreen extends HookConsumerWidget {
   const GetStartedScreen({super.key});
@@ -28,6 +31,22 @@ class GetStartedScreen extends HookConsumerWidget {
 
   Widget _buildSocialLogin(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
+    final isGoogleLoading = ref.watch(googleAuthProvider).isLoading;
+
+    ref.listen(googleAuthProvider, (previous, next) {
+      if (next is AsyncError) {
+        ShadToaster.of(context).show(
+          ShadToast.destructive(
+            title: const Text('Google Sign-In Failed'),
+            description: Text(next.error.toString()),
+          ),
+        );
+      } else if (next is AsyncData && !next.isLoading && previous?.isLoading == true) {
+        if (ref.read(userProvider).value != null) {
+          context.go('/home');
+        }
+      }
+    });
 
     return ClipRRect(
       borderRadius: const BorderRadius.only(
@@ -81,7 +100,7 @@ class GetStartedScreen extends HookConsumerWidget {
                     width: double.infinity,
                     child: ShadButton(
                       size: ShadButtonSize.lg,
-                      onPressed: () => context.push('/login'),
+                      onPressed: isGoogleLoading ? null : () => context.push('/login'),
                       leading: const Icon(LucideIcons.mail),
                       child: const Text("Sign in with Email"),
                     ),
@@ -92,15 +111,31 @@ class GetStartedScreen extends HookConsumerWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ShadButton.outline(
+                      decoration: ShadDecoration(
+                        border: ShadBorder.all(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      foregroundColor: Colors.white,
                       size: ShadButtonSize.lg,
-                      onPressed: () {},
-                      //backgroundColor: Colors.white,
-                      leading: SvgPicture.asset(
+                      onPressed: isGoogleLoading
+                          ? null
+                          : () {
+                              ref.read(googleAuthProvider.notifier).signIn();
+                            },
+                      leading: isGoogleLoading ? null : SvgPicture.asset(
                         "assets/drawables/google.svg",
                         height: 18,
                         width: 18,
                       ),
-                      child: Text("Sign in with Google"),
+                      child: isGoogleLoading
+                          ? const SizedBox(
+                              child: SpinKitThreeBounce(
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text("Continue with Google"),
                     ),
                   ),
 
