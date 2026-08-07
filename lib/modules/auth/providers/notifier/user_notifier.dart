@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/models/user_model.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
@@ -33,6 +34,24 @@ class UserNotifier extends _$UserNotifier {
       ifLeft: (failure) => AsyncValue.error(failure.message, StackTrace.current),
       ifRight: (user) => AsyncValue.data(user),
     );
+  }
+
+  Future<void> logout() async {
+    state = const AsyncValue.loading();
+    
+    try {
+      // 1. Call backend logout (and clear secure storage)
+      await ref.read(authRepositoryProvider).logout();
+      
+      // 2. Clear native Google Auth session (fails safely if not logged in via Google)
+      await GoogleSignIn().signOut();
+      
+      // 3. Clear user state
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      // Even if backend fails, forcefully log out locally
+      state = const AsyncValue.data(null);
+    }
   }
 
   void clear() {
