@@ -34,7 +34,7 @@ final class GoogleAuthNotifierProvider
 }
 
 String _$googleAuthNotifierHash() =>
-    r'a59b234e4e9970d85331a4ef4c0ea5800138c851';
+    r'ab15e2b371737337fa0b0e1f643957c83391b5bd';
 
 abstract class _$GoogleAuthNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();

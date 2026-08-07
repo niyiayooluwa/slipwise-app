@@ -31,24 +31,25 @@ class UserNotifier extends _$UserNotifier {
     final result = await ref.read(authRepositoryProvider).getMe();
 
     state = result.fold(
-      ifLeft: (failure) => AsyncValue.error(failure.message, StackTrace.current),
+      ifLeft: (failure) =>
+          AsyncValue.error(failure.message, StackTrace.current),
       ifRight: (user) => AsyncValue.data(user),
     );
   }
 
   Future<void> logout() async {
     state = const AsyncValue.loading();
-    
+
     try {
       // 1. Call backend logout (and clear secure storage)
       await ref.read(authRepositoryProvider).logout();
-      
+
       // 2. Clear native Google Auth session (fails safely if not logged in via Google)
       await GoogleSignIn().signOut();
-      
+
       // 3. Clear user state
       state = const AsyncValue.data(null);
-    } catch (e, st) {
+    } catch (e) {
       // Even if backend fails, forcefully log out locally
       state = const AsyncValue.data(null);
     }
