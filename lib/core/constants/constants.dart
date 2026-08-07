@@ -7,4 +7,7 @@ class ApiConstants {
 
   static const Duration connectTimeout = Duration(seconds: 10);
   static const Duration receiveTimeout = Duration(seconds: 10);
+
+  static const String googleAppClientId = '3489996639-s39alb0tfdgcucadco5f21lcferiem2j.apps.googleusercontent.com';
+  static const String googleServerClientId = '3489996639-ku9uumjse4cb0o41p9lfo6k5bqpsriq9.apps.googleusercontent.com';
 }
