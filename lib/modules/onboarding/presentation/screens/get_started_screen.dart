@@ -75,7 +75,7 @@ class GetStartedScreen extends HookConsumerWidget {
           child: SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,

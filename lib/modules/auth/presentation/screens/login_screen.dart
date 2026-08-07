@@ -31,7 +31,9 @@ class LoginScreen extends HookConsumerWidget {
             description: Text(next.error.toString()),
           ),
         );
-      } else if (next is AsyncData && !next.isLoading && previous?.isLoading == true) {
+      } else if (next is AsyncData &&
+          !next.isLoading &&
+          previous?.isLoading == true) {
         context.go('/home');
       }
     });
@@ -58,7 +60,7 @@ class LoginScreen extends HookConsumerWidget {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -129,11 +131,13 @@ class LoginScreen extends HookConsumerWidget {
 
         ShadButton.outline(
           width: double.infinity,
-          leading: isGoogleLoading ? null : SvgPicture.asset(
-            "assets/drawables/google.svg",
-            height: 18,
-            width: 18,
-          ),
+          leading: isGoogleLoading
+              ? null
+              : SvgPicture.asset(
+                  "assets/drawables/google.svg",
+                  height: 18,
+                  width: 18,
+                ),
           onPressed: isAnyLoading
               ? null
               : () {
@@ -174,7 +178,12 @@ class LoginScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _loginForm(BuildContext context, WidgetRef ref, bool isLoading, LoginFormState form) {
+  Widget _loginForm(
+    BuildContext context,
+    WidgetRef ref,
+    bool isLoading,
+    LoginFormState form,
+  ) {
     final dTheme = Theme.of(context);
     final theme = ShadTheme.of(context);
 
@@ -228,12 +237,7 @@ class LoginScreen extends HookConsumerWidget {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                ShadToaster.of(context).show(
-                  const ShadToast(
-                    title: Text('Forgot Password'),
-                    description: Text('Password reset flow coming soon.'),
-                  ),
-                );
+                context.push('/forgot-password');
               },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
