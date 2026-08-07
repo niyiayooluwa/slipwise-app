@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:go_router/go_router.dart';
 import 'package:slipwise/modules/auth/providers/notifier/user_notifier.dart';
 

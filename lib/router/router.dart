@@ -6,6 +6,8 @@ import 'package:slipwise/core/ui/empty_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/login_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/register_screen.dart';
 import 'package:slipwise/modules/auth/presentation/screens/verify_otp_screen.dart';
+import 'package:slipwise/modules/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:slipwise/modules/auth/presentation/screens/reset_password_screen.dart';
 import 'package:slipwise/modules/onboarding/presentation/screens/get_started_screen.dart';
 import 'package:slipwise/modules/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:slipwise/modules/onboarding/presentation/screens/splash_screen.dart';
@@ -34,6 +36,8 @@ GoRouter router(Ref ref) {
         '/get_started',
         '/onboarding',
         '/verify-otp',
+        '/forgot-password',
+        '/reset-password',
       ].contains(state.uri.path);
 
       if (!isLoggedIn && !isAuthRoute) {
@@ -70,6 +74,17 @@ GoRouter router(Ref ref) {
         builder: (context, state) {
           final email = state.extra as String? ?? '';
           return VerifyOtpScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return ResetPasswordScreen(email: email);
         },
       ),
       GoRoute(path: '/home', builder: (context, state) => EmptyScreen()),
