@@ -14,6 +14,8 @@ import '../models/register.dart';
 import '../models/resend_otp.dart';
 import '../models/verify.dart';
 import '../models/user_model.dart';
+import '../models/forgot_password.dart';
+import '../models/reset_password.dart';
 
 part 'auth_repository.g.dart';
 
@@ -111,6 +113,18 @@ class AuthRepository {
 
   Future<Either<Failure, UserModel>> getMe() async {
     return _remote.getMe();
+  }
+
+  Future<Either<Failure, MessageResponse>> forgotPassword(
+    ForgotPasswordRequest request,
+  ) async {
+    return _remote.forgotPassword(request);
+  }
+
+  Future<Either<Failure, MessageResponse>> resetPassword(
+    ResetPasswordRequest request,
+  ) async {
+    return _remote.resetPassword(request);
   }
 }
 

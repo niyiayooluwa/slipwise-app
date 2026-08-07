@@ -15,6 +15,8 @@ import '../models/register.dart';
 import '../models/resend_otp.dart';
 import '../models/verify.dart';
 import '../models/user_model.dart';
+import '../models/forgot_password.dart';
+import '../models/reset_password.dart';
 
 part 'auth_remote.g.dart';
 
@@ -105,6 +107,26 @@ class AuthRemote {
     try {
       final response = await _dio.get('/auth/me');
       return Right(UserModel.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    }
+  }
+
+  Future<Either<Failure, MessageResponse>> forgotPassword(ForgotPasswordRequest request) async {
+    try {
+      final response = await _dio.post('/auth/forgot-password', data: request.toJson());
+      return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, MessageResponse>> resetPassword(ResetPasswordRequest request) async {
+    try {
+      final response = await _dio.post('/auth/reset-password', data: request.toJson());
+      return Right(MessageResponse.fromJson(response.data));
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (e) {
