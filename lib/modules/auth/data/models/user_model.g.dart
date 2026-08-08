@@ -12,6 +12,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   firstName: json['first_name'] as String,
   lastName: json['last_name'] as String,
   isVerified: json['is_verified'] as bool,
+  username: json['username'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'first_name': instance.firstName,
       'last_name': instance.lastName,
       'is_verified': instance.isVerified,
+      'username': instance.username,
     };

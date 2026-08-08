@@ -16,6 +16,8 @@ import '../models/verify.dart';
 import '../models/user_model.dart';
 import '../models/forgot_password.dart';
 import '../models/reset_password.dart';
+import '../models/update_profile.dart';
+import '../models/check_username.dart';
 
 part 'auth_repository.g.dart';
 
@@ -125,6 +127,18 @@ class AuthRepository {
     ResetPasswordRequest request,
   ) async {
     return _remote.resetPassword(request);
+  }
+
+  Future<Either<Failure, UserModel>> updateProfile(
+    UpdateProfileRequest request,
+  ) async {
+    return _remote.updateProfile(request);
+  }
+
+  Future<Either<Failure, CheckUsernameResponse>> checkUsername(
+    String username,
+  ) async {
+    return _remote.checkUsername(username);
   }
 }
 
