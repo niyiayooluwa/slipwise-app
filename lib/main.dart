@@ -25,14 +25,14 @@ class MainApp extends ConsumerWidget {
     return ShadApp.router(
       title: 'SlipWise',
       themeMode: ThemeMode.system,
-      theme: ShadThemeData(
+      theme: /*ShadThemeData(
         colorScheme: const ShadOrangeColorScheme.light(),
         radius: BorderRadius.circular(12),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.openSans),
       ),
-      darkTheme: ShadThemeData(
+      darkTheme:*/ ShadThemeData(
         colorScheme: const ShadOrangeColorScheme.dark(),
-        radius: BorderRadius.circular(12),
+        radius: BorderRadius.circular(8),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
       ),
       routerConfig: router,

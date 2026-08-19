@@ -33,24 +33,31 @@ Failure mapDioException(DioException e) {
   debugPrint('mapDioException: status=$status, message=$message');
 
   // Auth specific checks (message is more specific than status code)
-  if (message.contains('invalid email or password'))
+  if (message.contains('invalid email or password')) {
     return const InvalidCredentialsFailure();
-  if (message.contains('email not verified'))
+  }
+  if (message.contains('email not verified')) {
     return const EmailNotVerifiedFailure();
+  }
   if (message.contains('already registered') ||
-      message.contains('already verified'))
+      message.contains('already verified')) {
     return const DuplicateFailure();
+  }
   if (message.contains('no active code') ||
       message.contains('code expired') ||
-      message.contains('code incorrect'))
+      message.contains('code incorrect')) {
     return const InvalidCodeFailure();
+  }
   if (message.contains('too many wrong attempts') ||
-      message.contains('too soon'))
+      message.contains('too soon')) {
     return const RateLimitFailure();
-  if (message.contains('no account for this email'))
+  }
+  if (message.contains('no account for this email')) {
     return const NotFoundFailure();
-  if (message.contains('invalid id token'))
+  }
+  if (message.contains('invalid id token')) {
     return const UnauthorizedFailure('Invalid ID Token.');
+  }
 
   // Status code as fallback
   if (status == 401) return const UnauthorizedFailure();

@@ -64,7 +64,8 @@ class SplashScreen extends HookConsumerWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SvgPicture.asset('assets/drawables/splash.svg', fit: BoxFit.cover),
+          Container(color: Color(0xFFea580c)),
+          //SvgPicture.asset('assets/drawables/splash.svg', fit: BoxFit.cover),
           Center(
             child: SvgPicture.asset(
               'assets/drawables/logo/white.svg',
@@ -73,7 +74,7 @@ class SplashScreen extends HookConsumerWidget {
               semanticsLabel: 'Splash Screen Logo',
             ),
           ),
-          SafeArea(
+          /*SafeArea(
             child: Padding(
               padding: EdgeInsets.only(bottom: 24),
               child: Align(
@@ -87,7 +88,7 @@ class SplashScreen extends HookConsumerWidget {
                 ),
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );
