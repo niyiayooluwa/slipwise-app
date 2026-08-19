@@ -3,8 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class RegisterFormState {
-  final TextEditingController firstNameController;
-  final TextEditingController lastNameController;
+  final TextEditingController usernameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
@@ -14,8 +13,7 @@ class RegisterFormState {
   final GlobalKey<ShadFormState> formKey;
 
   RegisterFormState({
-    required this.firstNameController,
-    required this.lastNameController,
+    required this.usernameController,
     required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
@@ -27,8 +25,7 @@ class RegisterFormState {
 }
 
 RegisterFormState useRegisterForm() {
-  final firstNameController = useTextEditingController();
-  final lastNameController = useTextEditingController();
+  final usernameController = useTextEditingController();
   final emailController = useTextEditingController();
   final passwordController = useTextEditingController();
   final confirmPasswordController = useTextEditingController();
@@ -41,31 +38,27 @@ RegisterFormState useRegisterForm() {
     () {
       void updateFormValidity() {
         isFormValid.value =
-            firstNameController.text.trim().isNotEmpty &&
-            lastNameController.text.trim().isNotEmpty &&
+            usernameController.text.trim().isNotEmpty &&
             emailController.text.trim().isNotEmpty &&
             passwordController.text.trim().isNotEmpty &&
             confirmPasswordController.text.trim().isNotEmpty &&
             (passwordController.text == confirmPasswordController.text);
       }
 
-      firstNameController.addListener(updateFormValidity);
-      lastNameController.addListener(updateFormValidity);
+      usernameController.addListener(updateFormValidity);
       emailController.addListener(updateFormValidity);
       passwordController.addListener(updateFormValidity);
       confirmPasswordController.addListener(updateFormValidity);
 
       return () {
-        firstNameController.removeListener(updateFormValidity);
-        lastNameController.removeListener(updateFormValidity);
+        usernameController.removeListener(updateFormValidity);
         emailController.removeListener(updateFormValidity);
         passwordController.removeListener(updateFormValidity);
         confirmPasswordController.removeListener(updateFormValidity);
       };
     },
     [
-      firstNameController,
-      lastNameController,
+      usernameController,
       emailController,
       passwordController,
       confirmPasswordController,
@@ -73,8 +66,7 @@ RegisterFormState useRegisterForm() {
   );
 
   return RegisterFormState(
-    firstNameController: firstNameController,
-    lastNameController: lastNameController,
+    usernameController: usernameController,
     emailController: emailController,
     passwordController: passwordController,
     confirmPasswordController: confirmPasswordController,

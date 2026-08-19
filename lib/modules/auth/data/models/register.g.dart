@@ -10,16 +10,14 @@ _RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) =>
     _RegisterRequest(
       email: json['email'] as String,
       password: json['password'] as String,
-      firstName: json['first_name'] as String,
-      lastName: json['last_name'] as String,
+      username: json['username'] as String,
     );
 
 Map<String, dynamic> _$RegisterRequestToJson(_RegisterRequest instance) =>
     <String, dynamic>{
       'email': instance.email,
       'password': instance.password,
-      'first_name': instance.firstName,
-      'last_name': instance.lastName,
+      'username': instance.username,
     };
 
 _RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) =>

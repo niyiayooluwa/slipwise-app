@@ -10,8 +10,7 @@ class RegisterNotifier extends _$RegisterNotifier {
   FutureOr<void> build() => null;
 
   Future<void> signUp({
-    required String firstName,
-    required String lastName,
+    required String username,
     required String email,
     required String password,
   }) async {
@@ -22,8 +21,7 @@ class RegisterNotifier extends _$RegisterNotifier {
       RegisterRequest(
         email: email,
         password: password,
-        firstName: firstName,
-        lastName: lastName,
+        username: username,
       ),
     );
 

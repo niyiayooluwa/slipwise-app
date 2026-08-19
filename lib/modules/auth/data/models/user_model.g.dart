@@ -9,18 +9,14 @@ part of 'user_model.dart';
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: json['id'] as String,
   email: json['email'] as String,
-  firstName: json['first_name'] as String,
-  lastName: json['last_name'] as String,
+  username: json['username'] as String,
   isVerified: json['is_verified'] as bool,
-  username: json['username'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'email': instance.email,
-      'first_name': instance.firstName,
-      'last_name': instance.lastName,
-      'is_verified': instance.isVerified,
       'username': instance.username,
+      'is_verified': instance.isVerified,
     };

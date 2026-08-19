@@ -197,18 +197,8 @@ class RegisterScreen extends HookConsumerWidget {
             children: [
               Expanded(
                 child: ShadInputFormField(
-                  id: 'firstName',
-                  controller: form.firstNameController,
-                  label: Text('FIRST NAME', style: dTheme.textTheme.labelSmall),
-                  placeholder: const Text('John'),
-                  validator: (v) => v.isEmpty ? 'Required' : null,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: ShadInputFormField(
                   id: 'lastName',
-                  controller: form.lastNameController,
+                  controller: form.usernameController,
                   label: Text('LAST NAME', style: dTheme.textTheme.labelSmall),
                   placeholder: const Text('Doe'),
                   validator: (v) => v.isEmpty ? 'Required' : null,
@@ -296,8 +286,7 @@ class RegisterScreen extends HookConsumerWidget {
                           ref
                               .read(registerProvider.notifier)
                               .signUp(
-                                firstName: form.firstNameController.text.trim(),
-                                lastName: form.lastNameController.text.trim(),
+                                username: form.usernameController.text.trim(),
                                 email: form.emailController.text.trim(),
                                 password: form.passwordController.text,
                               );
