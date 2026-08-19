@@ -41,7 +41,9 @@ class GetStartedScreen extends HookConsumerWidget {
             description: Text(next.error.toString()),
           ),
         );
-      } else if (next is AsyncData && !next.isLoading && previous?.isLoading == true) {
+      } else if (next is AsyncData &&
+          !next.isLoading &&
+          previous?.isLoading == true) {
         if (ref.read(userProvider).value != null) {
           context.go('/home');
         }
@@ -100,7 +102,9 @@ class GetStartedScreen extends HookConsumerWidget {
                     width: double.infinity,
                     child: ShadButton(
                       size: ShadButtonSize.lg,
-                      onPressed: isGoogleLoading ? null : () => context.push('/login'),
+                      onPressed: isGoogleLoading
+                          ? null
+                          : () => context.push('/login'),
                       leading: const Icon(LucideIcons.mail),
                       child: const Text("Sign in with Email"),
                     ),
@@ -123,11 +127,13 @@ class GetStartedScreen extends HookConsumerWidget {
                           : () {
                               ref.read(googleAuthProvider.notifier).signIn();
                             },
-                      leading: isGoogleLoading ? null : SvgPicture.asset(
-                        "assets/drawables/google.svg",
-                        height: 18,
-                        width: 18,
-                      ),
+                      leading: isGoogleLoading
+                          ? null
+                          : SvgPicture.asset(
+                              "assets/drawables/google.svg",
+                              height: 18,
+                              width: 18,
+                            ),
                       child: isGoogleLoading
                           ? const SizedBox(
                               child: SpinKitThreeBounce(

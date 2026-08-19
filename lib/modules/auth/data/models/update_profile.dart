@@ -11,5 +11,6 @@ abstract class UpdateProfileRequest with _$UpdateProfileRequest {
     String? username,
   }) = _UpdateProfileRequest;
 
-  factory UpdateProfileRequest.fromJson(Map<String, dynamic> json) => _$UpdateProfileRequestFromJson(json);
+  factory UpdateProfileRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProfileRequestFromJson(json);
 }

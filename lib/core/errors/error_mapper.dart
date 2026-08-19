@@ -7,7 +7,10 @@ String _extractMessage(DioException e) {
   final data = e.response?.data;
   if (data is String) return data.trim().toLowerCase();
   if (data is Map) {
-    return (data['error'] ?? data['message'] ?? '').toString().trim().toLowerCase();
+    return (data['error'] ?? data['message'] ?? '')
+        .toString()
+        .trim()
+        .toLowerCase();
   }
   return '';
 }
@@ -26,17 +29,28 @@ Failure mapDioException(DioException e) {
 
   final message = _extractMessage(e);
   final status = e.response?.statusCode;
-  
+
   debugPrint('mapDioException: status=$status, message=$message');
 
   // Auth specific checks (message is more specific than status code)
-  if (message.contains('invalid email or password')) return const InvalidCredentialsFailure();
-  if (message.contains('email not verified')) return const EmailNotVerifiedFailure();
-  if (message.contains('already registered') || message.contains('already verified')) return const DuplicateFailure();
-  if (message.contains('no active code') || message.contains('code expired') || message.contains('code incorrect')) return const InvalidCodeFailure();
-  if (message.contains('too many wrong attempts') || message.contains('too soon')) return const RateLimitFailure();
-  if (message.contains('no account for this email')) return const NotFoundFailure();
-  if (message.contains('invalid id token')) return const UnauthorizedFailure('Invalid ID Token.');
+  if (message.contains('invalid email or password'))
+    return const InvalidCredentialsFailure();
+  if (message.contains('email not verified'))
+    return const EmailNotVerifiedFailure();
+  if (message.contains('already registered') ||
+      message.contains('already verified'))
+    return const DuplicateFailure();
+  if (message.contains('no active code') ||
+      message.contains('code expired') ||
+      message.contains('code incorrect'))
+    return const InvalidCodeFailure();
+  if (message.contains('too many wrong attempts') ||
+      message.contains('too soon'))
+    return const RateLimitFailure();
+  if (message.contains('no account for this email'))
+    return const NotFoundFailure();
+  if (message.contains('invalid id token'))
+    return const UnauthorizedFailure('Invalid ID Token.');
 
   // Status code as fallback
   if (status == 401) return const UnauthorizedFailure();

@@ -11,10 +11,7 @@ class VerifyOtpNotifier extends _$VerifyOtpNotifier {
   @override
   FutureOr<void> build() => null;
 
-  Future<void> verifyOtp({
-    required String email,
-    required String code,
-  }) async {
+  Future<void> verifyOtp({required String email, required String code}) async {
     state = const AsyncValue.loading();
 
     final repo = ref.read(authRepositoryProvider);

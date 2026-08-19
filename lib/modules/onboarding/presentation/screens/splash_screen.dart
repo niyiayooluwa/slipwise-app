@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/storage/settings_service.dart';
 import 'package:slipwise/modules/auth/providers/notifier/user_notifier.dart';
@@ -26,22 +25,22 @@ class SplashScreen extends HookConsumerWidget {
         if (!context.mounted) return;
 
         final settings = results[1] as SettingsService;
-        
+
         if (!settings.hasCompletedOnboarding) {
           context.go('/onboarding');
           return;
         }
 
         final accessToken = await storage.getAccessToken();
-        
+
         if (accessToken != null) {
           // Attempt to fetch user
           await ref.read(userProvider.notifier).fetch();
-          
+
           if (!context.mounted) return;
 
           final userState = ref.read(userProvider);
-          
+
           if (userState.hasError || userState.value == null) {
             // Token expired or invalid, clear it
             await storage.clearTokens();

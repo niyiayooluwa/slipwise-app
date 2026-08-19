@@ -22,7 +22,8 @@ class ResetPasswordNotifier extends _$ResetPasswordNotifier {
     );
 
     state = result.fold(
-      ifLeft: (failure) => AsyncValue.error(failure.message, StackTrace.current),
+      ifLeft: (failure) =>
+          AsyncValue.error(failure.message, StackTrace.current),
       ifRight: (response) => const AsyncValue.data(null),
     );
   }

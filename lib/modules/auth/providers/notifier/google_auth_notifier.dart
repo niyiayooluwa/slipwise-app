@@ -28,20 +28,26 @@ class GoogleAuthNotifier extends _$GoogleAuthNotifier {
       final auth = await account.authentication;
       final idToken = auth.idToken;
       if (idToken == null) {
-        state = AsyncValue.error('No ID token from Google.', StackTrace.current);
+        state = AsyncValue.error(
+          'No ID token from Google.',
+          StackTrace.current,
+        );
         return;
       }
-      
+
       final repo = ref.read(authRepositoryProvider);
-      final result = await repo.googleLogin(OAuthLoginRequest(idToken: idToken));
-      
+      final result = await repo.googleLogin(
+        OAuthLoginRequest(idToken: idToken),
+      );
+
       state = await result.fold(
-        ifLeft: (failure) => AsyncValue.error(failure.message, StackTrace.current),
+        ifLeft: (failure) =>
+            AsyncValue.error(failure.message, StackTrace.current),
         ifRight: (response) async {
           ref.invalidate(userProvider);
           await ref.read(userProvider.future);
           return const AsyncValue.data(null);
-        }
+        },
       );
     } catch (e, st) {
       state = AsyncValue.error('Google Sign In failed: $e', st);

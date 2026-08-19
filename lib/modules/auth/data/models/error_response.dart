@@ -5,9 +5,7 @@ part 'error_response.g.dart';
 
 @freezed
 abstract class ErrorResponse with _$ErrorResponse {
-  const factory ErrorResponse({
-    required String error,
-  }) = _ErrorResponse;
+  const factory ErrorResponse({required String error}) = _ErrorResponse;
 
   factory ErrorResponse.fromJson(Map<String, dynamic> json) =>
       _$ErrorResponseFromJson(json);

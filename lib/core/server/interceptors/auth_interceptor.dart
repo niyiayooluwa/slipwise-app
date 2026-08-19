@@ -115,7 +115,7 @@ class AuthInterceptor extends Interceptor {
 
       // Retry the original failed request with the new token
       final retryOptions = _buildRetry(err.requestOptions, newAccessToken);
-      
+
       try {
         final retryResponse = await _refreshDio.fetch(retryOptions);
         return handler.resolve(retryResponse);
@@ -137,10 +137,7 @@ class AuthInterceptor extends Interceptor {
   /// Clones the original request options with a fresh Authorization header.
   RequestOptions _buildRetry(RequestOptions original, String newToken) {
     return original.copyWith(
-      headers: {
-        ...original.headers,
-        'Authorization': 'Bearer $newToken',
-      },
+      headers: {...original.headers, 'Authorization': 'Bearer $newToken'},
     );
   }
 

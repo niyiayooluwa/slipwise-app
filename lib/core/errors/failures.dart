@@ -4,7 +4,9 @@ abstract class Failure {
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure([super.message = 'Please check your internet connection.']);
+  const NetworkFailure([
+    super.message = 'Please check your internet connection.',
+  ]);
 }
 
 class ServerFailure extends Failure {
@@ -12,7 +14,9 @@ class ServerFailure extends Failure {
 }
 
 class InvalidCredentialsFailure extends Failure {
-  const InvalidCredentialsFailure([super.message = 'Invalid email or password.']);
+  const InvalidCredentialsFailure([
+    super.message = 'Invalid email or password.',
+  ]);
 }
 
 class EmailNotVerifiedFailure extends Failure {
@@ -32,7 +36,9 @@ class InvalidCodeFailure extends Failure {
 }
 
 class RateLimitFailure extends Failure {
-  const RateLimitFailure([super.message = 'Too many requests. Please try again later.']);
+  const RateLimitFailure([
+    super.message = 'Too many requests. Please try again later.',
+  ]);
 }
 
 class NotFoundFailure extends Failure {

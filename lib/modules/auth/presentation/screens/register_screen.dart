@@ -30,7 +30,9 @@ class RegisterScreen extends HookConsumerWidget {
             description: Text(next.error.toString()),
           ),
         );
-      } else if (next is AsyncData && !next.isLoading && previous?.isLoading == true) {
+      } else if (next is AsyncData &&
+          !next.isLoading &&
+          previous?.isLoading == true) {
         if (ref.read(userProvider).value != null) {
           context.go('/home');
         }
@@ -129,11 +131,13 @@ class RegisterScreen extends HookConsumerWidget {
 
         ShadButton.outline(
           width: double.infinity,
-          leading: isGoogleLoading ? null : SvgPicture.asset(
-            "assets/drawables/google.svg",
-            height: 18,
-            width: 18,
-          ),
+          leading: isGoogleLoading
+              ? null
+              : SvgPicture.asset(
+                  "assets/drawables/google.svg",
+                  height: 18,
+                  width: 18,
+                ),
           onPressed: isAnyLoading
               ? null
               : () {
@@ -174,7 +178,12 @@ class RegisterScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _registerForm(BuildContext context, WidgetRef ref, bool isLoading, RegisterFormState form) {
+  Widget _registerForm(
+    BuildContext context,
+    WidgetRef ref,
+    bool isLoading,
+    RegisterFormState form,
+  ) {
     final dTheme = Theme.of(context);
 
     return ShadForm(

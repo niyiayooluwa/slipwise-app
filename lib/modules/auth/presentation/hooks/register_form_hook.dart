@@ -37,37 +37,40 @@ RegisterFormState useRegisterForm() {
   final isFormValid = useState(false);
   final formKey = useMemoized(() => GlobalKey<ShadFormState>());
 
-  useEffect(() {
-    void updateFormValidity() {
-      isFormValid.value =
-          firstNameController.text.trim().isNotEmpty &&
-          lastNameController.text.trim().isNotEmpty &&
-          emailController.text.trim().isNotEmpty &&
-          passwordController.text.trim().isNotEmpty &&
-          confirmPasswordController.text.trim().isNotEmpty &&
-          (passwordController.text == confirmPasswordController.text);
-    }
+  useEffect(
+    () {
+      void updateFormValidity() {
+        isFormValid.value =
+            firstNameController.text.trim().isNotEmpty &&
+            lastNameController.text.trim().isNotEmpty &&
+            emailController.text.trim().isNotEmpty &&
+            passwordController.text.trim().isNotEmpty &&
+            confirmPasswordController.text.trim().isNotEmpty &&
+            (passwordController.text == confirmPasswordController.text);
+      }
 
-    firstNameController.addListener(updateFormValidity);
-    lastNameController.addListener(updateFormValidity);
-    emailController.addListener(updateFormValidity);
-    passwordController.addListener(updateFormValidity);
-    confirmPasswordController.addListener(updateFormValidity);
+      firstNameController.addListener(updateFormValidity);
+      lastNameController.addListener(updateFormValidity);
+      emailController.addListener(updateFormValidity);
+      passwordController.addListener(updateFormValidity);
+      confirmPasswordController.addListener(updateFormValidity);
 
-    return () {
-      firstNameController.removeListener(updateFormValidity);
-      lastNameController.removeListener(updateFormValidity);
-      emailController.removeListener(updateFormValidity);
-      passwordController.removeListener(updateFormValidity);
-      confirmPasswordController.removeListener(updateFormValidity);
-    };
-  }, [
-    firstNameController,
-    lastNameController,
-    emailController,
-    passwordController,
-    confirmPasswordController,
-  ]);
+      return () {
+        firstNameController.removeListener(updateFormValidity);
+        lastNameController.removeListener(updateFormValidity);
+        emailController.removeListener(updateFormValidity);
+        passwordController.removeListener(updateFormValidity);
+        confirmPasswordController.removeListener(updateFormValidity);
+      };
+    },
+    [
+      firstNameController,
+      lastNameController,
+      emailController,
+      passwordController,
+      confirmPasswordController,
+    ],
+  );
 
   return RegisterFormState(
     firstNameController: firstNameController,

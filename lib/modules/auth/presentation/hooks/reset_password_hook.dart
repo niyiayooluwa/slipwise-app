@@ -30,13 +30,13 @@ ResetPasswordFormState useResetPasswordForm() {
   final otpController = useTextEditingController();
   final passwordController = useTextEditingController();
   final confirmPasswordController = useTextEditingController();
-  
+
   final isPasswordVisible = useState(false);
   final isConfirmPasswordVisible = useState(false);
-  
+
   final isStep1Valid = useState(false);
   final isStep2Valid = useState(false);
-  
+
   final formKey = useMemoized(() => GlobalKey<ShadFormState>());
   final pageController = usePageController();
 
