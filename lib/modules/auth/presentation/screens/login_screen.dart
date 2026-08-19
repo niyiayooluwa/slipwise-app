@@ -130,7 +130,16 @@ class LoginScreen extends HookConsumerWidget {
         const SizedBox(height: 24),
 
         ShadButton.outline(
-          width: double.infinity,
+          decoration: ShadDecoration(
+            border: ShadBorder.all(color: theme.colorScheme.primary),
+          ),
+          foregroundColor: Colors.white,
+          size: ShadButtonSize.lg,
+          onPressed: isGoogleLoading
+              ? null
+              : () {
+                  ref.read(googleAuthProvider.notifier).signIn();
+                },
           leading: isGoogleLoading
               ? null
               : SvgPicture.asset(
@@ -138,19 +147,11 @@ class LoginScreen extends HookConsumerWidget {
                   height: 18,
                   width: 18,
                 ),
-          onPressed: isAnyLoading
-              ? null
-              : () {
-                  ref.read(googleAuthProvider.notifier).signIn();
-                },
           child: isGoogleLoading
-              ? SizedBox(
-                  child: SpinKitThreeBounce(
-                    size: 16,
-                    color: theme.colorScheme.foreground,
-                  ),
+              ? const SizedBox(
+                  child: SpinKitThreeBounce(size: 16, color: Colors.white),
                 )
-              : const Text('Continue with Google'),
+              : const Text("Continue with Google"),
         ),
 
         const Spacer(),
@@ -281,6 +282,7 @@ class LoginScreen extends HookConsumerWidget {
                         }
                       },
                 width: double.infinity,
+                size: ShadButtonSize.lg,
                 child: isLoading
                     ? SizedBox(
                         child: SpinKitThreeBounce(
