@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:slipwise/modules/auth/providers/notifier/user_notifier.dart';
+import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
 
 class EmptyScreen extends HookConsumerWidget {
   const EmptyScreen({super.key});
@@ -20,7 +20,7 @@ class EmptyScreen extends HookConsumerWidget {
               onPressed: () async {
                 await ref.read(userProvider.notifier).logout();
                 if (context.mounted) {
-                  context.go('/get_started');
+                  context.go('/get-started');
                 }
               },
               child: const Text('Logout'),

@@ -3,14 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/ui/empty_screen.dart';
-import 'package:slipwise/modules/auth/presentation/screens/login_screen.dart';
-import 'package:slipwise/modules/auth/presentation/screens/register_screen.dart';
-import 'package:slipwise/modules/auth/presentation/screens/verify_otp_screen.dart';
-import 'package:slipwise/modules/auth/presentation/screens/forgot_password_screen.dart';
-import 'package:slipwise/modules/auth/presentation/screens/reset_password_screen.dart';
-import 'package:slipwise/modules/onboarding/presentation/screens/get_started_screen.dart';
-import 'package:slipwise/modules/onboarding/presentation/screens/onboarding_screen.dart';
-import 'package:slipwise/modules/onboarding/presentation/screens/splash_screen.dart';
+import 'package:slipwise/modules/auth/screens/login/login_screen.dart';
+import 'package:slipwise/modules/auth/screens/register/register_screen.dart';
+import 'package:slipwise/modules/auth/screens/verify_otp/verify_otp_screen.dart';
+import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_screen.dart';
+import 'package:slipwise/modules/auth/screens/reset_password/reset_password_screen.dart';
+import 'package:slipwise/modules/onboarding/screens/get_started/get_started_screen.dart';
+import 'package:slipwise/modules/onboarding/screens/onboarding/onboarding_screen.dart';
+import 'package:slipwise/modules/onboarding/screens/splash/splash_screen.dart';
 
 part 'router.g.dart';
 
@@ -33,7 +33,7 @@ GoRouter router(Ref ref) {
       final bool isAuthRoute = [
         '/login',
         '/register',
-        '/get_started',
+        '/get-started',
         '/onboarding',
         '/verify-otp',
         '/forgot-password',
@@ -41,7 +41,7 @@ GoRouter router(Ref ref) {
       ].contains(state.uri.path);
 
       if (!isLoggedIn && !isAuthRoute) {
-        return '/get_started';
+        return '/get-started';
       }
 
       if (isLoggedIn && isAuthRoute) {
@@ -61,7 +61,7 @@ GoRouter router(Ref ref) {
         builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
-        path: '/get_started',
+        path: '/get-started',
         builder: (context, state) => const GetStartedScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
