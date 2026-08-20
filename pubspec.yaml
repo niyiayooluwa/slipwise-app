@@ -42,6 +42,12 @@ dev_dependencies:
   json_serializable: 6.11.2 
   riverpod_generator: ^3.0.3
 
+flutter_native_splash:
+  color: "#0C0A09"
+  image: assets/image/logo.png
+  android: true
+  #ios: true
+
 # The following section is specific to Flutter packages.
 flutter:
   # The following line ensures that the Material Icons font is
