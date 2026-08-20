@@ -13,7 +13,7 @@ part of 'utility_notifier.dart';
 const utilityProvider = UtilityNotifierProvider._();
 
 final class UtilityNotifierProvider
-    extends $AsyncNotifierProvider<UtilityNotifier, void> {
+    extends $NotifierProvider<UtilityNotifier, UsernameCheckStatus> {
   const UtilityNotifierProvider._()
     : super(
         from: null,
@@ -31,25 +31,33 @@ final class UtilityNotifierProvider
   @$internal
   @override
   UtilityNotifier create() => UtilityNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UsernameCheckStatus value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UsernameCheckStatus>(value),
+    );
+  }
 }
 
-String _$utilityNotifierHash() => r'663b24bd5d40ae2e91164339a67190d77701ad56';
+String _$utilityNotifierHash() => r'cca6f48aac2d35943911b120eeb2038c148f8937';
 
-abstract class _$UtilityNotifier extends $AsyncNotifier<void> {
-  FutureOr<void> build();
+abstract class _$UtilityNotifier extends $Notifier<UsernameCheckStatus> {
+  UsernameCheckStatus build();
   @$mustCallSuper
   @override
   void runBuild() {
-    build();
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final created = build();
+    final ref = this.ref as $Ref<UsernameCheckStatus, UsernameCheckStatus>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
+              AnyNotifier<UsernameCheckStatus, UsernameCheckStatus>,
+              UsernameCheckStatus,
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleValue(ref, created);
   }
 }

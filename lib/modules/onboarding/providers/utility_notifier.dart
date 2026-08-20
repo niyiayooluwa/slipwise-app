@@ -6,18 +6,44 @@ part 'utility_notifier.g.dart';
 @riverpod
 class UtilityNotifier extends _$UtilityNotifier {
   @override
-  FutureOr<void> build() => null;
+  UsernameCheckStatus build() => const UsernameCheckIdle();
 
-  Future checkUsername(String username) async {
-    state = const AsyncValue.loading();
+  void reset() => state = const UsernameCheckIdle();
 
+  Future<bool> checkUsername(String username) async {
+    state = const UsernameCheckLoading();
     final repo = ref.read(authRepositoryProvider);
     final result = await repo.checkUsername(username);
-
-    state = result.fold(
-      ifLeft: (failure) =>
-          AsyncValue.error(failure.message, StackTrace.current),
-      ifRight: (response) => const AsyncValue.data(null),
+    return result.fold(
+      ifLeft: (failure) {
+        state = UsernameCheckError(failure.message);
+        return false;
+      },
+      ifRight: (response) {
+        state = const UsernameCheckAvailable();
+        return true;
+      },
     );
   }
+}
+
+sealed class UsernameCheckStatus {
+  const UsernameCheckStatus();
+}
+
+class UsernameCheckIdle extends UsernameCheckStatus {
+  const UsernameCheckIdle();
+}
+
+class UsernameCheckLoading extends UsernameCheckStatus {
+  const UsernameCheckLoading();
+}
+
+class UsernameCheckAvailable extends UsernameCheckStatus {
+  const UsernameCheckAvailable();
+}
+
+class UsernameCheckError extends UsernameCheckStatus {
+  final String message;
+  const UsernameCheckError(this.message);
 }
