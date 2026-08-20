@@ -31,8 +31,14 @@ class UtilityNotifier extends _$UtilityNotifier {
         return false;
       },
       ifRight: (response) {
-        if (!_disposed) state = const UsernameCheckAvailable();
-        return true;
+        if (!_disposed) {
+          if (response.available) {
+            state = const UsernameCheckAvailable();
+          } else {
+            state = const UsernameCheckError('Username is already taken.');
+          }
+        }
+        return response.available;
       },
     );
   }
