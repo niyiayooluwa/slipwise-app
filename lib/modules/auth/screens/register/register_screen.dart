@@ -8,6 +8,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/auth/screens/register/controller/register_form_controller.dart';
 import 'package:slipwise/modules/auth/screens/register/controller/register_controller.dart';
 import 'package:slipwise/modules/auth/screens/google_auth/google_auth_notifier.dart';
+import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
 import 'package:slipwise/modules/auth/screens/register/widgets/register_email_step.dart';
 import 'package:slipwise/modules/auth/screens/register/widgets/register_username_step.dart';
@@ -41,46 +42,24 @@ class RegisterScreen extends HookConsumerWidget {
     final notifier = ref.read(registerFormProvider.notifier);
 
     // Google Auth listener to show error or navigate to home
-    ref.listen(googleAuthProvider, (previous, next) {
-      if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Google Sign-In Failed'),
-            description: Text(next.error.toString()),
-          ),
-        );
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous?.isLoading == true) {
+    return AuthErrorListener<void>(
+      provider: googleAuthProvider,
+      errorTitle: 'Google Sign-In Failed',
+      onSuccess: (context, state) {
         if (ref.read(userProvider).value != null) {
           context.go('/home');
         }
-      }
-    });
-
-    // Registration listener to show error or navigate to OTP verification
-    ref.listen(registerControllerProvider, (previous, next) {
-      if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Registration Failed'),
-            description: Text(next.error.toString()),
-          ),
-        );
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous?.isLoading == true) {
-        context.push('/verify-otp', extra: form.email);
-      }
-    });
-
-    // Main Scaffold with a background color set to Shad background color,
-    // and SafeArea to avoid notches and system UI overlays.
-    // The body contains a Column with the top section, the form display, and the bottom section.
-    return Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
+      },
+      child: AuthErrorListener<void>(
+        provider: registerControllerProvider,
+        errorTitle: 'Registration Failed',
+        onSuccess: (context, state) {
+          context.push('/verify-otp', extra: form.email);
+        },
+        child: Scaffold(
+          backgroundColor: theme.colorScheme.background,
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
@@ -113,7 +92,7 @@ class RegisterScreen extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    )));
   }
 
   // Top section to display the headers of each step of the registration process.

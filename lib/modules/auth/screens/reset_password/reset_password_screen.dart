@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/auth/screens/reset_password/reset_password_form_controller.dart';
 import 'package:slipwise/modules/auth/screens/reset_password/reset_password_controller.dart';
+import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 
 class ResetPasswordScreen extends HookConsumerWidget {
   final String email;
@@ -19,17 +20,10 @@ class ResetPasswordScreen extends HookConsumerWidget {
     final authState = ref.watch(resetPasswordControllerProvider);
     final isLoading = authState.isLoading;
 
-    ref.listen(resetPasswordControllerProvider, (previous, next) {
-      if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Reset Failed'),
-            description: Text(next.error.toString()),
-          ),
-        );
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous?.isLoading == true) {
+    return AuthErrorListener<void>(
+      provider: resetPasswordControllerProvider,
+      errorTitle: 'Reset Failed',
+      onSuccess: (context, state) {
         ShadToaster.of(context).show(
           const ShadToast(
             title: Text('Password Reset'),
@@ -38,12 +32,9 @@ class ResetPasswordScreen extends HookConsumerWidget {
             ),
           ),
         );
-        // The instructions say to route immediately to login
         context.go('/login');
-      }
-    });
-
-    return Scaffold(
+      },
+      child: Scaffold(
       backgroundColor: theme.colorScheme.background,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -70,7 +61,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _top(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/auth/screens/verify_otp/verify_otp_form_controller.dart';
 import 'package:slipwise/modules/auth/screens/verify_otp/verify_otp_controller.dart';
+import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 
 class VerifyOtpScreen extends HookConsumerWidget {
   final String email;
@@ -37,22 +38,13 @@ class VerifyOtpScreen extends HookConsumerWidget {
       return null;
     }, []);
 
-    ref.listen(verifyOtpControllerProvider, (previous, next) {
-      if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Verification Failed'),
-            description: Text(next.error.toString()),
-          ),
-        );
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous?.isLoading == true) {
+    return AuthErrorListener<void>(
+      provider: verifyOtpControllerProvider,
+      errorTitle: 'Verification Failed',
+      onSuccess: (context, state) {
         context.go('/home');
-      }
-    });
-
-    return Scaffold(
+      },
+      child: Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -80,7 +72,7 @@ class VerifyOtpScreen extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _top(BuildContext context) {

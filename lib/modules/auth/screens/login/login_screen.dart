@@ -8,6 +8,7 @@ import 'package:slipwise/core/utils/validators.dart';
 import 'package:slipwise/core/errors/failures.dart';
 import 'package:slipwise/modules/auth/screens/login/login_form_controller.dart';
 import 'package:slipwise/modules/auth/screens/login/login_controller.dart';
+import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 import 'package:slipwise/modules/auth/screens/google_auth/google_auth_notifier.dart';
 
 class LoginScreen extends HookConsumerWidget {
@@ -23,39 +24,23 @@ class LoginScreen extends HookConsumerWidget {
     final isGoogleLoading = ref.watch(googleAuthProvider).isLoading;
     final isAnyLoading = isLoading || isGoogleLoading;
 
-    ref.listen(googleAuthProvider, (previous, next) {
-      if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Google Sign-In Failed'),
-            description: Text(next.error.toString()),
-          ),
-        );
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous?.isLoading == true) {
+    return AuthErrorListener<void>(
+      provider: googleAuthProvider,
+      errorTitle: 'Google Sign-In Failed',
+      onSuccess: (context, state) {
         context.go('/home');
-      }
-    });
-
-    ref.listen(loginControllerProvider, (previous, next) {
-      if (next is AsyncError) {
-        final errorMsg = next.error.toString();
-        if (errorMsg == const EmailNotVerifiedFailure().message) {
-          context.push('/verify-otp', extra: form.emailController.text.trim());
-          return;
-        }
-
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Login Failed'),
-            description: Text(errorMsg),
-          ),
-        );
-      }
-    });
-
-    return Scaffold(
+      },
+      child: AuthErrorListener<void>(
+        provider: loginControllerProvider,
+        errorTitle: 'Login Failed',
+        onError: (context, error) {
+          if (error.toString() == const EmailNotVerifiedFailure().message) {
+            context.push('/verify-otp', extra: form.emailController.text.trim());
+            return true;
+          }
+          return false;
+        },
+        child: Scaffold(
       backgroundColor: theme.colorScheme.background,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -73,7 +58,7 @@ class LoginScreen extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    )));
   }
 
   Widget _top(BuildContext context) {

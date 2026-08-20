@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_form_controller.dart';
 import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_controller.dart';
+import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 
 class ForgotPasswordScreen extends HookConsumerWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,17 +17,9 @@ class ForgotPasswordScreen extends HookConsumerWidget {
     final authState = ref.watch(forgotPasswordControllerProvider);
     final isLoading = authState.isLoading;
 
-    ref.listen(forgotPasswordControllerProvider, (previous, next) {
-      if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            title: const Text('Error'),
-            description: Text(next.error.toString()),
-          ),
-        );
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous?.isLoading == true) {
+    return AuthErrorListener<void>(
+      provider: forgotPasswordControllerProvider,
+      onSuccess: (context, state) {
         ShadToaster.of(context).show(
           const ShadToast(
             title: Text('OTP Sent'),
@@ -37,10 +30,8 @@ class ForgotPasswordScreen extends HookConsumerWidget {
           '/reset-password',
           extra: form.emailController.text.trim(),
         );
-      }
-    });
-
-    return Scaffold(
+      },
+      child: Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -66,7 +57,7 @@ class ForgotPasswordScreen extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _top(BuildContext context) {
