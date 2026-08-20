@@ -8,6 +8,8 @@ import 'package:slipwise/modules/auth/screens/register/register_screen.dart';
 import 'package:slipwise/modules/auth/screens/verify_otp/verify_otp_screen.dart';
 import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_screen.dart';
 import 'package:slipwise/modules/auth/screens/reset_password/reset_password_screen.dart';
+import 'package:slipwise/modules/auth/screens/set_username/set_username_screen.dart';
+import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
 import 'package:slipwise/modules/onboarding/screens/get_started/get_started_screen.dart';
 import 'package:slipwise/modules/onboarding/screens/onboarding/onboarding_screen.dart';
 import 'package:slipwise/modules/onboarding/screens/splash/splash_screen.dart';
@@ -30,6 +32,7 @@ GoRouter router(Ref ref) {
       final token = await storage.getAccessToken();
 
       final bool isLoggedIn = token != null;
+      final isSetUsernameRoute = state.uri.path == '/set-username';
       final bool isAuthRoute = [
         '/login',
         '/register',
@@ -44,8 +47,15 @@ GoRouter router(Ref ref) {
         return '/get-started';
       }
 
-      if (isLoggedIn && isAuthRoute) {
-        return '/home';
+      if (isLoggedIn) {
+        final user = ref.read(userProvider).value;
+        // userProvider might be loading, so if it's null, we don't redirect yet unless it's an error?
+        // Actually, GoogleAuthNotifier waits for it to load before setting isLoggedIn (via invalidating).
+        if (user != null && (user.username == null || user.username!.isEmpty)) {
+          if (!isSetUsernameRoute) return '/set-username';
+        } else if (isAuthRoute || isSetUsernameRoute) {
+          return '/home';
+        }
       }
 
       return null;
@@ -86,6 +96,10 @@ GoRouter router(Ref ref) {
           final email = state.extra as String? ?? '';
           return ResetPasswordScreen(email: email);
         },
+      ),
+      GoRoute(
+        path: '/set-username',
+        builder: (context, state) => const SetUsernameScreen(),
       ),
       GoRoute(path: '/home', builder: (context, state) => EmptyScreen()),
     ],

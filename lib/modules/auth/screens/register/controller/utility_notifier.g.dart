@@ -41,7 +41,7 @@ final class UtilityNotifierProvider
   }
 }
 
-String _$utilityNotifierHash() => r'cca6f48aac2d35943911b120eeb2038c148f8937';
+String _$utilityNotifierHash() => r'8cd6668fc4bea561828029eaa7182ff7c7ec99fe';
 
 abstract class _$UtilityNotifier extends $Notifier<UsernameCheckStatus> {
   UsernameCheckStatus build();

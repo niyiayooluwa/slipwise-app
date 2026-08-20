@@ -10,7 +10,7 @@ abstract class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
     required String email,
-    required String username,
+    required String? username,
     @JsonKey(name: 'is_verified') required bool isVerified,
   }) = _UserModel;
 

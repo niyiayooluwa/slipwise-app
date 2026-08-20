@@ -46,8 +46,13 @@ class RegisterScreen extends HookConsumerWidget {
       provider: googleAuthProvider,
       errorTitle: 'Google Sign-In Failed',
       onSuccess: (context, state) {
-        if (ref.read(userProvider).value != null) {
-          context.go('/home');
+        final user = ref.read(userProvider).value;
+        if (user != null) {
+          if (user.username == null || user.username!.isEmpty) {
+            context.go('/set-username');
+          } else {
+            context.go('/home');
+          }
         }
       },
       child: AuthErrorListener<void>(
