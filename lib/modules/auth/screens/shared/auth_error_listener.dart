@@ -24,7 +24,7 @@ class AuthErrorListener<T> extends ConsumerWidget {
       if (next.hasError && !next.isLoading) {
         final error = next.error!;
         final handled = onError?.call(context, error) ?? false;
-        
+
         if (!handled) {
           ShadToaster.of(context).show(
             ShadToast.destructive(

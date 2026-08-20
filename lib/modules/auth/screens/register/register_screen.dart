@@ -60,39 +60,41 @@ class RegisterScreen extends HookConsumerWidget {
           backgroundColor: theme.colorScheme.background,
           resizeToAvoidBottomInset: false,
           body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Top section with the title and description based on the current
-              // step of the registration process.
-              _top(context, form, notifier),
-              const SizedBox(height: 24),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Top section with the title and description based on the current
+                  // step of the registration process.
+                  _top(context, form, notifier),
+                  const SizedBox(height: 24),
 
-              // Expanded widget to take up the remaining space for the form display.
-              Expanded(
-                child: _displayForm(
-                  context,
-                  form,
-                  isAnyLoading,
-                  ref,
-                  notifier,
-                  emailController,
-                  usernameController,
-                  passwordController,
-                  confirmPasswordController,
-                ),
+                  // Expanded widget to take up the remaining space for the form display.
+                  Expanded(
+                    child: _displayForm(
+                      context,
+                      form,
+                      isAnyLoading,
+                      ref,
+                      notifier,
+                      emailController,
+                      usernameController,
+                      passwordController,
+                      confirmPasswordController,
+                    ),
+                  ),
+
+                  // Bottom section with the "Continue with Google" button and other
+                  // information based on the current step of the registration process.
+                  _bottom(context, ref, isAnyLoading, form),
+                ],
               ),
-
-              // Bottom section with the "Continue with Google" button and other
-              // information based on the current step of the registration process.
-              _bottom(context, ref, isAnyLoading, form),
-            ],
+            ),
           ),
         ),
       ),
-    )));
+    );
   }
 
   // Top section to display the headers of each step of the registration process.
@@ -344,5 +346,4 @@ class RegisterScreen extends HookConsumerWidget {
         );
     }
   }
-
 }

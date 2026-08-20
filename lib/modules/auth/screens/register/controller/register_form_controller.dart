@@ -31,8 +31,8 @@ class RegisterFormState {
   String? get passwordError => validators.validatePassword(password);
   String? get confirmError =>
       confirmPassword == password && confirmPassword.isNotEmpty
-          ? null
-          : 'Passwords do not match';
+      ? null
+      : 'Passwords do not match';
 
   bool get isEmailValid => emailError == null;
   bool get isUsernameValid => usernameError == null;

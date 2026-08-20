@@ -32,32 +32,33 @@ class ForgotPasswordScreen extends HookConsumerWidget {
         );
       },
       child: Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            LucideIcons.arrowLeft,
-            color: theme.colorScheme.foreground,
-          ),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _top(context),
-              const SizedBox(height: 32),
-              _forgotPasswordForm(context, ref, isLoading, form),
-            ],
+        backgroundColor: theme.colorScheme.background,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              LucideIcons.arrowLeft,
+              color: theme.colorScheme.foreground,
+            ),
+            onPressed: () => context.pop(),
           ),
         ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _top(context),
+                const SizedBox(height: 32),
+                _forgotPasswordForm(context, ref, isLoading, form),
+              ],
+            ),
+          ),
+        ),
       ),
-    ));
+    );
   }
 
   Widget _top(BuildContext context) {

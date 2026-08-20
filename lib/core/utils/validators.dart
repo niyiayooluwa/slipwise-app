@@ -43,7 +43,6 @@ String? validateUsername(String username) {
   return null;
 }
 
-
 /// Returns each password requirement mapped to whether it's currently met.
 /// Keep this in sync with validatePassword's rules above.
 Map<String, bool> passwordRequirements(String password) {
@@ -52,6 +51,8 @@ Map<String, bool> passwordRequirements(String password) {
     'One uppercase letter': password.contains(RegExp(r'[A-Z]')),
     'One lowercase letter': password.contains(RegExp(r'[a-z]')),
     'One number': password.contains(RegExp(r'[0-9]')),
-    'One special character (@\$!%*?&)': password.contains(RegExp(r'[@\$!%*?&]')),
+    'One special character (@\$!%*?&)': password.contains(
+      RegExp(r'[@\$!%*?&]'),
+    ),
   };
 }

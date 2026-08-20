@@ -35,30 +35,35 @@ class LoginScreen extends HookConsumerWidget {
         errorTitle: 'Login Failed',
         onError: (context, error) {
           if (error.toString() == const EmailNotVerifiedFailure().message) {
-            context.push('/verify-otp', extra: form.emailController.text.trim());
+            context.push(
+              '/verify-otp',
+              extra: form.emailController.text.trim(),
+            );
             return true;
           }
           return false;
         },
         child: Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _top(context),
-              const SizedBox(height: 24),
-              _loginForm(context, ref, isAnyLoading, form),
-              const SizedBox(height: 24),
-              Expanded(child: _bottom(context, ref, isAnyLoading)),
-            ],
+          backgroundColor: theme.colorScheme.background,
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _top(context),
+                  const SizedBox(height: 24),
+                  _loginForm(context, ref, isAnyLoading, form),
+                  const SizedBox(height: 24),
+                  Expanded(child: _bottom(context, ref, isAnyLoading)),
+                ],
+              ),
+            ),
           ),
         ),
       ),
-    )));
+    );
   }
 
   Widget _top(BuildContext context) {
@@ -153,7 +158,7 @@ class LoginScreen extends HookConsumerWidget {
                 style: TextStyle(color: theme.colorScheme.primary),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    context.push('/register');
+                    context.replace('/register');
                   },
               ),
             ],
