@@ -319,8 +319,8 @@ class HomeScreen extends HookConsumerWidget {
           // Empty State
           SvgPicture.asset(
             'assets/drawables/states/empty_state.svg', // Replace with your actual path
-            width: 160,
-            height: 160,
+            width: 300,
+            height: 300,
           ),
           const SizedBox(height: 24),
           Text(
@@ -337,7 +337,7 @@ class HomeScreen extends HookConsumerWidget {
           const SizedBox(height: 24),
           ShadButton(
             onPressed: () {
-              context.push('/tickets/track');
+              context.replace('/track');
             },
             child: const Text('Track a Ticket'),
           ),

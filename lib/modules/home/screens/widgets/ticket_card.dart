@@ -63,7 +63,10 @@ class TicketCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: scheme.card,
+            // To something like:
+            color: scheme.card == scheme.background
+                ? const Color(0xff1c1917) // Slightly lighter than background
+                : scheme.card,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: scheme.border),
           ),
