@@ -10,7 +10,7 @@ class NetworkFailure extends Failure {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure([super.message = 'Something went wrong on the server.']);
+  const ServerFailure([super.message = 'Something went wrong on our end. Please try again later.']);
 }
 
 class InvalidCredentialsFailure extends Failure {
@@ -43,6 +43,10 @@ class RateLimitFailure extends Failure {
 
 class NotFoundFailure extends Failure {
   const NotFoundFailure([super.message = 'Resource not found.']);
+}
+
+class BadRequestFailure extends Failure {
+  const BadRequestFailure([super.message = 'Invalid request.']);
 }
 
 class OtherFailure extends Failure {
