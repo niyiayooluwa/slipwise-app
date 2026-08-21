@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
-import 'package:slipwise/core/ui/empty_screen.dart';
 import 'package:slipwise/modules/auth/screens/login/login_screen.dart';
 import 'package:slipwise/modules/auth/screens/register/register_screen.dart';
 import 'package:slipwise/modules/auth/screens/verify_otp/verify_otp_screen.dart';
@@ -13,6 +12,11 @@ import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
 import 'package:slipwise/modules/onboarding/screens/get_started/get_started_screen.dart';
 import 'package:slipwise/modules/onboarding/screens/onboarding/onboarding_screen.dart';
 import 'package:slipwise/modules/onboarding/screens/splash/splash_screen.dart';
+import 'package:slipwise/modules/main/screens/main_layout.dart';
+import 'package:slipwise/modules/home/screens/home_screen.dart';
+import 'package:slipwise/modules/tickets/screens/track/track_screen.dart';
+import 'package:slipwise/modules/tickets/screens/history/history_screen.dart';
+import 'package:slipwise/modules/profile/screens/profile_screen.dart';
 
 part 'router.g.dart';
 
@@ -101,7 +105,45 @@ GoRouter router(Ref ref) {
         path: '/set-username',
         builder: (context, state) => const SetUsernameScreen(),
       ),
-      GoRoute(path: '/home', builder: (context, state) => EmptyScreen()),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainLayout(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/track',
+                builder: (context, state) => const TrackScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/history',
+                builder: (context, state) => const HistoryScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
   );
 }
