@@ -7,7 +7,7 @@ enum Status { pending, won, lost }
 class TicketCard extends StatelessWidget {
   final String ticketId;
   final String bookingCode;
-  final int betAmount;
+  final double betAmount;
   final DateTime trackedAt;
   final String description;
   final double totalOdds;

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
 import 'package:slipwise/modules/home/screens/widgets/ticket_card.dart';
 import 'package:slipwise/modules/tickets/screens/shared/filtered_tickets_provider.dart';
 import 'package:slipwise/modules/tickets/screens/shared/ticket_controller.dart';
@@ -19,6 +22,7 @@ class HomeScreen extends HookConsumerWidget {
 
     final scrollController = useScrollController();
 
+    // Show errors as SnackBar
     ref.listen(ticketControllerProvider, (previous, next) {
       next.when(
         error: (error, stack) {
@@ -36,7 +40,7 @@ class HomeScreen extends HookConsumerWidget {
 
     // Setup scroll listener for pagination
     useEffect(() {
-      scrollController.addListener(() {
+      void listener() {
         if (scrollController.position.pixels >=
             scrollController.position.maxScrollExtent - 200) {
           final controller = ref.read(ticketControllerProvider.notifier);
@@ -44,18 +48,23 @@ class HomeScreen extends HookConsumerWidget {
             controller.loadMore();
           }
         }
-      });
-      return null;
+      }
+
+      scrollController.addListener(listener);
+      return () => scrollController.removeListener(listener);
     }, [scrollController]);
 
-    const mockUsername = 'niyi';
+    final userAsync = ref.watch(userProvider);
+    final username = userAsync.value?.username ?? 'there';
     final profileUrl =
-        'https://api.dicebear.com/10.x/glyphs/svg?seed=$mockUsername';
+        'https://api.dicebear.com/10.x/glyphs/svg?seed=$username';
+    final today = DateFormat('EEE, MMM d').format(DateTime.now());
 
     return Scaffold(
       backgroundColor: colorScheme.background,
       body: Stack(
         children: [
+          // Gradient Background
           Container(
             width: double.infinity,
             height: 240,
@@ -80,11 +89,13 @@ class HomeScreen extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Header Section
                 Padding(
                   padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
                   child: Column(
-                    crossAxisAlignment: .stretch,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      // Top Row: Date, Greeting, Icons
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -94,12 +105,15 @@ class HomeScreen extends HookConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Wed, Aug 21',
-                                  style: theme.textTheme.muted,
+                                  today,
+                                  style: theme.textTheme.muted.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.8),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Hello, @$mockUsername',
+                                  'Hello, @$username',
                                   style: theme.textTheme.h3.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -111,7 +125,7 @@ class HomeScreen extends HookConsumerWidget {
                           // Right Side (Icons)
                           Row(
                             children: [
-                              // Search / Notification Icon with circular dark background
+                              // Notification Icon
                               Container(
                                 width: 40,
                                 height: 40,
@@ -131,13 +145,7 @@ class HomeScreen extends HookConsumerWidget {
                                 ),
                               ),
                               const SizedBox(width: 12),
-
-                              // Profile Avatar with online indicator
-                              /*CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.black.withOpacity(0.3),
-                            backgroundImage: SvgPicture.network(profileUrl),
-                          ),*/
+                              // Profile Avatar
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
                                 child: SvgPicture.network(
@@ -153,70 +161,141 @@ class HomeScreen extends HookConsumerWidget {
 
                       const SizedBox(height: 32),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Pending Tickets',
-                            style: theme.textTheme.large.copyWith(
-                              fontWeight: FontWeight.bold,
+                      // Pending Tickets Header
+                      if (ticketAsync.hasValue &&
+                          !ticketAsync.hasError &&
+                          !ticketAsync.isLoading) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Pending Tickets',
+                                  style: theme.textTheme.large.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (pendingCount > 0) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Text(
+                                      '$pendingCount',
+                                      style: theme.textTheme.small.copyWith(
+                                        color: colorScheme.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Text(
-                              'See All',
-                              style: theme.textTheme.small.copyWith(
-                                color: colorScheme.primary,
+                            InkWell(
+                              onTap: () {
+                                context.push('/tickets');
+                              },
+                              child: Text(
+                                'See All',
+                                style: theme.textTheme.small.copyWith(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      /*SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        TicketCard(
-                          ticketId: 'TICKET',
-                          bookingCode: 'ABC123',
-                          betAmount: 200,
-                          trackedAt: DateTime.timestamp().startOfWeek,
-                          description: 'Sample ticket description',
-                          totalOdds: 447,
-                          provider: 'Sportybet',
-                          status: Status.won,
+                          ],
                         ),
-                        const SizedBox(height: 8),
                       ],
-                    ),
-                  ),*/
                     ],
                   ),
                 ),
 
+                const SizedBox(height: 16),
+
+                // Tickets List with Pull-to-Refresh
                 Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TicketCard(
-                          ticketId: 'TICKET',
-                          bookingCode: 'ABC123',
-                          betAmount: 200,
-                          trackedAt: DateTime.timestamp().startOfWeek,
-                          description: 'Sample ticket description',
-                          totalOdds: 447,
-                          provider: 'Sportybet',
-                          status: Status.won,
-                          onTap: () {},
-                        ),
-                      );
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await ref
+                          .read(ticketControllerProvider.notifier)
+                          .refresh();
                     },
+                    color: colorScheme.primary,
+                    child: ticketAsync.when(
+                      data: (tickets) {
+                        if (tickets.isEmpty) {
+                          return _buildEmptyState(context, theme, colorScheme);
+                        }
+
+                        return ListView.builder(
+                          controller: scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          itemCount: tickets.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == tickets.length) {
+                              final controller = ref.watch(
+                                ticketControllerProvider.notifier,
+                              );
+                              return controller.hasMorePages
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: colorScheme.primary,
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox(height: 80);
+                            }
+
+                            final ticket = tickets[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: TicketCard(
+                                ticketId: ticket.ticketId,
+                                bookingCode: ticket.code,
+                                betAmount: ticket.stake ?? 0.0,
+                                trackedAt: ticket.trackedAt,
+                                description: ticket.description ?? '',
+                                totalOdds: ticket.totalOdds,
+                                provider: ticket.provider,
+                                status: _mapStatus(ticket.overallStatus),
+                                onTap: () {
+                                  context.push('/tickets/${ticket.ticketId}');
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      loading: () => Center(
+                        child: CircularProgressIndicator(
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                      error: (error, stack) => _buildErrorState(
+                        context,
+                        theme,
+                        colorScheme,
+                        error,
+                        onRetry: () {
+                          ref.invalidate(ticketControllerProvider);
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -225,5 +304,98 @@ class HomeScreen extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  // Empty State
+  Widget _buildEmptyState(
+    BuildContext context,
+    ShadThemeData theme,
+    ShadColorScheme colorScheme,
+  ) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Empty State
+          SvgPicture.asset(
+            'assets/drawables/states/empty_state.svg', // Replace with your actual path
+            width: 160,
+            height: 160,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'No tickets yet',
+            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Track your first ticket to see it here',
+            style: theme.textTheme.muted.copyWith(
+              color: colorScheme.mutedForeground,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ShadButton(
+            onPressed: () {
+              context.push('/tickets/track');
+            },
+            child: const Text('Track a Ticket'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Error State
+  Widget _buildErrorState(
+    BuildContext context,
+    ShadThemeData theme,
+    ShadColorScheme colorScheme,
+    Object error, {
+    required VoidCallback onRetry,
+  }) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/drawables/states/no_data.svg', // Replace with your actual path
+            width: 160,
+            height: 160,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Oops! Something went wrong',
+            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              error.toString().replaceFirst('Exception: ', ''),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.muted.copyWith(
+                color: colorScheme.mutedForeground,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          ShadButton(onPressed: onRetry, child: const Text('Retry')),
+        ],
+      ),
+    );
+  }
+
+  // Map status string to enum
+  Status _mapStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'won':
+        return Status.won;
+      case 'lost':
+        return Status.lost;
+      case 'pending':
+      default:
+        return Status.pending;
+    }
   }
 }
