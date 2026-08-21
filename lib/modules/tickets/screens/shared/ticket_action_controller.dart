@@ -12,15 +12,15 @@ class TicketActions extends _$TicketActions {
   @override
   Future<void> build() async => Future.value();
 
-  Future<PreviewResponse> previewTicket(PreviewRequest request) async {
+  Future<PreviewResponse?> previewTicket(PreviewRequest request) async {
     state = const AsyncValue.loading();
-    
+
     final result = await ref.read(ticketRepositoryProvider).previewTicket(request);
-    
+
     return result.fold(
       ifLeft: (failure) {
-        state = AsyncValue.error(Exception(failure.message), StackTrace.current);
-        throw Exception(failure.message);
+        state = AsyncValue.error(failure.message, StackTrace.current);
+        return null; // Return null on error
       },
       ifRight: (preview) {
         state = const AsyncValue.data(null);
@@ -29,15 +29,15 @@ class TicketActions extends _$TicketActions {
     );
   }
 
-  Future<MessageResponse> trackTicket(TrackRequest request) async {
+  Future<MessageResponse?> trackTicket(TrackRequest request) async {
     state = const AsyncValue.loading();
-    
+
     final result = await ref.read(ticketRepositoryProvider).trackTicket(request);
-    
+
     return result.fold(
       ifLeft: (failure) {
-        state = AsyncValue.error(Exception(failure.message), StackTrace.current);
-        throw Exception(failure.message);
+        state = AsyncValue.error(failure.message, StackTrace.current);
+        return null; // Return null on error
       },
       ifRight: (response) {
         state = const AsyncValue.data(null);
