@@ -19,6 +19,7 @@ import 'package:slipwise/modules/tickets/screens/history/history_screen.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/ticket_details_screen.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/ticket_details_loader_screen.dart';
 import 'package:slipwise/modules/profile/screens/profile_screen.dart';
+import 'package:slipwise/modules/notifications/screens/notifications_screen.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 
 part 'router.g.dart';
@@ -107,6 +108,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/set-username',
         builder: (context, state) => const SetUsernameScreen(),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         path: '/ticket-details',

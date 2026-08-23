@@ -11,6 +11,7 @@ import 'package:slipwise/core/ui/empty_state_widget.dart';
 import 'package:slipwise/core/ui/error_state_widget.dart';
 import 'package:slipwise/modules/tickets/providers/filtered_tickets_provider.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_controller.dart';
+import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
@@ -58,6 +59,7 @@ class HomeScreen extends HookConsumerWidget {
     }, [scrollController]);
 
     final userAsync = ref.watch(userProvider);
+    final unreadCount = ref.watch(notificationControllerProvider).value?.where((n) => !n.isRead).length ?? 0;
     final username = userAsync.value?.username ?? 'there';
     final profileUrl = 'https://api.dicebear.com/10.x/blobs/svg?seed=$username';
     final today = DateFormat('EEE, MMM d').format(DateTime.now());
@@ -117,23 +119,40 @@ class HomeScreen extends HookConsumerWidget {
                             crossAxisAlignment: .end,
                             children: [
                               // Notification Icon
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.3),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(LucideIcons.bell, size: 20),
-                                  onPressed: () {},
-                                  color: Colors.white,
-                                  constraints: const BoxConstraints(
-                                    minWidth: 20,
-                                    minHeight: 20,
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withValues(alpha: 0.3),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(LucideIcons.bell, size: 20),
+                                      onPressed: () => context.push('/notifications'),
+                                      color: Colors.white,
+                                      constraints: const BoxConstraints(
+                                        minWidth: 20,
+                                        minHeight: 20,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                    ),
                                   ),
-                                  padding: EdgeInsets.zero,
-                                ),
+                                  if (unreadCount > 0)
+                                    Positioned(
+                                      right: 8,
+                                      top: 8,
+                                      child: Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.redAccent,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                               const SizedBox(width: 12),
                               // Profile Avatar
