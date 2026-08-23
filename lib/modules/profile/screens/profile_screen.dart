@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/auth/data/models/forgot_password.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
-import 'package:slipwise/modules/auth/data/models/update_profile.dart';
-import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
+import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
+import 'package:slipwise/modules/profile/screens/widgets/feedback_modal.dart';
+import 'package:slipwise/modules/profile/screens/widgets/personal_info_modal.dart';
+import 'package:slipwise/modules/profile/screens/widgets/security_modal.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
@@ -27,39 +27,7 @@ class ProfileScreen extends HookConsumerWidget {
       backgroundColor: colorScheme.background,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 140.0,
-            pinned: true,
-            backgroundColor: colorScheme.background,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      colorScheme.primary.withValues(alpha: 0.55),
-                      colorScheme.primary.withValues(alpha: 0.35),
-                      colorScheme.primary.withValues(alpha: 0.25),
-                      colorScheme.primary.withValues(alpha: 0.15),
-                      colorScheme.primary.withValues(alpha: 0.08),
-                      colorScheme.primary.withValues(alpha: 0.0),
-                    ],
-                    stops: const [0.0, 0.25, 0.45, 0.65, 0.85, 1.0],
-                  ),
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
-              title: Text(
-                'Profile',
-                style: theme.textTheme.h3.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.foreground,
-                ),
-              ),
-            ),
-          ),
+          const GradientSliverAppBar(title: 'Profile'),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -120,18 +88,6 @@ class ProfileScreen extends HookConsumerWidget {
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: colorScheme.secondary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            LucideIcons.edit2,
-                            size: 16,
-                            color: colorScheme.foreground,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -160,12 +116,12 @@ class ProfileScreen extends HookConsumerWidget {
                       ),
                       _buildMenuItem(
                         icon: LucideIcons.lock,
-                        label: 'Security & Password',
+                        label: 'Reset Password',
                         theme: theme,
                         colorScheme: colorScheme,
                         onTap: () => _showBottomSheetModal(
                           context,
-                          'Security & Password',
+                          'Reset Password',
                           SecurityModal(email: email),
                         ),
                       ),
@@ -174,13 +130,7 @@ class ProfileScreen extends HookConsumerWidget {
                         label: 'Notifications',
                         theme: theme,
                         colorScheme: colorScheme,
-                        onTap: () => _showBottomSheetModal(
-                          context,
-                          'Notifications',
-                          const Center(
-                            child: Text('Notification settings coming soon.'),
-                          ),
-                        ),
+                        onTap: () {},
                       ),
                     ],
                   ),
@@ -201,7 +151,7 @@ class ProfileScreen extends HookConsumerWidget {
                           context,
                           'Help & Support',
                           const Center(
-                            child: Text('Contact us at support@slipwise.app'),
+                            child: Text('Contact us at 16tolu@gmail.com'),
                           ),
                         ),
                       ),
@@ -229,21 +179,24 @@ class ProfileScreen extends HookConsumerWidget {
                       onPressed: () async {
                         final confirmed = await showDialog<bool>(
                           context: context,
-                          builder: (ctx) => ShadDialog(
-                            title: const Text('Log Out'),
-                            description: const Text(
-                              'Are you sure you want to log out of your account?',
+                          builder: (ctx) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ShadDialog(
+                              title: const Text('Log Out'),
+                              description: const Text(
+                                'Are you sure you want to log out of your account?',
+                              ),
+                              actions: [
+                                ShadButton.outline(
+                                  child: const Text('Cancel'),
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                ),
+                                ShadButton.destructive(
+                                  child: const Text('Log Out'),
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                ),
+                              ],
                             ),
-                            actions: [
-                              ShadButton.outline(
-                                child: const Text('Cancel'),
-                                onPressed: () => Navigator.pop(ctx, false),
-                              ),
-                              ShadButton.destructive(
-                                child: const Text('Log Out'),
-                                onPressed: () => Navigator.pop(ctx, true),
-                              ),
-                            ],
                           ),
                         );
 
@@ -460,217 +413,6 @@ class ProfileScreen extends HookConsumerWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class FeedbackModal extends HookConsumerWidget {
-  const FeedbackModal({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController();
-    final isSubmitting = useState(false);
-
-    // Rebuild when text changes to check length
-    useListenable(controller);
-
-    final isValid =
-        controller.text.trim().length >= 10 &&
-        controller.text.trim().length <= 2000;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text(
-          'Tell us what you think! We are constantly trying to improve SlipWise.',
-        ),
-        const SizedBox(height: 16),
-        ShadInputFormField(
-          controller: controller,
-          maxLines: 5,
-          placeholder: const Text('Type your feedback here (min 10 chars)...'),
-        ),
-        const SizedBox(height: 32),
-        ShadButton(
-          enabled: isValid && !isSubmitting.value,
-          onPressed: () async {
-            FocusScope.of(context).unfocus();
-            isSubmitting.value = true;
-            final error = await ref
-                .read(userProvider.notifier)
-                .submitFeedback(controller.text.trim());
-            isSubmitting.value = false;
-
-            if (context.mounted) {
-              if (error == null) {
-                Navigator.pop(context);
-                ShadToaster.of(context).show(
-                  const ShadToast(
-                    title: Text('Success'),
-                    description: Text('Thank you for your feedback!'),
-                  ),
-                );
-              } else {
-                ShadToaster.of(context).show(
-                  ShadToast(
-                    title: const Text('Error'),
-                    description: Text(error),
-                  ),
-                );
-              }
-            }
-          },
-          child: isSubmitting.value
-              ? const SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Send Feedback'),
-        ),
-      ],
-    );
-  }
-}
-
-class PersonalInfoModal extends HookConsumerWidget {
-  final String currentUsername;
-  final String currentEmail;
-
-  const PersonalInfoModal({
-    super.key,
-    required this.currentUsername,
-    required this.currentEmail,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController(text: currentUsername);
-    final isSubmitting = useState(false);
-    useListenable(controller);
-
-    final isValid =
-        controller.text.trim().isNotEmpty &&
-        controller.text.trim() != currentUsername;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ShadInputFormField(
-          label: const Text('Username'),
-          controller: controller,
-        ),
-        const SizedBox(height: 16),
-        ShadInputFormField(
-          label: const Text('Email'),
-          initialValue: currentEmail,
-          enabled: false,
-          description: const Text('Email cannot be changed.'),
-        ),
-        const SizedBox(height: 32),
-        ShadButton(
-          enabled: isValid && !isSubmitting.value,
-          onPressed: () async {
-            FocusScope.of(context).unfocus();
-            isSubmitting.value = true;
-
-            final req = UpdateProfileRequest(username: controller.text.trim());
-            final res = await ref
-                .read(authRepositoryProvider)
-                .updateProfile(req);
-
-            isSubmitting.value = false;
-            if (context.mounted) {
-              res.fold(
-                ifLeft: (failure) {
-                  ShadToaster.of(context).show(
-                    ShadToast(
-                      title: const Text('Error'),
-                      description: Text(failure.message),
-                    ),
-                  );
-                },
-                ifRight: (_) {
-                  ref.read(userProvider.notifier).fetch();
-                  Navigator.pop(context);
-                  ShadToaster.of(context).show(
-                    const ShadToast(
-                      title: Text('Success'),
-                      description: Text('Profile updated successfully.'),
-                    ),
-                  );
-                },
-              );
-            }
-          },
-          child: isSubmitting.value
-              ? const SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Save Changes'),
-        ),
-      ],
-    );
-  }
-}
-
-class SecurityModal extends HookConsumerWidget {
-  final String email;
-
-  const SecurityModal({super.key, required this.email});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isSubmitting = useState(false);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text(
-          'To change your password, we will send a verification code to your email.',
-        ),
-        const SizedBox(height: 32),
-        ShadButton(
-          enabled: !isSubmitting.value,
-          onPressed: () async {
-            isSubmitting.value = true;
-            final req = ForgotPasswordRequest(email: email);
-            final res = await ref
-                .read(authRepositoryProvider)
-                .forgotPassword(req);
-            isSubmitting.value = false;
-
-            if (context.mounted) {
-              res.fold(
-                ifLeft: (failure) {
-                  ShadToaster.of(context).show(
-                    ShadToast(
-                      title: const Text('Error'),
-                      description: Text(failure.message),
-                    ),
-                  );
-                },
-                ifRight: (_) {
-                  Navigator.pop(context);
-                  // Logout to secure session before reset
-                  ref.read(userProvider.notifier).logout();
-                  context.go('/reset-password', extra: email);
-                },
-              );
-            }
-          },
-          child: isSubmitting.value
-              ? const SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Send Reset Code'),
-        ),
-      ],
     );
   }
 }
