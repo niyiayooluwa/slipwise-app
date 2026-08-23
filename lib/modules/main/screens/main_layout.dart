@@ -22,22 +22,13 @@ class MainLayout extends StatelessWidget {
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: _onTap,
         destinations: const [
-          NavigationDestination(
-            icon: Icon(LucideIcons.home),
-            label: 'Home',
-          ),
+          NavigationDestination(icon: Icon(LucideIcons.home), label: 'Home'),
           NavigationDestination(
             icon: Icon(LucideIcons.plusSquare),
             label: 'Track',
           ),
-          NavigationDestination(
-            icon: Icon(LucideIcons.list),
-            label: 'History',
-          ),
-          NavigationDestination(
-            icon: Icon(LucideIcons.user),
-            label: 'Profile',
-          ),
+          NavigationDestination(icon: Icon(LucideIcons.list), label: 'History'),
+          NavigationDestination(icon: Icon(LucideIcons.user), label: 'Profile'),
         ],
       ),
     );

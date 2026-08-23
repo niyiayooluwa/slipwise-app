@@ -16,7 +16,10 @@ import 'package:slipwise/modules/main/screens/main_layout.dart';
 import 'package:slipwise/modules/home/screens/home_screen.dart';
 import 'package:slipwise/modules/tickets/screens/track/track_screen.dart';
 import 'package:slipwise/modules/tickets/screens/history/history_screen.dart';
+import 'package:slipwise/modules/tickets/screens/ticket_details/ticket_details_screen.dart';
+import 'package:slipwise/modules/tickets/screens/ticket_details/ticket_details_loader_screen.dart';
 import 'package:slipwise/modules/profile/screens/profile_screen.dart';
+import 'package:slipwise/modules/tickets/data/models/history.dart';
 
 part 'router.g.dart';
 
@@ -104,6 +107,22 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/set-username',
         builder: (context, state) => const SetUsernameScreen(),
+      ),
+      GoRoute(
+        path: '/ticket-details',
+        builder: (context, state) {
+          if (state.extra != null && state.extra is HistoryItem) {
+            final ticket = state.extra as HistoryItem;
+            return TicketDetailsScreen(initialTicket: ticket);
+          } else {
+            // Support deep linking via /ticket-details?id=...
+            final ticketId = state.uri.queryParameters['id'];
+            if (ticketId != null) {
+              return TicketDetailsLoaderScreen(ticketId: ticketId);
+            }
+            return const Scaffold(body: Center(child: Text('Error: No ticket provided')));
+          }
+        },
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

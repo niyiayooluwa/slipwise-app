@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
 import 'package:slipwise/modules/home/screens/widgets/ticket_card.dart';
@@ -56,8 +55,7 @@ class HomeScreen extends HookConsumerWidget {
 
     final userAsync = ref.watch(userProvider);
     final username = userAsync.value?.username ?? 'there';
-    final profileUrl =
-        'https://api.dicebear.com/10.x/glyphs/svg?seed=$username';
+    final profileUrl = 'https://api.dicebear.com/10.x/blobs/svg?seed=$username';
     final today = DateFormat('EEE, MMM d').format(DateTime.now());
 
     return Scaffold(
@@ -73,10 +71,10 @@ class HomeScreen extends HookConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  colorScheme.primary.withValues(alpha: 1.0),
-                  colorScheme.primary.withValues(alpha: 0.85),
                   colorScheme.primary.withValues(alpha: 0.55),
+                  colorScheme.primary.withValues(alpha: 0.35),
                   colorScheme.primary.withValues(alpha: 0.25),
+                  colorScheme.primary.withValues(alpha: 0.15),
                   colorScheme.primary.withValues(alpha: 0.08),
                   colorScheme.primary.withValues(alpha: 0.0),
                 ],
@@ -202,7 +200,7 @@ class HomeScreen extends HookConsumerWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                context.push('/tickets');
+                                context.replace('/tickets');
                               },
                               child: Text(
                                 'See All',
@@ -274,7 +272,10 @@ class HomeScreen extends HookConsumerWidget {
                                 provider: ticket.provider,
                                 status: _mapStatus(ticket.overallStatus),
                                 onTap: () {
-                                  context.push('/tickets/${ticket.ticketId}');
+                                  context.push(
+                                    '/ticket-details',
+                                    extra: ticket,
+                                  );
                                 },
                               ),
                             );
@@ -337,7 +338,7 @@ class HomeScreen extends HookConsumerWidget {
           const SizedBox(height: 24),
           ShadButton(
             onPressed: () {
-              context.replace('/track');
+              context.go('/track');
             },
             child: const Text('Track a Ticket'),
           ),
