@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/home/screens/widgets/ticket_card.dart';
-import 'package:slipwise/modules/tickets/screens/history/history_controller.dart';
-import 'package:slipwise/modules/tickets/screens/history/history_search_provider.dart';
+import 'package:slipwise/core/ui/ticket_card.dart';
+import 'package:slipwise/modules/tickets/providers/history_controller.dart';
+import 'package:slipwise/modules/tickets/providers/history_filter_provider.dart';
+import 'package:slipwise/modules/tickets/screens/history/widgets/history_filter_bottom_sheet.dart';
+import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
+import 'package:slipwise/core/ui/empty_state_widget.dart';
+import 'package:slipwise/core/ui/error_state_widget.dart';
 
 class HistoryScreen extends HookConsumerWidget {
   const HistoryScreen({super.key});
@@ -14,94 +19,146 @@ class HistoryScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
     final colorScheme = theme.colorScheme;
-    final selectedTab = useState<String>('PENDING');
+    final selectedTab = useState<String>('ALL');
 
     return Scaffold(
       backgroundColor: colorScheme.background,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 140.0,
-            pinned: true,
-            backgroundColor: colorScheme.background,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      colorScheme.primary.withValues(alpha: 0.55),
-                      colorScheme.primary.withValues(alpha: 0.35),
-                      colorScheme.primary.withValues(alpha: 0.25),
-                      colorScheme.primary.withValues(alpha: 0.15),
-                      colorScheme.primary.withValues(alpha: 0.08),
-                      colorScheme.primary.withValues(alpha: 0.0),
-                    ],
-                    stops: const [0.0, 0.25, 0.45, 0.65, 0.85, 1.0],
-                  ),
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
-              title: Text(
-                'History',
-                style: theme.textTheme.h3.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.foreground,
-                ),
-              ),
-            ),
-          ),
+          const GradientSliverAppBar(title: 'History'),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
                 vertical: 8.0,
               ),
-              child: ShadInput(
-                placeholder: const Text(
-                  'Search by booking code or description...',
-                ),
-                leading: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(
-                    LucideIcons.search,
-                    size: 16,
-                    color: colorScheme.mutedForeground,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          _buildFilterChip(
+                            'ALL',
+                            'All',
+                            selectedTab.value,
+                            (val) => selectedTab.value = val,
+                            theme,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildFilterChip(
+                            'PENDING',
+                            'Active',
+                            selectedTab.value,
+                            (val) => selectedTab.value = val,
+                            theme,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildFilterChip(
+                            'WON',
+                            'Won',
+                            selectedTab.value,
+                            (val) => selectedTab.value = val,
+                            theme,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildFilterChip(
+                            'LOST',
+                            'Lost',
+                            selectedTab.value,
+                            (val) => selectedTab.value = val,
+                            theme,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                onChanged: (val) {
-                  ref.read(historySearchQueryProvider.notifier).state = val;
-                },
+                  const SizedBox(width: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.card,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: colorScheme.border),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        LucideIcons.slidersHorizontal,
+                        size: 18,
+                        color: colorScheme.foreground,
+                      ),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) =>
+                              const HistoryFilterBottomSheet(),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
           SliverFillRemaining(
-            child: ShadTabs<String>(
-              value: selectedTab.value,
-              onChanged: (val) => selectedTab.value = val,
-              tabs: [
-                ShadTab(
-                  value: 'PENDING',
-                  content: _TicketList(status: 'PENDING'),
-                  child: const Text('Active'),
-                ),
-                ShadTab(
-                  value: 'WON',
-                  content: _TicketList(status: 'WON'),
-                  child: const Text('Won'),
-                ),
-                ShadTab(
-                  value: 'LOST',
-                  content: _TicketList(status: 'LOST'),
-                  child: const Text('Lost'),
-                ),
+            child: IndexedStack(
+              index: selectedTab.value == 'ALL'
+                  ? 0
+                  : selectedTab.value == 'PENDING'
+                  ? 1
+                  : selectedTab.value == 'WON'
+                  ? 2
+                  : 3,
+              children: const [
+                _TicketList(status: 'ALL'),
+                _TicketList(status: 'PENDING'),
+                _TicketList(status: 'WON'),
+                _TicketList(status: 'LOST'),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(
+    String value,
+    String label,
+    String selectedValue,
+    Function(String) onSelected,
+    ShadThemeData theme,
+  ) {
+    final isSelected = value == selectedValue;
+    return GestureDetector(
+      onTap: () => onSelected(value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.card,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.border,
+          ),
+        ),
+        child: Text(
+          label,
+          style: theme.textTheme.small.copyWith(
+            color: isSelected
+                ? theme.colorScheme.primaryForeground
+                : theme.colorScheme.mutedForeground,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }
@@ -120,7 +177,10 @@ class _TicketList extends HookConsumerWidget {
     return ticketsAsync.when(
       data: (tickets) {
         if (tickets.isEmpty) {
-          return const Center(child: Text('No tickets found.'));
+          return const EmptyStateWidget(
+            title: 'No tickets found',
+            message: 'Try adjusting your search or filter',
+          );
         }
 
         return RefreshIndicator(
@@ -142,31 +202,40 @@ class _TicketList extends HookConsumerWidget {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(),
+                      child: SpinKitThreeBounce(size: 16, color: Colors.white),
                     ),
                   );
                 }
                 final ticket = tickets[index];
-                return TicketCard(
-                  ticketId: ticket.ticketId,
-                  bookingCode: ticket.code,
-                  betAmount: ticket.stake ?? 0.0,
-                  trackedAt: ticket.trackedAt,
-                  description: ticket.description ?? '',
-                  totalOdds: ticket.totalOdds,
-                  provider: ticket.provider,
-                  status: _mapStatus(ticket.overallStatus),
-                  onTap: () {
-                    context.push('/ticket-details', extra: ticket);
-                  },
+                return Hero(
+                  tag: 'ticket-${ticket.ticketId}',
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: TicketCard(
+                      ticketId: ticket.ticketId,
+                      bookingCode: ticket.code,
+                      betAmount: ticket.stake ?? 0.0,
+                      trackedAt: ticket.trackedAt,
+                      description: ticket.description ?? '',
+                      totalOdds: ticket.totalOdds,
+                      provider: ticket.provider,
+                      status: _mapStatus(ticket.overallStatus),
+                      onTap: () {
+                        context.push('/ticket-details', extra: ticket);
+                      },
+                    ),
+                  ),
                 );
               },
             ),
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, stack) => Center(child: Text('Error loading tickets: $e')),
+      loading: () => const Center(
+        child: SpinKitThreeBounce(size: 16, color: Colors.white),
+      ),
+      error: (e, stack) =>
+          ErrorStateWidget(error: e, onRetry: () => controller.refresh()),
     );
   }
 }
