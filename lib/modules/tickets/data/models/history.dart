@@ -7,10 +7,10 @@ part 'history.g.dart';
 abstract class HistoryItem with _$HistoryItem {
   const factory HistoryItem({
     required String code,
-    required String? description,
+    String? description,
     @JsonKey(name: 'overall_status') required String overallStatus,
     required String provider,
-    required double? stake,
+    double? stake,
     @JsonKey(name: 'ticket_id') required String ticketId,
     @JsonKey(name: 'total_odds') required double totalOdds,
     @JsonKey(name: 'tracked_at') required DateTime trackedAt,

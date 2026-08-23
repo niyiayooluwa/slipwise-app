@@ -20,6 +20,7 @@ abstract class SelectionDetail with _$SelectionDetail {
     @JsonKey(name: 'away_team') required String awayTeam,
     @JsonKey(name: 'home_team') required String homeTeam,
     @JsonKey(name: 'market_type') required String marketType,
+    @JsonKey(name: 'market_spec') String? marketSpec,
     required double odds,
     required String selection,
   }) = _SelectionDetail;

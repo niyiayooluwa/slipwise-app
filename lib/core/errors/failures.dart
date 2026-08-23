@@ -10,7 +10,9 @@ class NetworkFailure extends Failure {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure([super.message = 'Something went wrong on our end. Please try again later.']);
+  const ServerFailure([
+    super.message = 'Something went wrong on our end. Please try again later.',
+  ]);
 }
 
 class InvalidCredentialsFailure extends Failure {

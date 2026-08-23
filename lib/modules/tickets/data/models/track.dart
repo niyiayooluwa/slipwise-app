@@ -7,8 +7,8 @@ part 'track.g.dart';
 abstract class TrackRequest with _$TrackRequest {
   const factory TrackRequest({
     @JsonKey(name: 'booking_code_id') required String bookingCodeId,
-    required String? description,
-    required double? stake,
+    String? description,
+    double? stake,
   }) = _TrackRequest;
 
   factory TrackRequest.fromJson(Map<String, dynamic> json) =>

@@ -216,7 +216,7 @@ return $default(_that.code,_that.description,_that.overallStatus,_that.provider,
 @JsonSerializable()
 
 class _HistoryItem implements HistoryItem {
-  const _HistoryItem({required this.code, required this.description, @JsonKey(name: 'overall_status') required this.overallStatus, required this.provider, required this.stake, @JsonKey(name: 'ticket_id') required this.ticketId, @JsonKey(name: 'total_odds') required this.totalOdds, @JsonKey(name: 'tracked_at') required this.trackedAt});
+  const _HistoryItem({required this.code, this.description, @JsonKey(name: 'overall_status') required this.overallStatus, required this.provider, this.stake, @JsonKey(name: 'ticket_id') required this.ticketId, @JsonKey(name: 'total_odds') required this.totalOdds, @JsonKey(name: 'tracked_at') required this.trackedAt});
   factory _HistoryItem.fromJson(Map<String, dynamic> json) => _$HistoryItemFromJson(json);
 
 @override final  String code;

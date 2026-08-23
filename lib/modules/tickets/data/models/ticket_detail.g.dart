@@ -10,7 +10,7 @@ _TicketDetailItem _$TicketDetailItemFromJson(Map<String, dynamic> json) =>
     _TicketDetailItem(
       awayTeam: json['away_team'] as String,
       homeTeam: json['home_team'] as String,
-      marketSpec: json['market_spec'] as String,
+      marketSpec: json['market_spec'] as String?,
       marketType: json['market_type'] as String,
       matchStatus: json['match_status'] as String,
       odds: (json['odds'] as num).toDouble(),

@@ -8,7 +8,7 @@ abstract class TicketDetailItem with _$TicketDetailItem {
   const factory TicketDetailItem({
     @JsonKey(name: 'away_team') required String awayTeam,
     @JsonKey(name: 'home_team') required String homeTeam,
-    @JsonKey(name: 'market_spec') required String marketSpec,
+    @JsonKey(name: 'market_spec') String? marketSpec,
     @JsonKey(name: 'market_type') required String marketType,
     @JsonKey(name: 'match_status') required String matchStatus,
     required double odds,

@@ -211,7 +211,7 @@ return $default(_that.bookingCodeId,_that.description,_that.stake);case _:
 @JsonSerializable()
 
 class _TrackRequest implements TrackRequest {
-  const _TrackRequest({@JsonKey(name: 'booking_code_id') required this.bookingCodeId, required this.description, required this.stake});
+  const _TrackRequest({@JsonKey(name: 'booking_code_id') required this.bookingCodeId, this.description, this.stake});
   factory _TrackRequest.fromJson(Map<String, dynamic> json) => _$TrackRequestFromJson(json);
 
 @override@JsonKey(name: 'booking_code_id') final  String bookingCodeId;

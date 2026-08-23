@@ -20,6 +20,7 @@ _SelectionDetail _$SelectionDetailFromJson(Map<String, dynamic> json) =>
       awayTeam: json['away_team'] as String,
       homeTeam: json['home_team'] as String,
       marketType: json['market_type'] as String,
+      marketSpec: json['market_spec'] as String?,
       odds: (json['odds'] as num).toDouble(),
       selection: json['selection'] as String,
     );
@@ -29,6 +30,7 @@ Map<String, dynamic> _$SelectionDetailToJson(_SelectionDetail instance) =>
       'away_team': instance.awayTeam,
       'home_team': instance.homeTeam,
       'market_type': instance.marketType,
+      'market_spec': instance.marketSpec,
       'odds': instance.odds,
       'selection': instance.selection,
     };
