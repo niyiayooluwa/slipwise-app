@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/models/user_model.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
+import 'package:slipwise/core/services/push_notification_service.dart';
 
 part 'user_notifier.g.dart';
 
@@ -21,7 +22,11 @@ class UserNotifier extends _$UserNotifier {
 
     return result.fold(
       ifLeft: (failure) => null, // If /me fails, we start with no user
-      ifRight: (user) => user,
+      ifRight: (user) {
+        // Tie device to user after successful session load
+        ref.read(pushNotificationServiceProvider).registerCurrentToken();
+        return user;
+      },
     );
   }
 
@@ -33,7 +38,11 @@ class UserNotifier extends _$UserNotifier {
     state = result.fold(
       ifLeft: (failure) =>
           AsyncValue.error(failure.message, StackTrace.current),
-      ifRight: (user) => AsyncValue.data(user),
+      ifRight: (user) {
+        // Tie device to user after successful session fetch/login
+        ref.read(pushNotificationServiceProvider).registerCurrentToken();
+        return AsyncValue.data(user);
+      },
     );
   }
 
@@ -57,5 +66,15 @@ class UserNotifier extends _$UserNotifier {
 
   void clear() {
     state = const AsyncValue.data(null);
+  }
+
+  Future<String?> submitFeedback(String feedback) async {
+    final result = await ref
+        .read(authRepositoryProvider)
+        .submitFeedback(feedback);
+    return result.fold(
+      ifLeft: (failure) => failure.message,
+      ifRight: (_) => null, // null means success
+    );
   }
 }

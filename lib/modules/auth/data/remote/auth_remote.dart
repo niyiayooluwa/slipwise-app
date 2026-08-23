@@ -188,6 +188,38 @@ class AuthRemote {
       return Left(mapException(e));
     }
   }
+
+  Future<Either<Failure, MessageResponse>> registerDevice(
+    String fcmToken,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/auth/devices',
+        data: {'fcm_token': fcmToken},
+      );
+      return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, MessageResponse>> submitFeedback(
+    String feedback,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/auth/feedback',
+        data: {'feedback': feedback},
+      );
+      return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
 }
 
 @riverpod

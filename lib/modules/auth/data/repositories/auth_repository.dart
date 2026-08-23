@@ -140,6 +140,18 @@ class AuthRepository {
   ) async {
     return _remote.checkUsername(username);
   }
+
+  Future<Either<Failure, MessageResponse>> registerDevice(
+    String fcmToken,
+  ) async {
+    return _remote.registerDevice(fcmToken);
+  }
+
+  Future<Either<Failure, MessageResponse>> submitFeedback(
+    String feedback,
+  ) async {
+    return _remote.submitFeedback(feedback);
+  }
 }
 
 @riverpod
