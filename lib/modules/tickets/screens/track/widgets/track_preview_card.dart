@@ -29,9 +29,11 @@ class TrackPreviewCard extends HookWidget {
     String formatMarketType(String market) {
       return market
           .split('_')
-          .map((word) => word.isNotEmpty
-              ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-              : '')
+          .map(
+            (word) => word.isNotEmpty
+                ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+                : '',
+          )
           .join(' ');
     }
 
@@ -43,7 +45,7 @@ class TrackPreviewCard extends HookWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xff0E0C0B) : Colors.white,
+            color: const Color(0xff0E0C0B),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: colorScheme.border),
           ),
@@ -148,7 +150,8 @@ class TrackPreviewCard extends HookWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        selection.displaySelection ?? '${formatMarketType(selection.marketType)}: ${selection.selection}',
+                        selection.displaySelection ??
+                            '${formatMarketType(selection.marketType)}: ${selection.selection}',
                         style: theme.textTheme.small.copyWith(
                           color: colorScheme.mutedForeground,
                         ),
@@ -198,7 +201,12 @@ class TrackPreviewCard extends HookWidget {
           placeholder: const Text('e.g., 1000'),
           leading: Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: Text('₦', style: theme.textTheme.small.copyWith(color: colorScheme.mutedForeground)),
+            child: Text(
+              '₦',
+              style: theme.textTheme.small.copyWith(
+                color: colorScheme.mutedForeground,
+              ),
+            ),
           ),
         ),
 

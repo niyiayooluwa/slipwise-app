@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,15 +14,14 @@ import 'package:slipwise/core/services/push_notification_service.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
   final container = ProviderContainer();
-
-  // Initialize Push Notifications and deep-linking handlers
-  await container.read(pushNotificationServiceProvider).initialize();
 
   runApp(
     UncontrolledProviderScope(container: container, child: const MainApp()),
   );
+
+  // Fire-and-forget: don't gate app boot on this.
+  unawaited(container.read(pushNotificationServiceProvider).initialize());
 }
 
 class MainApp extends ConsumerWidget {

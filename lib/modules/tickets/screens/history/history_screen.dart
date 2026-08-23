@@ -208,7 +208,7 @@ class _TicketList extends HookConsumerWidget {
                 }
                 final ticket = tickets[index];
                 return Hero(
-                  tag: 'ticket-${ticket.ticketId}',
+                  tag: 'ticket-${ticket.ticketId}-$status',
                   child: Material(
                     type: MaterialType.transparency,
                     child: TicketCard(
@@ -221,7 +221,7 @@ class _TicketList extends HookConsumerWidget {
                       provider: ticket.provider,
                       status: _mapStatus(ticket.overallStatus),
                       onTap: () {
-                        context.push('/ticket-details', extra: ticket);
+                        context.push('/ticket-details', extra: {'ticket': ticket, 'heroTag': 'ticket-${ticket.ticketId}-$status'});
                       },
                     ),
                   ),

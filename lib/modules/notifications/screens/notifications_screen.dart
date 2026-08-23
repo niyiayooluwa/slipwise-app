@@ -90,7 +90,7 @@ class _NotificationTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = true;
 
     return InkWell(
       onTap: () {

@@ -116,10 +116,18 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/ticket-details',
         builder: (context, state) {
-          if (state.extra != null && state.extra is HistoryItem) {
-            final ticket = state.extra as HistoryItem;
-            return TicketDetailsScreen(initialTicket: ticket);
-          } else {
+          if (state.extra != null) {
+            if (state.extra is HistoryItem) {
+              return TicketDetailsScreen(initialTicket: state.extra as HistoryItem);
+            } else if (state.extra is Map<String, dynamic>) {
+              final extra = state.extra as Map<String, dynamic>;
+              return TicketDetailsScreen(
+                initialTicket: extra['ticket'] as HistoryItem,
+                heroTag: extra['heroTag'] as String?,
+              );
+            }
+          }
+          {
             // Support deep linking via /ticket-details?id=...
             final ticketId = state.uri.queryParameters['id'];
             if (ticketId != null) {

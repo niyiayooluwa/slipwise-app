@@ -10,8 +10,13 @@ import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_tic
 
 class TicketDetailsScreen extends HookConsumerWidget {
   final HistoryItem initialTicket;
+  final String? heroTag;
 
-  const TicketDetailsScreen({super.key, required this.initialTicket});
+  const TicketDetailsScreen({
+    super.key,
+    required this.initialTicket,
+    this.heroTag,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,10 +74,15 @@ class TicketDetailsScreen extends HookConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Hero(
-                  tag: 'ticket-${ticket.ticketId}',
+                  tag: heroTag ?? 'ticket-${ticket.ticketId}',
                   child: Material(
                     type: MaterialType.transparency,
-                    child: _buildSummaryCard(context, ticket, theme, colorScheme),
+                    child: _buildSummaryCard(
+                      context,
+                      ticket,
+                      theme,
+                      colorScheme,
+                    ),
                   ),
                 ),
               ),
@@ -118,7 +128,8 @@ class TicketDetailsScreen extends HookConsumerWidget {
                       final selection = selections[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
-                        child: _buildSelectionCard(context, 
+                        child: _buildSelectionCard(
+                          context,
                           selection,
                           theme,
                           colorScheme,
@@ -135,7 +146,11 @@ class TicketDetailsScreen extends HookConsumerWidget {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    return _buildSkeletonSelectionCard(context, theme, colorScheme);
+                    return _buildSkeletonSelectionCard(
+                      context,
+                      theme,
+                      colorScheme,
+                    );
                   }, childCount: 3),
                 ),
               ),
@@ -161,9 +176,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xff0E0C0B)
-            : Colors.white,
+        color: const Color(0xff0E0C0B),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colorScheme.border),
       ),
@@ -285,9 +298,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(bottom: 12.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xff0E0C0B)
-            : Colors.white,
+        color: const Color(0xff0E0C0B),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.border),
       ),
@@ -383,7 +394,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
   }
 
   Widget _buildSelectionCard(
-    BuildContext context, 
+    BuildContext context,
     TicketDetailItem selection,
     ShadThemeData theme,
     ShadColorScheme colorScheme,
@@ -393,9 +404,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xff0E0C0B)
-            : Colors.white,
+        color: const Color(0xff0E0C0B),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.border),
       ),
