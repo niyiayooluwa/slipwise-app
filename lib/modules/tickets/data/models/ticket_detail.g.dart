@@ -18,6 +18,7 @@ _TicketDetailItem _$TicketDetailItemFromJson(Map<String, dynamic> json) =>
       selectionId: json['selection_id'] as String,
       selectionStatus: json['selection_status'] as String,
       startTime: DateTime.parse(json['start_time'] as String),
+      displaySelection: json['display_selection'] as String?,
     );
 
 Map<String, dynamic> _$TicketDetailItemToJson(_TicketDetailItem instance) =>
@@ -32,4 +33,5 @@ Map<String, dynamic> _$TicketDetailItemToJson(_TicketDetailItem instance) =>
       'selection_id': instance.selectionId,
       'selection_status': instance.selectionStatus,
       'start_time': instance.startTime.toIso8601String(),
+      'display_selection': instance.displaySelection,
     };

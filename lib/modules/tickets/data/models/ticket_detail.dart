@@ -16,6 +16,7 @@ abstract class TicketDetailItem with _$TicketDetailItem {
     @JsonKey(name: 'selection_id') required String selectionId,
     @JsonKey(name: 'selection_status') required String selectionStatus,
     @JsonKey(name: 'start_time') required DateTime startTime,
+    @JsonKey(name: 'display_selection') String? displaySelection,
   }) = _TicketDetailItem;
 
   factory TicketDetailItem.fromJson(Map<String, dynamic> json) =>

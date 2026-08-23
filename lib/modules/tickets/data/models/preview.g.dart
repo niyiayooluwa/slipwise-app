@@ -23,6 +23,7 @@ _SelectionDetail _$SelectionDetailFromJson(Map<String, dynamic> json) =>
       marketSpec: json['market_spec'] as String?,
       odds: (json['odds'] as num).toDouble(),
       selection: json['selection'] as String,
+      displaySelection: json['display_selection'] as String?,
     );
 
 Map<String, dynamic> _$SelectionDetailToJson(_SelectionDetail instance) =>
@@ -33,6 +34,7 @@ Map<String, dynamic> _$SelectionDetailToJson(_SelectionDetail instance) =>
       'market_spec': instance.marketSpec,
       'odds': instance.odds,
       'selection': instance.selection,
+      'display_selection': instance.displaySelection,
     };
 
 _PreviewResponse _$PreviewResponseFromJson(Map<String, dynamic> json) =>

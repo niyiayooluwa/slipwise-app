@@ -281,7 +281,7 @@ as String,
 /// @nodoc
 mixin _$SelectionDetail {
 
-@JsonKey(name: 'away_team') String get awayTeam;@JsonKey(name: 'home_team') String get homeTeam;@JsonKey(name: 'market_type') String get marketType;@JsonKey(name: 'market_spec') String? get marketSpec; double get odds; String get selection;
+@JsonKey(name: 'away_team') String get awayTeam;@JsonKey(name: 'home_team') String get homeTeam;@JsonKey(name: 'market_type') String get marketType;@JsonKey(name: 'market_spec') String? get marketSpec; double get odds; String get selection;@JsonKey(name: 'display_selection') String? get displaySelection;
 /// Create a copy of SelectionDetail
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -294,16 +294,16 @@ $SelectionDetailCopyWith<SelectionDetail> get copyWith => _$SelectionDetailCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectionDetail&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectionDetail&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.displaySelection, displaySelection) || other.displaySelection == displaySelection));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketType,marketSpec,odds,selection);
+int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketType,marketSpec,odds,selection,displaySelection);
 
 @override
 String toString() {
-  return 'SelectionDetail(awayTeam: $awayTeam, homeTeam: $homeTeam, marketType: $marketType, marketSpec: $marketSpec, odds: $odds, selection: $selection)';
+  return 'SelectionDetail(awayTeam: $awayTeam, homeTeam: $homeTeam, marketType: $marketType, marketSpec: $marketSpec, odds: $odds, selection: $selection, displaySelection: $displaySelection)';
 }
 
 
@@ -314,7 +314,7 @@ abstract mixin class $SelectionDetailCopyWith<$Res>  {
   factory $SelectionDetailCopyWith(SelectionDetail value, $Res Function(SelectionDetail) _then) = _$SelectionDetailCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'market_spec') String? marketSpec, double odds, String selection
+@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'market_spec') String? marketSpec, double odds, String selection,@JsonKey(name: 'display_selection') String? displaySelection
 });
 
 
@@ -331,7 +331,7 @@ class _$SelectionDetailCopyWithImpl<$Res>
 
 /// Create a copy of SelectionDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketType = null,Object? marketSpec = freezed,Object? odds = null,Object? selection = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketType = null,Object? marketSpec = freezed,Object? odds = null,Object? selection = null,Object? displaySelection = freezed,}) {
   return _then(_self.copyWith(
 awayTeam: null == awayTeam ? _self.awayTeam : awayTeam // ignore: cast_nullable_to_non_nullable
 as String,homeTeam: null == homeTeam ? _self.homeTeam : homeTeam // ignore: cast_nullable_to_non_nullable
@@ -339,7 +339,8 @@ as String,marketType: null == marketType ? _self.marketType : marketType // igno
 as String,marketSpec: freezed == marketSpec ? _self.marketSpec : marketSpec // ignore: cast_nullable_to_non_nullable
 as String?,odds: null == odds ? _self.odds : odds // ignore: cast_nullable_to_non_nullable
 as double,selection: null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
-as String,
+as String,displaySelection: freezed == displaySelection ? _self.displaySelection : displaySelection // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -424,10 +425,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'market_spec')  String? marketSpec,  double odds,  String selection)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'market_spec')  String? marketSpec,  double odds,  String selection, @JsonKey(name: 'display_selection')  String? displaySelection)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SelectionDetail() when $default != null:
-return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,_that.odds,_that.selection);case _:
+return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,_that.odds,_that.selection,_that.displaySelection);case _:
   return orElse();
 
 }
@@ -445,10 +446,10 @@ return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'market_spec')  String? marketSpec,  double odds,  String selection)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'market_spec')  String? marketSpec,  double odds,  String selection, @JsonKey(name: 'display_selection')  String? displaySelection)  $default,) {final _that = this;
 switch (_that) {
 case _SelectionDetail():
-return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,_that.odds,_that.selection);case _:
+return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,_that.odds,_that.selection,_that.displaySelection);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -465,10 +466,10 @@ return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'market_spec')  String? marketSpec,  double odds,  String selection)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'market_spec')  String? marketSpec,  double odds,  String selection, @JsonKey(name: 'display_selection')  String? displaySelection)?  $default,) {final _that = this;
 switch (_that) {
 case _SelectionDetail() when $default != null:
-return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,_that.odds,_that.selection);case _:
+return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,_that.odds,_that.selection,_that.displaySelection);case _:
   return null;
 
 }
@@ -480,7 +481,7 @@ return $default(_that.awayTeam,_that.homeTeam,_that.marketType,_that.marketSpec,
 @JsonSerializable()
 
 class _SelectionDetail implements SelectionDetail {
-  const _SelectionDetail({@JsonKey(name: 'away_team') required this.awayTeam, @JsonKey(name: 'home_team') required this.homeTeam, @JsonKey(name: 'market_type') required this.marketType, @JsonKey(name: 'market_spec') this.marketSpec, required this.odds, required this.selection});
+  const _SelectionDetail({@JsonKey(name: 'away_team') required this.awayTeam, @JsonKey(name: 'home_team') required this.homeTeam, @JsonKey(name: 'market_type') required this.marketType, @JsonKey(name: 'market_spec') this.marketSpec, required this.odds, required this.selection, @JsonKey(name: 'display_selection') this.displaySelection});
   factory _SelectionDetail.fromJson(Map<String, dynamic> json) => _$SelectionDetailFromJson(json);
 
 @override@JsonKey(name: 'away_team') final  String awayTeam;
@@ -489,6 +490,7 @@ class _SelectionDetail implements SelectionDetail {
 @override@JsonKey(name: 'market_spec') final  String? marketSpec;
 @override final  double odds;
 @override final  String selection;
+@override@JsonKey(name: 'display_selection') final  String? displaySelection;
 
 /// Create a copy of SelectionDetail
 /// with the given fields replaced by the non-null parameter values.
@@ -503,16 +505,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelectionDetail&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelectionDetail&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.displaySelection, displaySelection) || other.displaySelection == displaySelection));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketType,marketSpec,odds,selection);
+int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketType,marketSpec,odds,selection,displaySelection);
 
 @override
 String toString() {
-  return 'SelectionDetail(awayTeam: $awayTeam, homeTeam: $homeTeam, marketType: $marketType, marketSpec: $marketSpec, odds: $odds, selection: $selection)';
+  return 'SelectionDetail(awayTeam: $awayTeam, homeTeam: $homeTeam, marketType: $marketType, marketSpec: $marketSpec, odds: $odds, selection: $selection, displaySelection: $displaySelection)';
 }
 
 
@@ -523,7 +525,7 @@ abstract mixin class _$SelectionDetailCopyWith<$Res> implements $SelectionDetail
   factory _$SelectionDetailCopyWith(_SelectionDetail value, $Res Function(_SelectionDetail) _then) = __$SelectionDetailCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'market_spec') String? marketSpec, double odds, String selection
+@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'market_spec') String? marketSpec, double odds, String selection,@JsonKey(name: 'display_selection') String? displaySelection
 });
 
 
@@ -540,7 +542,7 @@ class __$SelectionDetailCopyWithImpl<$Res>
 
 /// Create a copy of SelectionDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketType = null,Object? marketSpec = freezed,Object? odds = null,Object? selection = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketType = null,Object? marketSpec = freezed,Object? odds = null,Object? selection = null,Object? displaySelection = freezed,}) {
   return _then(_SelectionDetail(
 awayTeam: null == awayTeam ? _self.awayTeam : awayTeam // ignore: cast_nullable_to_non_nullable
 as String,homeTeam: null == homeTeam ? _self.homeTeam : homeTeam // ignore: cast_nullable_to_non_nullable
@@ -548,7 +550,8 @@ as String,marketType: null == marketType ? _self.marketType : marketType // igno
 as String,marketSpec: freezed == marketSpec ? _self.marketSpec : marketSpec // ignore: cast_nullable_to_non_nullable
 as String?,odds: null == odds ? _self.odds : odds // ignore: cast_nullable_to_non_nullable
 as double,selection: null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
-as String,
+as String,displaySelection: freezed == displaySelection ? _self.displaySelection : displaySelection // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

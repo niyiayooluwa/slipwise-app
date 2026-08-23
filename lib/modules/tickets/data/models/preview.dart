@@ -23,6 +23,7 @@ abstract class SelectionDetail with _$SelectionDetail {
     @JsonKey(name: 'market_spec') String? marketSpec,
     required double odds,
     required String selection,
+    @JsonKey(name: 'display_selection') String? displaySelection,
   }) = _SelectionDetail;
 
   factory SelectionDetail.fromJson(Map<String, dynamic> json) =>
