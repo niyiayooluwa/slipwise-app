@@ -159,69 +159,64 @@ class TrackScreen extends HookConsumerWidget {
 
     return Scaffold(
       backgroundColor: colorScheme.background,
-      appBar: AppBar(
-        title: Text('Track Ticket'),
-        backgroundColor: Colors.transparent,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Step indicator
-            _buildStepIndicator(
-              currentStep: previewResponse.value == null ? 1 : 2,
-              colorScheme: colorScheme,
-            ),
-
-            const SizedBox(height: 32),
-
-            if (previewResponse.value == null) ...[
-              // STEP 1: Input Form
-              _buildInputForm(theme, colorScheme, codeController),
-
-              const SizedBox(height: 24),
-
-              ShadButton(
-                onPressed: isPreviewing.value ? null : handlePreview,
-                child: isPreviewing.value
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text('Preview Ticket'),
-              ),
-            ] else ...[
-              // STEP 2: Preview & Track
-              _buildPreviewCard(
-                theme,
-                colorScheme,
-                previewResponse.value!,
-                stakeController,
-                descriptionController,
-              ),
-
-              const SizedBox(height: 24),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: ShadButton.outline(
-                      onPressed: () {
-                        previewResponse.value = null;
-                      },
-                      child: const Text('Back'),
-                    ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 140.0,
+            pinned: true,
+            backgroundColor: colorScheme.background,
+            elevation: 0,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      colorScheme.primary.withValues(alpha: 0.55),
+                      colorScheme.primary.withValues(alpha: 0.35),
+                      colorScheme.primary.withValues(alpha: 0.25),
+                      colorScheme.primary.withValues(alpha: 0.15),
+                      colorScheme.primary.withValues(alpha: 0.08),
+                      colorScheme.primary.withValues(alpha: 0.0),
+                    ],
+                    stops: const [0.0, 0.25, 0.45, 0.65, 0.85, 1.0],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ShadButton(
-                      onPressed: isTracking.value ? null : handleTrack,
-                      child: isTracking.value
+                ),
+              ),
+              titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+              title: Text(
+                'Track Ticket',
+                style: theme.textTheme.h3.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.foreground,
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Step indicator
+                  _buildStepIndicator(
+                    currentStep: previewResponse.value == null ? 1 : 2,
+                    colorScheme: colorScheme,
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  if (previewResponse.value == null) ...[
+                    // STEP 1: Input Form
+                    _buildInputForm(theme, colorScheme, codeController),
+
+                    const SizedBox(height: 24),
+
+                    ShadButton(
+                      onPressed: isPreviewing.value ? null : handlePreview,
+                      child: isPreviewing.value
                           ? const SizedBox(
                               height: 20,
                               width: 20,
@@ -230,14 +225,55 @@ class TrackScreen extends HookConsumerWidget {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text('Track Ticket'),
+                          : const Text('Preview Ticket'),
                     ),
-                  ),
+                  ] else ...[
+                    // STEP 2: Preview & Track
+                    _buildPreviewCard(
+                      theme,
+                      colorScheme,
+                      previewResponse.value!,
+                      stakeController,
+                      descriptionController,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ShadButton.outline(
+                            onPressed: () {
+                              previewResponse.value = null;
+                            },
+                            child: const Text('Back'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ShadButton(
+                            onPressed: isTracking.value ? null : handleTrack,
+                            child: isTracking.value
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text('Track Ticket'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 40),
                 ],
               ),
-            ],
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
