@@ -9,6 +9,7 @@ import '../models/history.dart';
 import '../models/preview.dart';
 import '../models/ticket_detail.dart';
 import '../models/track.dart';
+import '../models/update_ticket.dart';
 
 part 'ticket_repository.g.dart';
 
@@ -20,24 +21,38 @@ class TicketRepository {
   Future<Either<Failure, PaginatedHistoryResponse>> getTickets({
     int page = 1,
     int limit = 20,
+    String? status,
   }) async {
-    return _ticketRemote.getTickets(page: page, limit: limit);
+    return _ticketRemote.getTickets(page: page, limit: limit, status: status);
   }
 
   Future<Either<Failure, MessageResponse>> deleteTicket(String id) async {
     return _ticketRemote.deleteTicket(id);
   }
 
-  Future<Either<Failure, List<TicketDetailItem>>> getTicketDetails(String id) async {
+  Future<Either<Failure, List<TicketDetailItem>>> getTicketDetails(
+    String id,
+  ) async {
     return _ticketRemote.getTicketDetails(id);
   }
 
-  Future<Either<Failure, PreviewResponse>> previewTicket(PreviewRequest request) async {
+  Future<Either<Failure, PreviewResponse>> previewTicket(
+    PreviewRequest request,
+  ) async {
     return _ticketRemote.previewTicket(request);
   }
 
-  Future<Either<Failure, MessageResponse>> trackTicket(TrackRequest request) async {
+  Future<Either<Failure, MessageResponse>> trackTicket(
+    TrackRequest request,
+  ) async {
     return _ticketRemote.trackTicket(request);
+  }
+
+  Future<Either<Failure, MessageResponse>> updateTicket(
+    String id,
+    UpdateTicketRequest request,
+  ) async {
+    return _ticketRemote.updateTicket(id, request);
   }
 }
 

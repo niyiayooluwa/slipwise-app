@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:dart_either/dart_either.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,6 +12,7 @@ import '../models/history.dart';
 import '../models/preview.dart';
 import '../models/ticket_detail.dart';
 import '../models/track.dart';
+import '../models/update_ticket.dart';
 
 part 'ticket_remote.g.dart';
 
@@ -22,6 +24,7 @@ class TicketRemote {
   Future<Either<Failure, PaginatedHistoryResponse>> getTickets({
     int page = 1,
     int limit = 20,
+    String? status,
   }) async {
     try {
       final response = await _dio.get(
@@ -29,12 +32,18 @@ class TicketRemote {
         queryParameters: {
           'page': page,
           'limit': limit,
+          if (status != null) 'status': status,
         },
       );
       return Right(PaginatedHistoryResponse.fromJson(response.data));
     } on DioException catch (e) {
+      developer.log('DioException in getTickets: $e', name: 'TicketRemote');
       return Left(mapDioException(e));
-    } catch (e) {
+    } catch (e, stack) {
+      developer.log(
+        'Exception in getTickets: $e\n$stack',
+        name: 'TicketRemote',
+      );
       return Left(mapException(e));
     }
   }
@@ -50,11 +59,15 @@ class TicketRemote {
     }
   }
 
-  Future<Either<Failure, List<TicketDetailItem>>> getTicketDetails(String id) async {
+  Future<Either<Failure, List<TicketDetailItem>>> getTicketDetails(
+    String id,
+  ) async {
     try {
       final response = await _dio.get('/v1/tickets/$id');
       final data = response.data as List;
-      final items = data.map((e) => TicketDetailItem.fromJson(e as Map<String, dynamic>)).toList();
+      final items = data
+          .map((e) => TicketDetailItem.fromJson(e as Map<String, dynamic>))
+          .toList();
       return Right(items);
     } on DioException catch (e) {
       return Left(mapDioException(e));
@@ -63,7 +76,9 @@ class TicketRemote {
     }
   }
 
-  Future<Either<Failure, PreviewResponse>> previewTicket(PreviewRequest request) async {
+  Future<Either<Failure, PreviewResponse>> previewTicket(
+    PreviewRequest request,
+  ) async {
     try {
       final response = await _dio.post(
         '/v1/tickets/preview',
@@ -77,7 +92,9 @@ class TicketRemote {
     }
   }
 
-  Future<Either<Failure, MessageResponse>> trackTicket(TrackRequest request) async {
+  Future<Either<Failure, MessageResponse>> trackTicket(
+    TrackRequest request,
+  ) async {
     try {
       final response = await _dio.post(
         '/v1/tickets/track',
@@ -85,8 +102,35 @@ class TicketRemote {
       );
       return Right(MessageResponse.fromJson(response.data));
     } on DioException catch (e) {
+      developer.log('DioException in trackTicket: $e', name: 'TicketRemote');
       return Left(mapDioException(e));
-    } catch (e) {
+    } catch (e, stack) {
+      developer.log(
+        'Exception in trackTicket: $e\n$stack',
+        name: 'TicketRemote',
+      );
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, MessageResponse>> updateTicket(
+    String id,
+    UpdateTicketRequest request,
+  ) async {
+    try {
+      final response = await _dio.patch(
+        '/v1/tickets/$id',
+        data: request.toJson(),
+      );
+      return Right(MessageResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      developer.log('DioException in updateTicket: $e', name: 'TicketRemote');
+      return Left(mapDioException(e));
+    } catch (e, stack) {
+      developer.log(
+        'Exception in updateTicket: $e\n$stack',
+        name: 'TicketRemote',
+      );
       return Left(mapException(e));
     }
   }
