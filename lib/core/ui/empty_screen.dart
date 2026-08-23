@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 
 class EmptyScreen extends HookConsumerWidget {
   const EmptyScreen({super.key});
@@ -17,6 +17,7 @@ class EmptyScreen extends HookConsumerWidget {
           children: [
             Text('Home Screen Placeholder'),
             ShadButton(
+              size: ShadButtonSize.lg,
               onPressed: () async {
                 await ref.read(userProvider.notifier).logout();
                 if (context.mounted) {
