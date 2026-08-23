@@ -1,7 +1,7 @@
 // filtered_tickets_provider.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
-import 'package:slipwise/modules/tickets/screens/shared/ticket_controller.dart';
+import 'package:slipwise/modules/tickets/providers/ticket_controller.dart';
 part 'filtered_tickets_provider.g.dart';
 
 @riverpod

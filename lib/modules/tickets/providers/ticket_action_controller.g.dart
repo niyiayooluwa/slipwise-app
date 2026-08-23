@@ -20,7 +20,7 @@ final class TicketActionsProvider
         argument: null,
         retry: null,
         name: r'ticketActionsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +33,7 @@ final class TicketActionsProvider
   TicketActions create() => TicketActions();
 }
 
-String _$ticketActionsHash() => r'a191672c163ec13254d740685a8ef6bd7b72a3ae';
+String _$ticketActionsHash() => r'0738acda529946e36d18ba5ebc35940097009d59';
 
 abstract class _$TicketActions extends $AsyncNotifier<void> {
   FutureOr<void> build();

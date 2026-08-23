@@ -7,7 +7,7 @@ import 'package:slipwise/modules/tickets/data/repositories/ticket_repository.dar
 
 part 'ticket_action_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TicketActions extends _$TicketActions {
   @override
   Future<void> build() async => Future.value();

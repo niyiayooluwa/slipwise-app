@@ -107,3 +107,78 @@ abstract class _$TicketDetailController
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(singleTicket)
+const singleTicketProvider = SingleTicketFamily._();
+
+final class SingleTicketProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<HistoryItem>,
+          HistoryItem,
+          FutureOr<HistoryItem>
+        >
+    with $FutureModifier<HistoryItem>, $FutureProvider<HistoryItem> {
+  const SingleTicketProvider._({
+    required SingleTicketFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'singleTicketProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$singleTicketHash();
+
+  @override
+  String toString() {
+    return r'singleTicketProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<HistoryItem> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<HistoryItem> create(Ref ref) {
+    final argument = this.argument as String;
+    return singleTicket(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SingleTicketProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$singleTicketHash() => r'b2d9ecb45c3b3904b2bc3f78214130db226982b4';
+
+final class SingleTicketFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<HistoryItem>, String> {
+  const SingleTicketFamily._()
+    : super(
+        retry: null,
+        name: r'singleTicketProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  SingleTicketProvider call(String ticketId) =>
+      SingleTicketProvider._(argument: ticketId, from: this);
+
+  @override
+  String toString() => r'singleTicketProvider';
+}

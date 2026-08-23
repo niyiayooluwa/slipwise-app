@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/ticket_detail.dart';
 import 'package:slipwise/modules/tickets/data/repositories/ticket_repository.dart';
 
@@ -22,4 +23,20 @@ class TicketDetailController extends _$TicketDetailController {
     ref.invalidateSelf();
     await future;
   }
+}
+
+@riverpod
+Future<HistoryItem> singleTicket(Ref ref, String ticketId) async {
+  final repo = ref.read(ticketRepositoryProvider);
+  final result = await repo.getTickets(limit: 50);
+  return result.fold(
+    ifLeft: (err) => throw Exception(err.message),
+    ifRight: (resp) {
+      final ticket = resp.data.where((t) => t.ticketId == ticketId).firstOrNull;
+      if (ticket == null) {
+        throw Exception('Ticket not found');
+      }
+      return ticket;
+    },
+  );
 }
