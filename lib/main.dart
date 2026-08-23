@@ -33,13 +33,8 @@ class MainApp extends ConsumerWidget {
 
     return ShadApp.router(
       title: 'SlipWise',
-      themeMode: ThemeMode.system,
-      theme: /*ShadThemeData(
-        colorScheme: const ShadGreenColorScheme.light(),
-        radius: BorderRadius.circular(20),
-        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.openSans),
-      ),
-      darkTheme:*/ ShadThemeData(
+      //themeMode: ThemeMode.system,
+      theme: ShadThemeData(
         colorScheme: const ShadGreenColorScheme.dark(),
         radius: BorderRadius.circular(20),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
@@ -63,6 +58,12 @@ class MainApp extends ConsumerWidget {
           duration: Duration(milliseconds: 2000),
         ),
       ),
+      /*ShadThemeData(
+        colorScheme: const ShadGreenColorScheme.light(),
+        radius: BorderRadius.circular(20),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.openSans),
+      ),
+      darkTheme:*/
       routerConfig: router,
       builder: (context, child) {
         final brightness = Theme.of(context).brightness;
