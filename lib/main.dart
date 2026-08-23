@@ -4,15 +4,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/router/router.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:slipwise/core/services/push_notification_service.dart';
 
 // Main entrypoint to the application
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   final container = ProviderContainer();
-  
+
   // Initialize Push Notifications and deep-linking handlers
   await container.read(pushNotificationServiceProvider).initialize();
 
@@ -33,13 +35,12 @@ class MainApp extends ConsumerWidget {
       title: 'SlipWise',
       themeMode: ThemeMode.system,
       theme: /*ShadThemeData(
-        colorScheme: const ShadOrangeColorScheme.light(),
+        colorScheme: const ShadGreenColorScheme.light(),
         radius: BorderRadius.circular(20),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.openSans),
       ),
       darkTheme:*/ ShadThemeData(
         colorScheme: const ShadGreenColorScheme.dark(),
-
         radius: BorderRadius.circular(20),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
         inputTheme: const ShadInputTheme(

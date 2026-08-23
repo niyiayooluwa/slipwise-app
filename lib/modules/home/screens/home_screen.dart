@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
-import 'package:slipwise/modules/home/screens/widgets/ticket_card.dart';
-import 'package:slipwise/modules/tickets/screens/shared/filtered_tickets_provider.dart';
-import 'package:slipwise/modules/tickets/screens/shared/ticket_controller.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
+import 'package:slipwise/core/ui/ticket_card.dart';
+import 'package:slipwise/core/ui/theme_gradients.dart';
+import 'package:slipwise/core/ui/empty_state_widget.dart';
+import 'package:slipwise/core/ui/error_state_widget.dart';
+import 'package:slipwise/modules/tickets/providers/filtered_tickets_provider.dart';
+import 'package:slipwise/modules/tickets/providers/ticket_controller.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
@@ -67,19 +71,7 @@ class HomeScreen extends HookConsumerWidget {
             width: double.infinity,
             height: 240,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  colorScheme.primary.withValues(alpha: 0.55),
-                  colorScheme.primary.withValues(alpha: 0.35),
-                  colorScheme.primary.withValues(alpha: 0.25),
-                  colorScheme.primary.withValues(alpha: 0.15),
-                  colorScheme.primary.withValues(alpha: 0.08),
-                  colorScheme.primary.withValues(alpha: 0.0),
-                ],
-                stops: const [0.0, 0.25, 0.45, 0.65, 0.85, 1.0],
-              ),
+              gradient: ThemeGradients.primaryBackground(context),
             ),
           ),
 
@@ -95,7 +87,7 @@ class HomeScreen extends HookConsumerWidget {
                     children: [
                       // Top Row: Date, Greeting, Icons
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           // Left Side
                           Expanded(
@@ -112,7 +104,7 @@ class HomeScreen extends HookConsumerWidget {
                                 const SizedBox(height: 8),
                                 Text(
                                   'Hello, @$username',
-                                  style: theme.textTheme.h3.copyWith(
+                                  style: theme.textTheme.large.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -122,6 +114,7 @@ class HomeScreen extends HookConsumerWidget {
                           ),
                           // Right Side (Icons)
                           Row(
+                            crossAxisAlignment: .end,
                             children: [
                               // Notification Icon
                               Container(
@@ -169,7 +162,7 @@ class HomeScreen extends HookConsumerWidget {
                             Row(
                               children: [
                                 Text(
-                                  'Pending Tickets',
+                                  'Recent Tickets',
                                   style: theme.textTheme.large.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -200,7 +193,7 @@ class HomeScreen extends HookConsumerWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                context.replace('/tickets');
+                                context.replace('/history');
                               },
                               child: Text(
                                 'See All',
@@ -231,7 +224,14 @@ class HomeScreen extends HookConsumerWidget {
                     child: ticketAsync.when(
                       data: (tickets) {
                         if (tickets.isEmpty) {
-                          return _buildEmptyState(context, theme, colorScheme);
+                          return EmptyStateWidget(
+                            title: 'No tickets yet',
+                            message: 'Track your first ticket to see it here',
+                            buttonText: 'Track a Ticket',
+                            onButtonPressed: () {
+                              context.go('/track');
+                            },
+                          );
                         }
 
                         return ListView.builder(
@@ -251,8 +251,9 @@ class HomeScreen extends HookConsumerWidget {
                                   ? Padding(
                                       padding: const EdgeInsets.all(16),
                                       child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: colorScheme.primary,
+                                        child: SpinKitThreeBounce(
+                                          size: 16,
+                                          color: theme.colorScheme.primary,
                                         ),
                                       ),
                                     )
@@ -283,15 +284,13 @@ class HomeScreen extends HookConsumerWidget {
                         );
                       },
                       loading: () => Center(
-                        child: CircularProgressIndicator(
-                          color: colorScheme.primary,
+                        child: SpinKitThreeBounce(
+                          size: 20,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
-                      error: (error, stack) => _buildErrorState(
-                        context,
-                        theme,
-                        colorScheme,
-                        error,
+                      error: (error, stack) => ErrorStateWidget(
+                        error: error,
                         onRetry: () {
                           ref.invalidate(ticketControllerProvider);
                         },
@@ -302,86 +301,6 @@ class HomeScreen extends HookConsumerWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  // Empty State
-  Widget _buildEmptyState(
-    BuildContext context,
-    ShadThemeData theme,
-    ShadColorScheme colorScheme,
-  ) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Empty State
-          SvgPicture.asset(
-            'assets/drawables/states/empty_state.svg', // Replace with your actual path
-            width: 300,
-            height: 300,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'No tickets yet',
-            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Track your first ticket to see it here',
-            style: theme.textTheme.muted.copyWith(
-              color: colorScheme.mutedForeground,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ShadButton(
-            onPressed: () {
-              context.go('/track');
-            },
-            child: const Text('Track a Ticket'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Error State
-  Widget _buildErrorState(
-    BuildContext context,
-    ShadThemeData theme,
-    ShadColorScheme colorScheme,
-    Object error, {
-    required VoidCallback onRetry,
-  }) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/drawables/states/no_data.svg', // Replace with your actual path
-            width: 160,
-            height: 160,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Oops! Something went wrong',
-            style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(
-              error.toString().replaceFirst('Exception: ', ''),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.muted.copyWith(
-                color: colorScheme.mutedForeground,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          ShadButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );

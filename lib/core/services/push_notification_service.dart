@@ -18,8 +18,13 @@ PushNotificationService pushNotificationService(Ref ref) {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    developer.log('Handling a background message: ${message.messageId}', name: 'PushNotification');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    developer.log(
+      'Handling a background message: ${message.messageId}',
+      name: 'PushNotification',
+    );
   } catch (e) {
     developer.log('Error in background handler: $e', name: 'PushNotification');
   }
@@ -33,10 +38,14 @@ class PushNotificationService {
   Future<void> initialize() async {
     try {
       // 1. Initialize Firebase (Ensure google-services.json and firebase_options are configured in the project)
-      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-      
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
       // Set the background messaging handler early on, as a logic basis
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler,
+      );
 
       // 2. Request permission (iOS specifically, Android 13+)
       final messaging = FirebaseMessaging.instance;
@@ -46,7 +55,7 @@ class PushNotificationService {
         sound: true,
       );
 
-      if (settings.authorizationStatus == AuthorizationStatus.authorized || 
+      if (settings.authorizationStatus == AuthorizationStatus.authorized ||
           settings.authorizationStatus == AuthorizationStatus.provisional) {
         // 3. Get the token and register device
         final token = await messaging.getToken();
@@ -63,7 +72,10 @@ class PushNotificationService {
         _setupMessageHandlers();
       }
     } catch (e) {
-      developer.log('Failed to initialize push notifications: $e', name: 'PushNotification');
+      developer.log(
+        'Failed to initialize push notifications: $e',
+        name: 'PushNotification',
+      );
     }
   }
 
@@ -75,7 +87,10 @@ class PushNotificationService {
         _registerDevice(token);
       }
     } catch (e) {
-      developer.log('Failed to fetch token for registration: $e', name: 'PushNotification');
+      developer.log(
+        'Failed to fetch token for registration: $e',
+        name: 'PushNotification',
+      );
     }
   }
 
@@ -83,7 +98,7 @@ class PushNotificationService {
     try {
       developer.log('FCM Token: $token', name: 'PushNotification');
       final authRepo = _ref.read(authRepositoryProvider);
-      
+
       // This endpoint is protected, so this will automatically upsert the device
       // using the currently logged-in user's Bearer token. If the user is not logged in,
       // the interceptor or remote might fail, which is fine (we'll ignore the error).
@@ -96,8 +111,11 @@ class PushNotificationService {
   void _setupMessageHandlers() {
     // A. Handle messages while the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      developer.log('Received foreground message: ${message.messageId}', name: 'PushNotification');
-      // Here you could show a local notification if needed. 
+      developer.log(
+        'Received foreground message: ${message.messageId}',
+        name: 'PushNotification',
+      );
+      // Here you could show a local notification if needed.
       // flutter_local_notifications could be used to present a heads-up notification.
     });
 
@@ -105,7 +123,9 @@ class PushNotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 
     // C. Handle notification tap when the app is launched from a terminated state
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    FirebaseMessaging.instance.getInitialMessage().then((
+      RemoteMessage? message,
+    ) {
       if (message != null) {
         _handleMessage(message);
       }
@@ -113,8 +133,11 @@ class PushNotificationService {
   }
 
   void _handleMessage(RemoteMessage message) {
-    developer.log('Opened app from notification: ${message.data}', name: 'PushNotification');
-    
+    developer.log(
+      'Opened app from notification: ${message.data}',
+      name: 'PushNotification',
+    );
+
     final data = message.data;
     final type = data['type'];
     final ticketId = data['ticket_id'];
