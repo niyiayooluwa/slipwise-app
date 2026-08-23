@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/update_ticket.dart';
-import 'package:slipwise/modules/tickets/screens/history/history_controller.dart';
+import 'package:slipwise/modules/tickets/providers/history_controller.dart';
 import 'package:slipwise/modules/tickets/data/repositories/ticket_repository.dart';
 
 class EditTicketModal extends HookConsumerWidget {
@@ -170,11 +171,7 @@ class EditTicketModal extends HookConsumerWidget {
             ShadButton(
               onPressed: isSaving.value ? null : handleSave,
               child: isSaving.value
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                  ? const SpinKitThreeBounce(size: 16, color: Colors.white)
                   : const Text('Save Changes'),
             ),
           ],

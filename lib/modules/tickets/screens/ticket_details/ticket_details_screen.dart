@@ -5,9 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/ticket_detail.dart';
-import 'package:slipwise/modules/tickets/screens/shared/ticket_detail_controller.dart';
+import 'package:slipwise/modules/tickets/providers/ticket_detail_controller.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_ticket_modal.dart';
-import 'package:slipwise/core/utils/market_formatter.dart';
 
 class TicketDetailsScreen extends HookConsumerWidget {
   final HistoryItem initialTicket;
@@ -62,76 +61,97 @@ class TicketDetailsScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: _buildSummaryCard(ticket, theme, colorScheme),
-            ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 8.0,
-              ),
-              child: Text(
-                'Selections',
-                style: theme.textTheme.large.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.foreground,
+      body: SafeArea(
+        bottom: true,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Hero(
+                  tag: 'ticket-${ticket.ticketId}',
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: _buildSummaryCard(context, ticket, theme, colorScheme),
+                  ),
                 ),
               ),
             ),
-          ),
 
-          selectionsAsync.when(
-            data: (selections) {
-              if (selections.isEmpty) {
-                return SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: Text(
-                      'No selections found.',
-                      style: TextStyle(color: colorScheme.mutedForeground),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 8.0,
+                ),
+                child: Text(
+                  'Selections',
+                  style: theme.textTheme.large.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.foreground,
+                  ),
+                ),
+              ),
+            ),
+
+            selectionsAsync.when(
+              data: (selections) {
+                if (selections.isEmpty) {
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Text(
+                        'No selections found.',
+                        style: TextStyle(color: colorScheme.mutedForeground),
+                      ),
                     ),
+                  );
+                }
+
+                return SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 8.0,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final selection = selections[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: _buildSelectionCard(context, 
+                          selection,
+                          theme,
+                          colorScheme,
+                        ),
+                      );
+                    }, childCount: selections.length),
                   ),
                 );
-              }
-
-              return SliverPadding(
+              },
+              loading: () => SliverPadding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20.0,
                   vertical: 8.0,
                 ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final selection = selections[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: _buildSelectionCard(selection, theme, colorScheme),
-                    );
-                  }, childCount: selections.length),
+                    return _buildSkeletonSelectionCard(context, theme, colorScheme);
+                  }, childCount: 3),
                 ),
-              );
-            },
-            loading: () => const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (e, stack) => SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: Text('Error: $e')),
+              ),
             ),
-            error: (e, stack) => SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: Text('Error: $e')),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildSummaryCard(
+    BuildContext context,
     HistoryItem ticket,
     ShadThemeData theme,
     ShadColorScheme colorScheme,
@@ -141,7 +161,9 @@ class TicketDetailsScreen extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorScheme.card,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xff0E0C0B)
+            : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colorScheme.border),
       ),
@@ -211,14 +233,14 @@ class TicketDetailsScreen extends HookConsumerWidget {
               _buildSummaryStat(
                 'Stake',
                 ticket.stake != null && ticket.stake! > 0
-                    ? '₦${ticket.stake!.toStringAsFixed(0)}'
+                    ? '₦${NumberFormat('#,##0.00').format(ticket.stake!)}'
                     : '-',
                 colorScheme,
               ),
               _buildSummaryStat(
                 'Potential Win',
                 ticket.stake != null && ticket.stake! > 0
-                    ? '₦${(ticket.stake! * ticket.totalOdds).toStringAsFixed(0)}'
+                    ? '₦${NumberFormat('#,##0.00').format(ticket.stake! * ticket.totalOdds)}'
                     : '-',
                 colorScheme,
               ),
@@ -254,81 +276,238 @@ class TicketDetailsScreen extends HookConsumerWidget {
     );
   }
 
+  Widget _buildSkeletonSelectionCard(
+    BuildContext context,
+    ShadThemeData theme,
+    ShadColorScheme colorScheme,
+  ) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(bottom: 12.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xff0E0C0B)
+            : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.border),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(width: 2, color: colorScheme.muted),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.muted,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                width: 20,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.muted,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                width: 100,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.muted,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 60,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: colorScheme.muted,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        Container(
+                          width: 40,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: colorScheme.muted,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSelectionCard(
+    BuildContext context, 
     TicketDetailItem selection,
     ShadThemeData theme,
     ShadColorScheme colorScheme,
   ) {
-    final statusColor = _getStatusColor(selection.matchStatus);
+    final statusColor = _getStatusColor(selection.selectionStatus);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: colorScheme.card,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xff0E0C0B)
+            : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.border),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  '${selection.homeTeam} vs ${selection.awayTeam}',
-                  style: theme.textTheme.small.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 4,
+              color: statusColor.withValues(alpha: 0.222222223),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selection.homeTeam,
+                                style: theme.textTheme.small.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'vs',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontStyle: FontStyle.italic,
+                                  color: colorScheme.mutedForeground,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                selection.awayTeam,
+                                style: theme.textTheme.small.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: statusColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: statusColor.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            selection.selectionStatus.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: statusColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            selection.displaySelection ?? selection.selection,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.foreground,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          selection.odds.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.only(top: 4, left: 8),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  MarketFormatter.formatMarket(
-                    selection.marketType,
-                    selection.marketSpec,
-                  ),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.foreground,
-                  ),
-                ),
-              ),
-              Text(
-                selection.odds.toStringAsFixed(2),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
