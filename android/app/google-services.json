@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "3489996639",
+    "project_id": "unique-badge-503610-f5",
+    "storage_bucket": "unique-badge-503610-f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3489996639:android:b419d8841e4e4ecdc8a0ea",
+        "android_client_info": {
+          "package_name": "com.slipwise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3489996639-ku9uumjse4cb0o41p9lfo6k5bqpsriq9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfBCKJhKmD2s81yUleSNH-9xTI3pW6PdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3489996639-ku9uumjse4cb0o41p9lfo6k5bqpsriq9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

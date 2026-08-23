@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
+import 'package:slipwise/modules/tickets/data/models/ticket_detail.dart';
 import 'package:slipwise/modules/tickets/screens/shared/ticket_detail_controller.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_ticket_modal.dart';
 import 'package:slipwise/core/utils/market_formatter.dart';
@@ -254,7 +255,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
   }
 
   Widget _buildSelectionCard(
-    dynamic selection,
+    TicketDetailItem selection,
     ShadThemeData theme,
     ShadColorScheme colorScheme,
   ) {
@@ -307,8 +308,8 @@ class TicketDetailsScreen extends HookConsumerWidget {
                 ),
                 child: Text(
                   MarketFormatter.formatMarket(
-                    selection.market,
-                    selection.selection,
+                    selection.marketType,
+                    selection.marketSpec,
                   ),
                   style: TextStyle(
                     fontSize: 12,

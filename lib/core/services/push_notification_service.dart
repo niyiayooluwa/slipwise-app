@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:slipwise/router/router.dart';
+import 'package:slipwise/firebase_options.dart';
 
 part 'push_notification_service.g.dart';
 
@@ -17,7 +18,7 @@ PushNotificationService pushNotificationService(Ref ref) {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     developer.log('Handling a background message: ${message.messageId}', name: 'PushNotification');
   } catch (e) {
     developer.log('Error in background handler: $e', name: 'PushNotification');
@@ -32,7 +33,7 @@ class PushNotificationService {
   Future<void> initialize() async {
     try {
       // 1. Initialize Firebase (Ensure google-services.json and firebase_options are configured in the project)
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       
       // Set the background messaging handler early on, as a logic basis
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

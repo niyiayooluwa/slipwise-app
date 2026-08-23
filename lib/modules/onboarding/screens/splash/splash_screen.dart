@@ -64,11 +64,11 @@ class SplashScreen extends HookConsumerWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(color: Color(0xFF0C0A09)),
+          Container(color: ShadTheme.of(context).colorScheme.background),
           //SvgPicture.asset('assets/drawables/splash.svg', fit: BoxFit.cover),
           Center(
             child: SvgPicture.asset(
-              'assets/drawables/logo/orange.svg',
+              'assets/drawables/logo/green.svg',
               height: 170,
               width: 170,
               semanticsLabel: 'Splash Screen Logo',

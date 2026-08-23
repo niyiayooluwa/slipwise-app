@@ -14,7 +14,7 @@ Future<void> main() async {
   final container = ProviderContainer();
   
   // Initialize Push Notifications and deep-linking handlers
-  container.read(pushNotificationServiceProvider).initialize();
+  await container.read(pushNotificationServiceProvider).initialize();
 
   runApp(
     UncontrolledProviderScope(container: container, child: const MainApp()),
