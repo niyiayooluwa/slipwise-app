@@ -17,10 +17,17 @@ class TicketController extends _$TicketController {
     return _fetchTickets(page: 1);
   }
 
-  Future<List<HistoryItem>> _fetchTickets({required int page}) async {
+  Future<List<HistoryItem>> _fetchTickets({
+    required int page,
+    String? status,
+  }) async {
     final repository = ref.read(ticketRepositoryProvider);
 
-    final result = await repository.getTickets(page: page, limit: 20);
+    final result = await repository.getTickets(
+      page: page,
+      limit: 20,
+      status: status,
+    );
 
     return result.fold(
       ifLeft: (failure) {

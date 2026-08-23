@@ -15,7 +15,9 @@ class TicketActions extends _$TicketActions {
   Future<PreviewResponse?> previewTicket(PreviewRequest request) async {
     state = const AsyncValue.loading();
 
-    final result = await ref.read(ticketRepositoryProvider).previewTicket(request);
+    final result = await ref
+        .read(ticketRepositoryProvider)
+        .previewTicket(request);
 
     return result.fold(
       ifLeft: (failure) {
@@ -32,7 +34,9 @@ class TicketActions extends _$TicketActions {
   Future<MessageResponse?> trackTicket(TrackRequest request) async {
     state = const AsyncValue.loading();
 
-    final result = await ref.read(ticketRepositoryProvider).trackTicket(request);
+    final result = await ref
+        .read(ticketRepositoryProvider)
+        .trackTicket(request);
 
     return result.fold(
       ifLeft: (failure) {

@@ -33,7 +33,7 @@ final class TicketActionsProvider
   TicketActions create() => TicketActions();
 }
 
-String _$ticketActionsHash() => r'bcee73a7d9be45156a0ba59f78fd47dcd7e36b05';
+String _$ticketActionsHash() => r'a191672c163ec13254d740685a8ef6bd7b72a3ae';
 
 abstract class _$TicketActions extends $AsyncNotifier<void> {
   FutureOr<void> build();
