@@ -6,9 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:slipwise/core/utils/validators.dart' as validators;
-import 'package:slipwise/modules/auth/screens/register/controller/utility_notifier.dart';
+import 'package:slipwise/modules/auth/providers/utility_notifier.dart';
 import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
-import 'set_username_controller.dart';
+import 'package:slipwise/modules/auth/providers/set_username_controller.dart';
 
 class SetUsernameScreen extends HookConsumerWidget {
   const SetUsernameScreen({super.key});

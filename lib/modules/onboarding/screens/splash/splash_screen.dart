@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/storage/settings_service.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
@@ -14,6 +15,10 @@ class SplashScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FlutterNativeSplash.remove();
+      });
+
       Future(() async {
         final storage = ref.read(secureStorageProvider);
         // Run the 2-second timer and settings reads concurrently

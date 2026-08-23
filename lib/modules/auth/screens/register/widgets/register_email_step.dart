@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/auth/screens/register/controller/register_form_controller.dart';
+import 'package:slipwise/modules/auth/providers/register_form_controller.dart';
 
 class RegisterEmailStep extends StatelessWidget {
   final RegisterForm notifier;

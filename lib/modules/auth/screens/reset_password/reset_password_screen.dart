@@ -4,8 +4,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/auth/screens/reset_password/reset_password_form_controller.dart';
-import 'package:slipwise/modules/auth/screens/reset_password/reset_password_controller.dart';
+import 'package:slipwise/modules/auth/providers/reset_password_form_controller.dart';
+import 'package:slipwise/modules/auth/providers/reset_password_controller.dart';
 import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 
 class ResetPasswordScreen extends HookConsumerWidget {
@@ -145,6 +145,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
           valueListenable: form.isStep1Valid,
           builder: (context, isValid, _) {
             return ShadButton(
+              size: ShadButtonSize.lg,
               enabled: isValid,
               onPressed: !isValid
                   ? null
@@ -228,6 +229,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
           valueListenable: form.isStep2Valid,
           builder: (context, isValid, _) {
             return ShadButton(
+              size: ShadButtonSize.lg,
               enabled: isValid && !isLoading,
               onPressed: isLoading || !isValid
                   ? null

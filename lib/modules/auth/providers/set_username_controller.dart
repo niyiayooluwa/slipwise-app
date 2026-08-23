@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/models/update_profile.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 
 part 'set_username_controller.g.dart';
 

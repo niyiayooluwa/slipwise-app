@@ -3,8 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:slipwise/core/utils/validators.dart' as validators;
-import 'package:slipwise/modules/auth/screens/register/controller/register_form_controller.dart';
-import 'package:slipwise/modules/auth/screens/register/controller/register_controller.dart';
+import 'package:slipwise/modules/auth/providers/register_form_controller.dart';
+import 'package:slipwise/modules/auth/providers/register_controller.dart';
 
 class RegisterPasswordStep extends ConsumerWidget {
   final RegisterForm notifier;
@@ -73,8 +73,8 @@ class RegisterPasswordStep extends ConsumerWidget {
             size: ShadButtonSize.lg,
             enabled: !isAnyLoading && form.isFormComplete,
             onPressed: !isAnyLoading && form.isFormComplete
-                ? () async {
-                    await ref
+                ? () {
+                    ref
                         .read(registerControllerProvider.notifier)
                         .signUp(
                           username: form.username.trim(),

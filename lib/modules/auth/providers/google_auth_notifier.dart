@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/models/oauth.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:slipwise/core/constants/constants.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 
 part 'google_auth_notifier.g.dart';
 

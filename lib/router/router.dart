@@ -8,7 +8,7 @@ import 'package:slipwise/modules/auth/screens/verify_otp/verify_otp_screen.dart'
 import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_screen.dart';
 import 'package:slipwise/modules/auth/screens/reset_password/reset_password_screen.dart';
 import 'package:slipwise/modules/auth/screens/set_username/set_username_screen.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 import 'package:slipwise/modules/onboarding/screens/get_started/get_started_screen.dart';
 import 'package:slipwise/modules/onboarding/screens/onboarding/onboarding_screen.dart';
 import 'package:slipwise/modules/onboarding/screens/splash/splash_screen.dart';
@@ -120,7 +120,9 @@ GoRouter router(Ref ref) {
             if (ticketId != null) {
               return TicketDetailsLoaderScreen(ticketId: ticketId);
             }
-            return const Scaffold(body: Center(child: Text('Error: No ticket provided')));
+            return const Scaffold(
+              body: Center(child: Text('Error: No ticket provided')),
+            );
           }
         },
       ),

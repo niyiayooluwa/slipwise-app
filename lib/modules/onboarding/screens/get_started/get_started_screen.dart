@@ -7,8 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:slipwise/modules/auth/screens/google_auth/google_auth_notifier.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/modules/auth/providers/google_auth_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 
 class GetStartedScreen extends HookConsumerWidget {
   const GetStartedScreen({super.key});

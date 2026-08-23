@@ -5,8 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:slipwise/core/utils/validators.dart' as validators;
-import 'package:slipwise/modules/auth/screens/register/controller/register_form_controller.dart';
-import 'package:slipwise/modules/auth/screens/register/controller/utility_notifier.dart';
+import 'package:slipwise/modules/auth/providers/register_form_controller.dart';
+import 'package:slipwise/modules/auth/providers/utility_notifier.dart';
 
 class RegisterUsernameStep extends HookConsumerWidget {
   final RegisterForm notifier;

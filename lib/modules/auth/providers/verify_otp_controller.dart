@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/models/resend_otp.dart';
 import 'package:slipwise/modules/auth/data/models/verify.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
-import 'package:slipwise/modules/auth/screens/shared/user_notifier.dart';
+import 'package:slipwise/core/providers/user_notifier.dart';
 
 part 'verify_otp_controller.g.dart';
 

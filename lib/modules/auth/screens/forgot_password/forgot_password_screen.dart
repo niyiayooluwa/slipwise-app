@@ -3,8 +3,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_form_controller.dart';
-import 'package:slipwise/modules/auth/screens/forgot_password/forgot_password_controller.dart';
+import 'package:slipwise/modules/auth/providers/forgot_password_form_controller.dart';
+import 'package:slipwise/modules/auth/providers/forgot_password_controller.dart';
 import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
 
 class ForgotPasswordScreen extends HookConsumerWidget {
@@ -110,6 +110,7 @@ class ForgotPasswordScreen extends HookConsumerWidget {
             valueListenable: form.isFormValid,
             builder: (context, isValid, _) {
               return ShadButton(
+                size: ShadButtonSize.lg,
                 enabled: isValid && !isLoading,
                 onPressed: isLoading || !isValid
                     ? null

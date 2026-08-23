@@ -6,10 +6,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/utils/validators.dart';
 import 'package:slipwise/core/errors/failures.dart';
-import 'package:slipwise/modules/auth/screens/login/login_form_controller.dart';
-import 'package:slipwise/modules/auth/screens/login/login_controller.dart';
+import 'package:slipwise/modules/auth/providers/login_form_controller.dart';
+import 'package:slipwise/modules/auth/providers/login_controller.dart';
 import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
-import 'package:slipwise/modules/auth/screens/google_auth/google_auth_notifier.dart';
+import 'package:slipwise/modules/auth/providers/google_auth_notifier.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
@@ -33,6 +33,9 @@ class LoginScreen extends HookConsumerWidget {
       child: AuthErrorListener<void>(
         provider: loginControllerProvider,
         errorTitle: 'Login Failed',
+        onSuccess: (context, state) {
+          context.go('/home');
+        },
         onError: (context, error) {
           if (error.toString() == const EmailNotVerifiedFailure().message) {
             context.push(
@@ -254,21 +257,14 @@ class LoginScreen extends HookConsumerWidget {
                 enabled: isValid && !isLoading,
                 onPressed: isLoading || !isValid
                     ? null
-                    : () async {
+                    : () {
                         if (form.formKey.currentState!.saveAndValidate()) {
-                          await ref
+                          ref
                               .read(loginControllerProvider.notifier)
                               .signInWithEmail(
                                 email: form.emailController.text.trim(),
                                 password: form.passwordController.text,
                               );
-
-                          if (context.mounted) {
-                            final state = ref.read(loginControllerProvider);
-                            if (!state.hasError) {
-                              context.go('/home');
-                            }
-                          }
                         }
                       },
                 width: double.infinity,
