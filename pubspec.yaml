@@ -44,10 +44,22 @@ dev_dependencies:
   riverpod_generator: ^3.0.3
 
 flutter_native_splash:
-  color: "#0C0A09"
-  image: assets/image/logo.png
+  color: "#0c0a09"
+  image: assets/image/green.png
   android: true
-  #ios: true
+  ios: false
+  android_12:
+    image: assets/image/green.png
+    icon_background_color: "#0c0a09"
+    color: "#0c0a09"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/image/green.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#0c0a09"
+  adaptive_icon_foreground: "assets/image/green.png"
 
 # The following section is specific to Flutter packages.
 flutter:
