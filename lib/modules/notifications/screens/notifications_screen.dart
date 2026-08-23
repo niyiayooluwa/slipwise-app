@@ -90,7 +90,6 @@ class _NotificationTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final isDark = true;
 
     return InkWell(
       onTap: () {
@@ -115,7 +114,7 @@ class _NotificationTile extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xff1A1A1A) : Colors.grey.shade100,
+                color: const Color(0xff1A1A1A),
                 shape: BoxShape.circle,
                 border: Border.all(color: theme.colorScheme.border),
               ),

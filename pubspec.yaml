@@ -7,6 +7,7 @@ environment:
   sdk: ^3.10.7
 
 dependencies:
+  sentry_flutter: ^9.27.0
   badges: ^3.1.2
   connectivity_plus: ^7.3.1
   dart_either: ^2.0.0
@@ -36,6 +37,7 @@ dependencies:
   uuid: ^4.6.0
 
 dev_dependencies:
+  sentry_dart_plugin: ^3.4.0
   build_runner: 2.10.5
   custom_lint: ^0.8.1
   flutter_lints: ">=3.0.0 <7.0.0"
@@ -103,3 +105,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true
+  project: flutter
+  org: toluwalase-abiola

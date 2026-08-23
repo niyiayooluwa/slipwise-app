@@ -9,6 +9,7 @@ import 'package:slipwise/router/router.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:slipwise/core/services/push_notification_service.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Main entrypoint to the application
 Future<void> main() async {
@@ -16,8 +17,22 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   final container = ProviderContainer();
 
-  runApp(
-    UncontrolledProviderScope(container: container, child: const MainApp()),
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://7d1b0f8c3a721a2d316db237a5f0d6ea@o4511960944869376.ingest.de.sentry.io/4511961053986896';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = .2;
+    },
+    appRunner: () => runApp(
+      SentryWidget(
+        child: UncontrolledProviderScope(
+          container: container,
+          child: const MainApp(),
+        ),
+      ),
+    ),
   );
 
   // Fire-and-forget: don't gate app boot on this.
