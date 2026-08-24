@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+// A simple enum describing the status a ticket can be in
 enum Status { pending, won, lost }
 
+// Widget for drawing a ticket
 class TicketCard extends StatelessWidget {
   final String ticketId;
   final String bookingCode;
@@ -54,8 +56,14 @@ class TicketCard extends StatelessWidget {
       ),
     };
 
+    // Simple material widget to wrap our actual widget
     return Material(
+      // Im setting the transparency here to override it. I dont like not knowing
+      // if it is clear or not
       color: Colors.transparent,
+
+      // InkWell basically make the card clickable. Clicking a ticket should take
+      //  the user to the ticket page
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,

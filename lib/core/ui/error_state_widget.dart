@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+// Are you familiar with errors? If yes, then we need an error state to display
+// when something goes wrong beyond the scope of a shad toast
 class ErrorStateWidget extends StatelessWidget {
   final String title;
   final Object error;

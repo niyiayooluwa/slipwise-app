@@ -4,6 +4,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:slipwise/core/providers/user_notifier.dart';
 
+
+// An empty screen with a log out button. Very useful during dev
 class EmptyScreen extends HookConsumerWidget {
   const EmptyScreen({super.key});
 
