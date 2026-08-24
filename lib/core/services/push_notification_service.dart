@@ -116,16 +116,18 @@ class PushNotificationService {
         'Received foreground message: ${message.messageId}',
         name: 'PushNotification',
       );
-      
+
       final ticketId = message.data['ticket_id'] as String?;
       final type = message.data['type'] as String? ?? 'ticket_update';
-      
-      _ref.read(notificationControllerProvider.notifier).addNotification(
-        title: message.notification?.title ?? 'Update',
-        body: message.notification?.body ?? 'You have a new alert',
-        ticketId: ticketId,
-        type: type,
-      );
+
+      _ref
+          .read(notificationControllerProvider.notifier)
+          .addNotification(
+            title: message.notification?.title ?? 'Update',
+            body: message.notification?.body ?? 'You have a new alert',
+            ticketId: ticketId,
+            type: type,
+          );
 
       // Here you could show a local notification if needed.
     });

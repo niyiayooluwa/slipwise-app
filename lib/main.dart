@@ -17,6 +17,9 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   final container = ProviderContainer();
 
+  // Initialises sentry. To be honest, i still dunno what it does fully yet. I
+  // just put it in for now to better prepare upfront for when errors and app 
+  // crashes start to burn me
   await SentryFlutter.init(
     (options) {
       options.dsn =
@@ -51,9 +54,19 @@ class MainApp extends ConsumerWidget {
       title: 'SlipWise',
       //themeMode: ThemeMode.system,
       theme: ShadThemeData(
+        // Set the current color scheme to ShadCn's Dark green
         colorScheme: const ShadGreenColorScheme.dark(),
+
+        // This sets the radius of all elements to a smooth 20dp curve that is quite
+        // playful imo
         radius: BorderRadius.circular(20),
+
+        // Uses Google Font Inter(da goat)
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
+
+        // Overrides the border radius set earlier for inactive text inputs as an
+        // overly round text input is kinda weird if the text input size itself 
+        // is quite small
         inputTheme: const ShadInputTheme(
           decoration: ShadDecoration(
             border: ShadBorder(radius: BorderRadius.all(Radius.circular(10))),
@@ -65,13 +78,15 @@ class MainApp extends ConsumerWidget {
             ),
           ),
         ),
+
+        // Sets the display length for a shad toast to 1.5 s give or take
         primaryToastTheme: const ShadToastTheme(
           alignment: Alignment.topCenter,
-          duration: Duration(milliseconds: 2000),
+          duration: Duration(milliseconds: 1500),
         ),
         destructiveToastTheme: const ShadToastTheme(
           alignment: Alignment.topCenter,
-          duration: Duration(milliseconds: 2000),
+          duration: Duration(milliseconds: 1500),
         ),
       ),
       /*ShadThemeData(
@@ -80,7 +95,12 @@ class MainApp extends ConsumerWidget {
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.openSans),
       ),
       darkTheme:*/
+
+      // Uses the watched state of the router to navigate between screens
       routerConfig: router,
+
+      // Sets the system UI overlay like the top(battery icons, notification icons, etc)
+      // to be of light color instead of being dark... Smart eh?
       builder: (context, child) {
         final brightness = Theme.of(context).brightness;
         SystemChrome.setSystemUIOverlayStyle(

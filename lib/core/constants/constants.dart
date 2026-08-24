@@ -7,8 +7,10 @@ class ApiConstants {
   // static const String baseUrl = 'https://niyiayooluwa-hololine.hf.space';
   static const String baseUrl = 'https://slipwise-production.up.railway.app';
 
-  static const Duration connectTimeout = Duration(seconds: 50);
-  static const Duration receiveTimeout = Duration(seconds: 50);
+  // Timeouts: because waiting forever is weird and i hate late people
+  // Set to 12s because I am actually torn between 10s and 15s
+  static const Duration connectTimeout = Duration(seconds: 12);
+  static const Duration receiveTimeout = Duration(seconds: 12);
 
   static const String googleAppClientId =
       '3489996639-s39alb0tfdgcucadco5f21lcferiem2j.apps.googleusercontent.com';

@@ -24,23 +24,37 @@ import 'package:slipwise/modules/tickets/data/models/history.dart';
 
 part 'router.g.dart';
 
+// I guess this is pretty clear from the signature...
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// 💪 BOOM!!!! Riverpod just generated all the boilerplate
+// so you dont have to. You're welcome 💅
 @riverpod
 GoRouter router(Ref ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
+    // Initial location is always splash due to a useEffect trigger that was
+    // defined there which works in tandem with our redirect logic
     initialLocation: '/splash',
 
+    // Le redirect logic
     redirect: (context, state) async {
       // 1. Splash screen handles initial routing itself
       if (state.uri.path == '/splash') return null;
 
+      // This fetches the storage service instance and gets the access token from
+      // there and puts it in the token variable basically... Easy peasy
       final storage = ref.read(secureStorageProvider);
-      final token = await storage.getAccessToken();
+      // Lest i forget, token is a String? meaning it can be null
+      final String? token = await storage.getAccessToken();
 
+      // We set the isLoggedIn to whether or not the token is null. Null means
+      // the user doesnt have a JWT access token which implies they are not logged in
       final bool isLoggedIn = token != null;
       final isSetUsernameRoute = state.uri.path == '/set-username';
+
+      // This creates the authentication routes... so we can exclude them as public
+      // routes for unauthenticated users
       final bool isAuthRoute = [
         '/login',
         '/register',
@@ -51,11 +65,18 @@ GoRouter router(Ref ref) {
         '/reset-password',
       ].contains(state.uri.path);
 
+      // If users is not logged in, and user is not on a public route, kick them to
+      // the get started screen
       if (!isLoggedIn && !isAuthRoute) {
         return '/get-started';
       }
 
+      // We check the value of isLoggedIn and check if there is a user saved in state
+      // The app then checks the user state to see if they have a username. if yes,
+      // they are taken to the Home screen, but if no, they are taken to the screen
+      // where they have to set their username after which they can go to the home screen
       if (isLoggedIn) {
+        // User is a UserModel?
         final user = ref.read(userProvider).value;
         // userProvider might be loading, so if it's null, we don't redirect yet unless it's an error?
         // Actually, GoogleAuthNotifier waits for it to load before setting isLoggedIn (via invalidating).
@@ -118,7 +139,9 @@ GoRouter router(Ref ref) {
         builder: (context, state) {
           if (state.extra != null) {
             if (state.extra is HistoryItem) {
-              return TicketDetailsScreen(initialTicket: state.extra as HistoryItem);
+              return TicketDetailsScreen(
+                initialTicket: state.extra as HistoryItem,
+              );
             } else if (state.extra is Map<String, dynamic>) {
               final extra = state.extra as Map<String, dynamic>;
               return TicketDetailsScreen(

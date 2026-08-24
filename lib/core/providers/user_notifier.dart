@@ -7,6 +7,9 @@ import 'package:slipwise/core/services/push_notification_service.dart';
 
 part 'user_notifier.g.dart';
 
+// Guys, come see, you have stumbled upon the greatest and most revered Notifier,
+// the UserNotifier. It is keep alive because it is small and needed in almost
+// every screen
 @Riverpod(keepAlive: true)
 class UserNotifier extends _$UserNotifier {
   @override
@@ -30,6 +33,7 @@ class UserNotifier extends _$UserNotifier {
     );
   }
 
+  // This is weird... But ehh, it works... Basically the same as above
   Future<void> fetch() async {
     state = const AsyncValue.loading();
 
@@ -68,6 +72,7 @@ class UserNotifier extends _$UserNotifier {
     state = const AsyncValue.data(null);
   }
 
+  // This is the heart of the app. Feedback sending
   Future<String?> submitFeedback(String feedback) async {
     final result = await ref
         .read(authRepositoryProvider)
