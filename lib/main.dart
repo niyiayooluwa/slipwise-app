@@ -15,12 +15,23 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  final container = ProviderContainer();
 
-  // Initialises sentry. To be honest, i still dunno what it does fully yet. I
-  // just put it in for now to better prepare upfront for when errors and app 
-  // crashes start to burn me
-  await SentryFlutter.init(
+  // Disable Google Fonts runtime fetching to force offline fonts
+  GoogleFonts.config.allowRuntimeFetching = false;
+
+  final container = ProviderContainer();
+  runApp(
+    SentryWidget(
+      child: UncontrolledProviderScope(
+        container: container,
+        child: const MainApp(),
+      ),
+    ),
+
+    // Initialises sentry. To be honest, i still dunno what it does fully yet. I
+    // just put it in for now to better prepare upfront for when errors and app
+    // crashes start to burn me
+    /*await SentryFlutter.init(
     (options) {
       options.dsn =
           'https://7d1b0f8c3a721a2d316db237a5f0d6ea@o4511960944869376.ingest.de.sentry.io/4511961053986896';
@@ -35,7 +46,7 @@ Future<void> main() async {
           child: const MainApp(),
         ),
       ),
-    ),
+    ),*/
   );
 
   // Fire-and-forget: don't gate app boot on this.
@@ -65,7 +76,7 @@ class MainApp extends ConsumerWidget {
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
 
         // Overrides the border radius set earlier for inactive text inputs as an
-        // overly round text input is kinda weird if the text input size itself 
+        // overly round text input is kinda weird if the text input size itself
         // is quite small
         inputTheme: const ShadInputTheme(
           decoration: ShadDecoration(
