@@ -12,8 +12,10 @@ class SecureStorage {
   // stored upon successful authentiaction
   static const refreshTokenKey = 'refresh_token';
   static const accessTokenKey = 'access_token';
+  static const fcmTokenKey = 'fcm_token';
   String? _refreshTokenCache; // In-memory cache (instance variable)
   String? _accessTokenCache; // In-memory cache (instance variable)
+  String? _fcmTokenCache;
 
   // Saves the tokens to secure storage service instance upon call
   Future<void> saveTokens({
@@ -38,12 +40,24 @@ class SecureStorage {
     return _refreshTokenCache;
   }
 
+  Future<void> saveFCMToken(String token) async {
+    _fcmTokenCache = token;
+    await _storage.write(key: fcmTokenKey, value: token);
+  }
+
+  Future<String?> getFCMToken() async {
+    _fcmTokenCache ??= await _storage.read(key: fcmTokenKey);
+    return _fcmTokenCache;
+  }
+
   // Clears token. Done when the refresh token expires or when the user logs out
   Future<void> clearTokens() async {
     _refreshTokenCache = null;
     _accessTokenCache = null;
+    _fcmTokenCache = null;
     await _storage.delete(key: accessTokenKey);
     await _storage.delete(key: refreshTokenKey);
+    await _storage.delete(key: fcmTokenKey);
   }
 }
 

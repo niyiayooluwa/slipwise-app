@@ -42,7 +42,10 @@ class PersonalInfoModal extends HookConsumerWidget {
       debounce.value?.cancel();
 
       final localError = validators.validateUsername(value);
-      if (localError != null || value.trim().isEmpty || value == currentUsername) return;
+      if (localError != null ||
+          value.trim().isEmpty ||
+          value == currentUsername)
+        return;
 
       debounce.value = Timer(const Duration(milliseconds: 1000), () {
         ref.read(utilityProvider.notifier).checkUsername(value.trim());
@@ -60,34 +63,39 @@ class PersonalInfoModal extends HookConsumerWidget {
         isAvailable;
 
     Widget buildAvailabilityDisplay() {
-      if (usernameState.value == currentUsername || usernameState.value.isEmpty) {
+      if (usernameState.value == currentUsername ||
+          usernameState.value.isEmpty) {
         return const SizedBox.shrink();
       }
 
       if (localError != null) {
         return Text(
           localError,
-          style: theme.textTheme.small.copyWith(color: theme.colorScheme.destructive),
+          style: theme.textTheme.small.copyWith(
+            color: theme.colorScheme.destructive,
+          ),
         );
       }
 
       return switch (status) {
         UsernameCheckIdle() => const SizedBox.shrink(),
         UsernameCheckLoading() => Row(
-            children: [
-              SpinKitThreeBounce(size: 12, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
-              Text('Checking availability...', style: theme.textTheme.small),
-            ],
-          ),
+          children: [
+            SpinKitThreeBounce(size: 12, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Text('Checking availability...', style: theme.textTheme.small),
+          ],
+        ),
         UsernameCheckAvailable() => Text(
-            'Username is available!',
-            style: theme.textTheme.small.copyWith(color: Colors.green),
-          ),
+          'Username is available!',
+          style: theme.textTheme.small.copyWith(color: Colors.green),
+        ),
         UsernameCheckError(message: final msg) => Text(
-            msg,
-            style: theme.textTheme.small.copyWith(color: theme.colorScheme.destructive),
+          msg,
+          style: theme.textTheme.small.copyWith(
+            color: theme.colorScheme.destructive,
           ),
+        ),
       };
     }
 

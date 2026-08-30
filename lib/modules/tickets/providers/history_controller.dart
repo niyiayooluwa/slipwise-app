@@ -55,7 +55,11 @@ class HistoryController extends _$HistoryController {
     try {
       final result = await ref
           .read(ticketRepositoryProvider)
-          .getTickets(page: _currentPage + 1, limit: 20, status: status == 'ALL' ? null : status);
+          .getTickets(
+            page: _currentPage + 1,
+            limit: 20,
+            status: status == 'ALL' ? null : status,
+          );
 
       return result.fold(
         ifLeft: (failure) => throw Exception(failure.message),

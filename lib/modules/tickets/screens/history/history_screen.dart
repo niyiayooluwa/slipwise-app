@@ -221,7 +221,13 @@ class _TicketList extends HookConsumerWidget {
                       provider: ticket.provider,
                       status: _mapStatus(ticket.overallStatus),
                       onTap: () {
-                        context.push('/ticket-details', extra: {'ticket': ticket, 'heroTag': 'ticket-${ticket.ticketId}-$status'});
+                        context.push(
+                          '/ticket-details',
+                          extra: {
+                            'ticket': ticket,
+                            'heroTag': 'ticket-${ticket.ticketId}-$status',
+                          },
+                        );
                       },
                     ),
                   ),

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-
 // Have you ever heard about empty states? Basically, they are states of an application
-// before any data has been created like an empty folder. This one is a configurable 
-// one so we can follow th DRY principle. 
+// before any data has been created like an empty folder. This one is a configurable
+// one so we can follow th DRY principle.
 class EmptyStateWidget extends StatelessWidget {
   final String title;
   final String message;

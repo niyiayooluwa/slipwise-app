@@ -23,7 +23,7 @@ class LoginController extends _$LoginController {
 
     state = await result.fold(
       ifLeft: (failure) {
-        return AsyncValue.error(failure.message, StackTrace.current);
+        return AsyncValue.error(failure, StackTrace.current);
       },
       ifRight: (response) async {
         // The token is already saved by AuthRepository.

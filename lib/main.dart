@@ -21,9 +21,7 @@ Future<void> main() async {
   // Disable Google Fonts runtime fetching to force offline fonts
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final container = ProviderContainer();
   runApp(

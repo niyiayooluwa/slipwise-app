@@ -30,14 +30,16 @@ class AuthRepository {
   Future<Either<Failure, LoginResponse>> login(LoginRequest request) async {
     final result = await _remote.login(request);
 
-    // If successful, save tokens to SecureStorage
-    return result.map((response) {
-      _storage.saveTokens(
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      );
-      return response;
-    });
+    return result.fold(
+      ifLeft: (failure) => Left(failure),
+      ifRight: (response) async {
+        await _storage.saveTokens(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+        );
+        return Right(response);
+      },
+    );
   }
 
   Future<Either<Failure, RegisterResponse>> signup(
@@ -53,13 +55,16 @@ class AuthRepository {
     final result = await _remote.verifyOtp(request);
 
     // The backend returns tokens upon successful OTP verification
-    return result.map((response) {
-      _storage.saveTokens(
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      );
-      return response;
-    });
+    return result.fold(
+      ifLeft: (failure) => Left(failure),
+      ifRight: (response) async {
+        await _storage.saveTokens(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+        );
+        return Right(response);
+      },
+    );
   }
 
   Future<Either<Failure, LoginResponse>> googleLogin(
@@ -67,25 +72,31 @@ class AuthRepository {
   ) async {
     final result = await _remote.googleLogin(request);
 
-    return result.map((response) {
-      _storage.saveTokens(
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      );
-      return response;
-    });
+    return result.fold(
+      ifLeft: (failure) => Left(failure),
+      ifRight: (response) async {
+        await _storage.saveTokens(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+        );
+        return Right(response);
+      },
+    );
   }
 
   Future<Either<Failure, LoginResponse>> refresh(RefreshRequest request) async {
     final result = await _remote.refresh(request);
 
-    return result.map((response) {
-      _storage.saveTokens(
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      );
-      return response;
-    });
+    return result.fold(
+      ifLeft: (failure) => Left(failure),
+      ifRight: (response) async {
+        await _storage.saveTokens(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+        );
+        return Right(response);
+      },
+    );
   }
 
   Future<Either<Failure, MessageResponse>> logout() async {

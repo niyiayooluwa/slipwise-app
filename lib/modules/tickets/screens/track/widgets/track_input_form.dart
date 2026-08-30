@@ -33,12 +33,23 @@ class TrackInputForm extends StatelessWidget {
           initialValue: selectedProvider,
           onChanged: onProviderSelected,
           options: [
-            ShadOption<String>(value: 'SPORTYBET', child: const Text('Sportybet')),
-            ShadOption<String>(value: 'BET9JA', child: const Text('Bet9ja (Coming Soon)')),
-            ShadOption<String>(value: '1XBET', child: const Text('1xBet (Coming Soon)')),
+            ShadOption<String>(
+              value: 'SPORTYBET',
+              child: const Text('Sportybet'),
+            ),
+            ShadOption<String>(
+              value: 'BET9JA',
+              child: const Text('Bet9ja (Coming Soon)'),
+            ),
+            ShadOption<String>(
+              value: '1XBET',
+              child: const Text('1xBet (Coming Soon)'),
+            ),
           ],
           selectedOptionBuilder: (context, value) {
-            final text = value == 'SPORTYBET' ? 'Sportybet' : (value == 'BET9JA' ? 'Bet9ja' : '1xBet');
+            final text = value == 'SPORTYBET'
+                ? 'Sportybet'
+                : (value == 'BET9JA' ? 'Bet9ja' : '1xBet');
             return Text(text);
           },
         ),
@@ -48,9 +59,9 @@ class TrackInputForm extends StatelessWidget {
             icon: Icon(LucideIcons.info),
             description: Text('Only Sportybet is fully supported currently.'),
           ),
-        
+
         const SizedBox(height: 24),
-        
+
         Text(
           'Booking Code',
           style: theme.textTheme.small.copyWith(fontWeight: FontWeight.w600),
@@ -60,7 +71,11 @@ class TrackInputForm extends StatelessWidget {
           controller: codeController,
           placeholder: const Text('e.g., J6J2TN'),
           textCapitalization: TextCapitalization.characters,
-          trailing: Icon(LucideIcons.ticket, size: 16, color: colorScheme.mutedForeground),
+          trailing: Icon(
+            LucideIcons.ticket,
+            size: 16,
+            color: colorScheme.mutedForeground,
+          ),
         ),
         const SizedBox(height: 12),
         Text(

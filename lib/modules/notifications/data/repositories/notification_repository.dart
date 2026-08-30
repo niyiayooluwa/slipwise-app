@@ -24,8 +24,7 @@ class NotificationRepository extends _$NotificationRepository {
 
   Future<void> saveNotifications(List<AppNotification> notifications) async {
     final prefs = await future;
-    final jsonList =
-        notifications.map((n) => jsonEncode(n.toJson())).toList();
+    final jsonList = notifications.map((n) => jsonEncode(n.toJson())).toList();
     await prefs.setStringList(_key, jsonList);
   }
 }

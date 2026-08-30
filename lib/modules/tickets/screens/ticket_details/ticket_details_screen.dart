@@ -7,6 +7,7 @@ import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/ticket_detail.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_detail_controller.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_ticket_modal.dart';
+import 'package:slipwise/core/ui/error_state_widget.dart';
 
 class TicketDetailsScreen extends HookConsumerWidget {
   final HistoryItem initialTicket;
@@ -156,7 +157,12 @@ class TicketDetailsScreen extends HookConsumerWidget {
               ),
               error: (e, stack) => SliverFillRemaining(
                 hasScrollBody: false,
-                child: Center(child: Text('Error: $e')),
+                child: ErrorStateWidget(
+                  error: e,
+                  onRetry: () => ref.refresh(
+                    ticketDetailControllerProvider(ticket.ticketId),
+                  ),
+                ),
               ),
             ),
           ],

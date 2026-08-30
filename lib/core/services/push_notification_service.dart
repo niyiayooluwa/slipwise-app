@@ -93,9 +93,22 @@ class PushNotificationService {
 
   void _registerDevice(String token) async {
     try {
-      final accessToken = await _ref.read(secureStorageProvider).getAccessToken();
+      final storage = _ref.read(secureStorageProvider);
+      final accessToken = await storage.getAccessToken();
       if (accessToken == null) {
-        developer.log('User not logged in, skipping FCM token registration.', name: 'PushNotification');
+        developer.log(
+          'User not logged in, skipping FCM token registration.',
+          name: 'PushNotification',
+        );
+        return;
+      }
+
+      final cachedToken = await storage.getFCMToken();
+      if (cachedToken == token) {
+        developer.log(
+          'FCM Token unchanged, skipping backend registration.',
+          name: 'PushNotification',
+        );
         return;
       }
 
@@ -105,6 +118,9 @@ class PushNotificationService {
       // This endpoint is protected, so this will automatically upsert the device
       // using the currently logged-in user's Bearer token.
       await authRepo.registerDevice(token);
+
+      // Save the token locally so we don't spam the backend on next startup
+      await storage.saveFCMToken(token);
     } catch (e) {
       developer.log('Failed to register device: $e', name: 'PushNotification');
     }

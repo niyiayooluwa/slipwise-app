@@ -75,11 +75,19 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
     );
   }
 
-  Widget _buildOddsRange(BuildContext context, TicketFilter filter, WidgetRef ref, ShadThemeData theme) {
+  Widget _buildOddsRange(
+    BuildContext context,
+    TicketFilter filter,
+    WidgetRef ref,
+    ShadThemeData theme,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Total Odds Range', style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Total Odds Range',
+          style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -90,9 +98,14 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                 initialValue: filter.minOdds?.toString() ?? '',
                 onChanged: (val) {
                   final parsed = double.tryParse(val);
-                  ref.read(historyFilterStateProvider.notifier).updateFilter(
-                    filter.copyWith(minOdds: parsed, clearMinOdds: parsed == null),
-                  );
+                  ref
+                      .read(historyFilterStateProvider.notifier)
+                      .updateFilter(
+                        filter.copyWith(
+                          minOdds: parsed,
+                          clearMinOdds: parsed == null,
+                        ),
+                      );
                 },
               ),
             ),
@@ -106,9 +119,14 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                 initialValue: filter.maxOdds?.toString() ?? '',
                 onChanged: (val) {
                   final parsed = double.tryParse(val);
-                  ref.read(historyFilterStateProvider.notifier).updateFilter(
-                    filter.copyWith(maxOdds: parsed, clearMaxOdds: parsed == null),
-                  );
+                  ref
+                      .read(historyFilterStateProvider.notifier)
+                      .updateFilter(
+                        filter.copyWith(
+                          maxOdds: parsed,
+                          clearMaxOdds: parsed == null,
+                        ),
+                      );
                 },
               ),
             ),
@@ -118,11 +136,19 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
     );
   }
 
-  Widget _buildStakeRange(BuildContext context, TicketFilter filter, WidgetRef ref, ShadThemeData theme) {
+  Widget _buildStakeRange(
+    BuildContext context,
+    TicketFilter filter,
+    WidgetRef ref,
+    ShadThemeData theme,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Stake Amount (₦)', style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Stake Amount (₦)',
+          style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -133,9 +159,14 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                 initialValue: filter.minStake?.toString() ?? '',
                 onChanged: (val) {
                   final parsed = double.tryParse(val);
-                  ref.read(historyFilterStateProvider.notifier).updateFilter(
-                    filter.copyWith(minStake: parsed, clearMinStake: parsed == null),
-                  );
+                  ref
+                      .read(historyFilterStateProvider.notifier)
+                      .updateFilter(
+                        filter.copyWith(
+                          minStake: parsed,
+                          clearMinStake: parsed == null,
+                        ),
+                      );
                 },
               ),
             ),
@@ -149,9 +180,14 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                 initialValue: filter.maxStake?.toString() ?? '',
                 onChanged: (val) {
                   final parsed = double.tryParse(val);
-                  ref.read(historyFilterStateProvider.notifier).updateFilter(
-                    filter.copyWith(maxStake: parsed, clearMaxStake: parsed == null),
-                  );
+                  ref
+                      .read(historyFilterStateProvider.notifier)
+                      .updateFilter(
+                        filter.copyWith(
+                          maxStake: parsed,
+                          clearMaxStake: parsed == null,
+                        ),
+                      );
                 },
               ),
             ),
@@ -161,7 +197,12 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
     );
   }
 
-  Widget _buildDateRange(BuildContext context, TicketFilter filter, WidgetRef ref, ShadThemeData theme) {
+  Widget _buildDateRange(
+    BuildContext context,
+    TicketFilter filter,
+    WidgetRef ref,
+    ShadThemeData theme,
+  ) {
     final dateFormat = DateFormat('MMM dd, yyyy');
     final dateStr = filter.dateRange != null
         ? '${dateFormat.format(filter.dateRange!.start)} - ${dateFormat.format(filter.dateRange!.end)}'
@@ -170,7 +211,10 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Date Range', style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Date Range',
+          style: theme.textTheme.small.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: () async {
@@ -180,7 +224,10 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
               isScrollControlled: true,
               builder: (context) {
                 var tempRange = filter.dateRange != null
-                    ? ShadDateTimeRange(start: filter.dateRange!.start, end: filter.dateRange!.end)
+                    ? ShadDateTimeRange(
+                        start: filter.dateRange!.start,
+                        end: filter.dateRange!.end,
+                      )
                     : null;
                 return Padding(
                   padding: EdgeInsets.only(
@@ -205,10 +252,7 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 24),
-                          Text(
-                            'Select Date Range',
-                            style: theme.textTheme.h4,
-                          ),
+                          Text('Select Date Range', style: theme.textTheme.h4),
                           const SizedBox(height: 16),
                           ShadCalendar.range(
                             selected: tempRange,
@@ -227,12 +271,13 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                               const SizedBox(width: 16),
                               Expanded(
                                 child: ShadButton(
-                                  onPressed: () => Navigator.pop(context, tempRange),
+                                  onPressed: () =>
+                                      Navigator.pop(context, tempRange),
                                   child: const Text('Confirm'),
                                 ),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       );
                     },
@@ -240,12 +285,16 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                 );
               },
             );
-            
+
             if (picked != null && picked.start != null) {
               final end = picked.end ?? picked.start!;
-              ref.read(historyFilterStateProvider.notifier).updateFilter(
-                filter.copyWith(dateRange: DateTimeRange(start: picked.start!, end: end)),
-              );
+              ref
+                  .read(historyFilterStateProvider.notifier)
+                  .updateFilter(
+                    filter.copyWith(
+                      dateRange: DateTimeRange(start: picked.start!, end: end),
+                    ),
+                  );
             }
           },
           child: Container(
@@ -265,7 +314,11 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
                         : theme.colorScheme.mutedForeground,
                   ),
                 ),
-                Icon(Icons.calendar_today, size: 16, color: theme.colorScheme.mutedForeground),
+                Icon(
+                  Icons.calendar_today,
+                  size: 16,
+                  color: theme.colorScheme.mutedForeground,
+                ),
               ],
             ),
           ),
@@ -275,9 +328,9 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                ref.read(historyFilterStateProvider.notifier).updateFilter(
-                  filter.copyWith(clearDateRange: true),
-                );
+                ref
+                    .read(historyFilterStateProvider.notifier)
+                    .updateFilter(filter.copyWith(clearDateRange: true));
               },
               child: const Text('Clear date', style: TextStyle(fontSize: 12)),
             ),

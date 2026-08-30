@@ -37,7 +37,9 @@ class NotificationController extends _$NotificationController {
     final updated = [newNotif, ...current];
     state = AsyncData(updated);
 
-    await ref.read(notificationRepositoryProvider.notifier).saveNotifications(updated);
+    await ref
+        .read(notificationRepositoryProvider.notifier)
+        .saveNotifications(updated);
   }
 
   Future<void> markAsRead(String id) async {
@@ -50,7 +52,9 @@ class NotificationController extends _$NotificationController {
     }).toList();
 
     state = AsyncData(updated);
-    await ref.read(notificationRepositoryProvider.notifier).saveNotifications(updated);
+    await ref
+        .read(notificationRepositoryProvider.notifier)
+        .saveNotifications(updated);
   }
 
   Future<void> markAllAsRead() async {
@@ -58,6 +62,8 @@ class NotificationController extends _$NotificationController {
     final updated = current.map((n) => n.copyWith(isRead: true)).toList();
 
     state = AsyncData(updated);
-    await ref.read(notificationRepositoryProvider.notifier).saveNotifications(updated);
+    await ref
+        .read(notificationRepositoryProvider.notifier)
+        .saveNotifications(updated);
   }
 }

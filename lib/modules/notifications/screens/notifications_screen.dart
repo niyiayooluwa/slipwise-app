@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/ui/empty_state_widget.dart';
+import 'package:slipwise/core/ui/error_state_widget.dart';
 import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
 import 'package:slipwise/modules/notifications/data/models/app_notification.dart';
 import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
@@ -23,7 +24,7 @@ class NotificationsScreen extends HookConsumerWidget {
         slivers: [
           GradientSliverAppBar(
             title: 'Inbox',
-            
+
             actions: [
               IconButton(
                 icon: Icon(
@@ -47,32 +48,25 @@ class NotificationsScreen extends HookConsumerWidget {
                   child: EmptyStateWidget(
                     title: 'No new notifications',
                     message: 'You are all caught up!',
-                    
                   ),
                 );
               }
 
               return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final notif = notifications[index];
-                    return _NotificationTile(notif: notif);
-                  },
-                  childCount: notifications.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final notif = notifications[index];
+                  return _NotificationTile(notif: notif);
+                }, childCount: notifications.length),
               );
             },
             loading: () => const SliverFillRemaining(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             ),
             error: (err, stack) => SliverFillRemaining(
-              child: Center(
-                child: Text(
-                  'Failed to load notifications: $err',
-                  style: TextStyle(color: colorScheme.destructive),
-                ),
+              hasScrollBody: false,
+              child: ErrorStateWidget(
+                error: err,
+                onRetry: () => ref.refresh(notificationControllerProvider),
               ),
             ),
           ),
@@ -104,9 +98,7 @@ class _NotificationTile extends ConsumerWidget {
           color: notif.isRead
               ? Colors.transparent
               : theme.colorScheme.primary.withValues(alpha: 0.1),
-          border: Border(
-            bottom: BorderSide(color: theme.colorScheme.border),
-          ),
+          border: Border(bottom: BorderSide(color: theme.colorScheme.border)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +174,7 @@ class _NotificationTile extends ConsumerWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-            ]
+            ],
           ],
         ),
       ),

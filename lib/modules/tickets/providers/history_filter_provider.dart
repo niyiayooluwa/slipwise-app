@@ -70,15 +70,21 @@ AsyncValue<List<HistoryItem>> filteredHistory(Ref ref, String status) {
 
   return ticketsAsync.whenData((tickets) {
     if (filter.isEmpty) return tickets;
-    
+
     return tickets.where((ticket) {
-      if (filter.minOdds != null && ticket.totalOdds < filter.minOdds!) return false;
-      if (filter.maxOdds != null && ticket.totalOdds > filter.maxOdds!) return false;
-      if (filter.minStake != null && (ticket.stake ?? 0) < filter.minStake!) return false;
-      if (filter.maxStake != null && (ticket.stake ?? 0) > filter.maxStake!) return false;
+      if (filter.minOdds != null && ticket.totalOdds < filter.minOdds!)
+        return false;
+      if (filter.maxOdds != null && ticket.totalOdds > filter.maxOdds!)
+        return false;
+      if (filter.minStake != null && (ticket.stake ?? 0) < filter.minStake!)
+        return false;
+      if (filter.maxStake != null && (ticket.stake ?? 0) > filter.maxStake!)
+        return false;
       if (filter.dateRange != null) {
         if (ticket.trackedAt.isBefore(filter.dateRange!.start) ||
-            ticket.trackedAt.isAfter(filter.dateRange!.end.add(const Duration(days: 1)))) {
+            ticket.trackedAt.isAfter(
+              filter.dateRange!.end.add(const Duration(days: 1)),
+            )) {
           return false;
         }
       }

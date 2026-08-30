@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_detail_controller.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/ticket_details_screen.dart';
+import 'package:slipwise/core/ui/error_state_widget.dart';
 
 class TicketDetailsLoaderScreen extends HookConsumerWidget {
   final String ticketId;
@@ -22,19 +23,13 @@ class TicketDetailsLoaderScreen extends HookConsumerWidget {
         ),
       ),
       error: (err, stack) => Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Could not load ticket details',
-                style: theme.textTheme.large,
-              ),
-              const SizedBox(height: 8),
-              Text(err.toString(), style: theme.textTheme.muted),
-            ],
-          ),
+        appBar: AppBar(
+          backgroundColor: theme.colorScheme.background,
+          elevation: 0,
+        ),
+        body: ErrorStateWidget(
+          error: err,
+          onRetry: () => ref.refresh(singleTicketProvider(ticketId)),
         ),
       ),
       data: (ticket) => TicketDetailsScreen(initialTicket: ticket),
