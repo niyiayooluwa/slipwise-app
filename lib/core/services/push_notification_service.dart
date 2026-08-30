@@ -7,6 +7,7 @@ import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:slipwise/router/router.dart';
 import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
 import 'package:slipwise/firebase_options.dart';
+import 'package:slipwise/core/storage/secure_storage.dart';
 
 part 'push_notification_service.g.dart';
 
@@ -38,11 +39,6 @@ class PushNotificationService {
 
   Future<void> initialize() async {
     try {
-      // 1. Initialize Firebase (Ensure google-services.json and firebase_options are configured in the project)
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-
       // Set the background messaging handler early on, as a logic basis
       FirebaseMessaging.onBackgroundMessage(
         _firebaseMessagingBackgroundHandler,
@@ -97,12 +93,17 @@ class PushNotificationService {
 
   void _registerDevice(String token) async {
     try {
+      final accessToken = await _ref.read(secureStorageProvider).getAccessToken();
+      if (accessToken == null) {
+        developer.log('User not logged in, skipping FCM token registration.', name: 'PushNotification');
+        return;
+      }
+
       developer.log('FCM Token: $token', name: 'PushNotification');
       final authRepo = _ref.read(authRepositoryProvider);
 
       // This endpoint is protected, so this will automatically upsert the device
-      // using the currently logged-in user's Bearer token. If the user is not logged in,
-      // the interceptor or remote might fail, which is fine (we'll ignore the error).
+      // using the currently logged-in user's Bearer token.
       await authRepo.registerDevice(token);
     } catch (e) {
       developer.log('Failed to register device: $e', name: 'PushNotification');

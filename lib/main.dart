@@ -10,6 +10,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:slipwise/core/services/push_notification_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:slipwise/firebase_options.dart';
 
 // Main entrypoint to the application
 Future<void> main() async {
@@ -18,6 +20,10 @@ Future<void> main() async {
 
   // Disable Google Fonts runtime fetching to force offline fonts
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final container = ProviderContainer();
   runApp(
