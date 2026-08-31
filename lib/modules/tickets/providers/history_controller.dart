@@ -32,6 +32,13 @@ class HistoryController extends _$HistoryController {
         _lastSyncTime = DateTime.tryParse(savedTime);
       }
 
+      final savedHasNext = syncBox.get('history_has_next_$status');
+      if (savedHasNext != null) {
+        _hasNextPage = savedHasNext == 'true';
+      } else {
+        _hasNextPage = false;
+      }
+
       // 2. Fire the Delta-Sync in the background without blocking the UI
       Future.microtask(() => fetchUpdates());
 
@@ -57,6 +64,10 @@ class HistoryController extends _$HistoryController {
         _lastSyncTime!.toIso8601String(),
       );
     }
+    syncBox.put(
+      'history_has_next_$_currentStatus',
+      _hasNextPage ? 'true' : 'false',
+    );
   }
 
   Future<List<HistoryItem>> _fetchTickets({

@@ -128,6 +128,15 @@ class AuthRemote {
     }
   }
 
+  Future<Either<Failure, dynamic>> getUserStats() async {
+    try {
+      final response = await _dio.get('/users/me/stats');
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    }
+  }
+
   Future<Either<Failure, MessageResponse>> forgotPassword(
     ForgotPasswordRequest request,
   ) async {

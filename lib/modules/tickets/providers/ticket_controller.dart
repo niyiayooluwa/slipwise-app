@@ -29,6 +29,13 @@ class TicketController extends _$TicketController {
         _lastSyncTime = DateTime.tryParse(savedTime);
       }
 
+      final savedHasNext = syncBox.get('ticket_has_next');
+      if (savedHasNext != null) {
+        _hasNextPage = savedHasNext == 'true';
+      } else {
+        _hasNextPage = false;
+      }
+
       // 2. Fire the Delta-Sync in the background without blocking the UI
       Future.microtask(() => fetchUpdates());
 
@@ -51,6 +58,7 @@ class TicketController extends _$TicketController {
     if (_lastSyncTime != null) {
       syncBox.put('ticket_last_sync', _lastSyncTime!.toIso8601String());
     }
+    syncBox.put('ticket_has_next', _hasNextPage ? 'true' : 'false');
   }
 
   Future<List<HistoryItem>> _fetchTickets({

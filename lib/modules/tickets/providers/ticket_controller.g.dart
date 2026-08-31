@@ -33,7 +33,7 @@ final class TicketControllerProvider
   TicketController create() => TicketController();
 }
 
-String _$ticketControllerHash() => r'017f6c7f670c207521067099ce2278fc330c7f34';
+String _$ticketControllerHash() => r'9046d47bef7b548f999628eb2645281116f1aa6d';
 
 abstract class _$TicketController extends $AsyncNotifier<List<HistoryItem>> {
   FutureOr<List<HistoryItem>> build();

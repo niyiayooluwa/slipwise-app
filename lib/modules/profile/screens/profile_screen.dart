@@ -1,328 +1,183 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:slipwise/core/providers/user_notifier.dart';
-import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
-import 'package:slipwise/modules/profile/screens/widgets/feedback_modal.dart';
-import 'package:slipwise/modules/profile/screens/widgets/personal_info_modal.dart';
-import 'package:slipwise/modules/profile/screens/widgets/security_modal.dart';
 
-class ProfileScreen extends HookConsumerWidget {
+// Temporary mock UserStats model.
+// Replace with the actual UserStats model when available.
+class UserStats {
+  final double netProfit;
+  final int totalTickets;
+  final int wonTickets;
+  final double totalStaked;
+  final double totalReturns;
+
+  const UserStats({
+    required this.netProfit,
+    required this.totalTickets,
+    required this.wonTickets,
+    required this.totalStaked,
+    required this.totalReturns,
+  });
+}
+
+// Temporary mock provider for UI testing.
+final mockUserStatsProvider = Provider<UserStats>((ref) {
+  return const UserStats(
+    netProfit: 1250.50,
+    totalTickets: 120,
+    wonTickets: 75,
+    totalStaked: 5000.0,
+    totalReturns: 6250.50,
+  );
+});
+
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ShadTheme.of(context);
-    final colorScheme = theme.colorScheme;
+    // In the future, this will watch the actual user stats provider
+    final stats = ref.watch(mockUserStatsProvider);
+    final theme = Theme.of(context);
 
-    final userAsync = ref.watch(userProvider);
-    final user = userAsync.value;
+    final isProfit = stats.netProfit >= 0;
+    final profitColor = isProfit ? Colors.green : Colors.red;
+    final winRate = stats.totalTickets > 0
+        ? stats.wonTickets / stats.totalTickets
+        : 0.0;
 
-    final username = user?.username ?? 'Guest';
-    final email = user?.email ?? '';
-    final profileUrl = 'https://api.dicebear.com/10.x/blobs/svg?seed=$username';
+    // To normalize for the progress bars, we can find the max of staked vs returns
+    final maxAmount = stats.totalStaked > stats.totalReturns
+        ? stats.totalStaked
+        : stats.totalReturns;
+    final stakedProgress = maxAmount > 0 ? stats.totalStaked / maxAmount : 0.0;
+    final returnsProgress = maxAmount > 0
+        ? stats.totalReturns / maxAmount
+        : 0.0;
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
-      body: CustomScrollView(
-        slivers: [
-          const GradientSliverAppBar(title: 'Profile'),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-
-                  // Profile Header Card
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: colorScheme.card,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: colorScheme.border),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 72,
-                          height: 72,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: colorScheme.primary.withValues(alpha: 0.5),
-                              width: 2,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(40),
-                            child: SvgPicture.network(
-                              profileUrl,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                username,
-                                style: theme.textTheme.h4.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.foreground,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                email,
-                                style: theme.textTheme.small.copyWith(
-                                  color: colorScheme.mutedForeground,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Menu Items
-                  _buildMenuGroup(
-                    theme: theme,
-                    colorScheme: colorScheme,
-                    title: 'Account',
-                    items: [
-                      _buildMenuItem(
-                        icon: LucideIcons.user,
-                        label: 'Personal Information',
-                        theme: theme,
-                        colorScheme: colorScheme,
-                        onTap: () => _showBottomSheetModal(
-                          context,
-                          'Personal Information',
-                          PersonalInfoModal(
-                            currentUsername: username,
-                            currentEmail: email,
-                          ),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        icon: LucideIcons.lock,
-                        label: 'Reset Password',
-                        theme: theme,
-                        colorScheme: colorScheme,
-                        onTap: () => _showBottomSheetModal(
-                          context,
-                          'Reset Password',
-                          SecurityModal(email: email),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        icon: LucideIcons.bell,
-                        label: 'Notifications',
-                        theme: theme,
-                        colorScheme: colorScheme,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  _buildMenuGroup(
-                    theme: theme,
-                    colorScheme: colorScheme,
-                    title: 'Support',
-                    items: [
-                      _buildMenuItem(
-                        icon: LucideIcons.helpCircle,
-                        label: 'Help & Support',
-                        theme: theme,
-                        colorScheme: colorScheme,
-                        onTap: () => _showBottomSheetModal(
-                          context,
-                          'Help & Support',
-                          const Center(
-                            child: Text('Contact us at 16tolu@gmail.com'),
-                          ),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        icon: LucideIcons.messageSquare,
-                        label: 'Submit Feedback',
-                        theme: theme,
-                        colorScheme: colorScheme,
-                        onTap: () => _showBottomSheetModal(
-                          context,
-                          'Anonymous Feedback',
-                          const FeedbackModal(),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Logout Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ShadButton.destructive(
-                      onPressed: () async {
-                        final confirmed = await showDialog<bool>(
-                          context: context,
-                          builder: (ctx) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ShadDialog(
-                              title: const Text('Log Out'),
-                              description: const Text(
-                                'Are you sure you want to log out of your account?',
-                              ),
-                              actions: [
-                                ShadButton.outline(
-                                  child: const Text('Cancel'),
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                ),
-                                ShadButton.destructive(
-                                  child: const Text('Log Out'),
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-
-                        if (confirmed == true) {
-                          await ref.read(userProvider.notifier).logout();
-                          if (context.mounted) {
-                            context.go('/get-started');
-                          }
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(LucideIcons.logOut, size: 18),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Log Out',
-                            style: theme.textTheme.small.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.destructiveForeground,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMenuGroup({
-    required String title,
-    required List<Widget> items,
-    required ShadThemeData theme,
-    required ShadColorScheme colorScheme,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 12, bottom: 12),
-          child: Text(
-            title.toUpperCase(),
-            style: theme.textTheme.small.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.mutedForeground,
-              letterSpacing: 1.2,
-              fontSize: 11,
-            ),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: colorScheme.card,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: colorScheme.border),
-          ),
-          child: Column(
-            children: items.asMap().entries.map((entry) {
-              final index = entry.key;
-              final item = entry.value;
-              final isLast = index == items.length - 1;
-
-              if (isLast) {
-                return item;
-              }
-
-              return Column(
-                children: [
-                  item,
-                  Padding(
-                    padding: const EdgeInsets.only(left: 56),
-                    child: Divider(height: 1, color: colorScheme.border),
-                  ),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    required ShadThemeData theme,
-    required ShadColorScheme colorScheme,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
+      appBar: AppBar(title: const Text('Analytics'), centerTitle: true),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: colorScheme.secondary,
-                borderRadius: BorderRadius.circular(10),
+            // 1. Hero Metric
+            Text(
+              'Net Profit',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                fontWeight: FontWeight.w500,
               ),
-              child: Icon(icon, size: 18, color: colorScheme.foreground),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                label,
-                style: theme.textTheme.small.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.foreground,
+            const SizedBox(height: 8),
+            Text(
+              '${isProfit ? '+' : '-'}\$${stats.netProfit.abs().toStringAsFixed(2)}',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.displayMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: profitColor,
+              ),
+            ),
+
+            const SizedBox(height: 48),
+
+            // 2. Win/Loss Ring
+            Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 160,
+                    height: 160,
+                    child: CircularProgressIndicator(
+                      value: winRate,
+                      strokeWidth: 14,
+                      backgroundColor: theme.colorScheme.onSurface.withOpacity(
+                        0.1,
+                      ),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        theme.colorScheme.primary,
+                      ),
+                      strokeCap: StrokeCap.round,
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${(winRate * 100).toStringAsFixed(1)}%',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Win Rate',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Won ${stats.wonTickets} of ${stats.totalTickets} tickets',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+            ),
+
+            const SizedBox(height: 48),
+
+            // 3. Total Staked vs Total Returns visual
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withOpacity(
+                  0.4,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withOpacity(0.2),
                 ),
               ),
-            ),
-            Icon(
-              LucideIcons.chevronRight,
-              size: 18,
-              color: colorScheme.mutedForeground,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Performance Overview',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Staked Row
+                  _buildStatBar(
+                    context: context,
+                    label: 'Total Staked',
+                    value: '\$${stats.totalStaked.toStringAsFixed(2)}',
+                    progress: stakedProgress,
+                    color: Colors.blueAccent,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Returns Row
+                  _buildStatBar(
+                    context: context,
+                    label: 'Total Returns',
+                    value: '\$${stats.totalReturns.toStringAsFixed(2)}',
+                    progress: returnsProgress,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -330,89 +185,45 @@ class ProfileScreen extends HookConsumerWidget {
     );
   }
 
-  void _showBottomSheetModal(
-    BuildContext context,
-    String title,
-    Widget content,
-  ) {
-    final theme = ShadTheme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              color: colorScheme.background,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(24),
-              ),
-              border: Border.all(color: colorScheme.border),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Drag Handle
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 12),
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: colorScheme.muted,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  // Header
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          title,
-                          style: theme.textTheme.h4.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.foreground,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            LucideIcons.x,
-                            color: colorScheme.mutedForeground,
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(height: 1, color: colorScheme.border),
-                  // Content
-                  Flexible(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
-                      child: content,
-                    ),
-                  ),
-                ],
+  Widget _buildStatBar({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required double progress,
+    required Color color,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
               ),
             ),
+            Text(
+              value,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: LinearProgressIndicator(
+            value: progress,
+            backgroundColor: theme.colorScheme.onSurface.withOpacity(0.1),
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+            minHeight: 10,
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
