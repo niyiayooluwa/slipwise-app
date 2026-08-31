@@ -1,3 +1,4 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/repositories/ticket_repository.dart';
@@ -16,7 +17,46 @@ class HistoryController extends _$HistoryController {
   @override
   Future<List<HistoryItem>> build(String status) async {
     _currentStatus = status;
+
+    // 1. Load instantly from Offline Cache
+    final cacheBox = Hive.box<HistoryItem>('tickets_cache_$status');
+    final syncBox = Hive.box<String>('sync_cache');
+
+    final cachedTickets = cacheBox.values.toList();
+    if (cachedTickets.isNotEmpty) {
+      _allTickets.clear();
+      _allTickets.addAll(cachedTickets);
+
+      final savedTime = syncBox.get('history_last_sync_$status');
+      if (savedTime != null) {
+        _lastSyncTime = DateTime.tryParse(savedTime);
+      }
+
+      // 2. Fire the Delta-Sync in the background without blocking the UI
+      Future.microtask(() => fetchUpdates());
+
+      return List<HistoryItem>.from(_allTickets);
+    }
+
+    // 3. Initial Load if no cache exists
     return _fetchTickets(page: 1, status: status);
+  }
+
+  void _saveToCache() {
+    final cacheBox = Hive.box<HistoryItem>('tickets_cache_$_currentStatus');
+    final syncBox = Hive.box<String>('sync_cache');
+
+    // Overwrite box safely
+    cacheBox.clear().then((_) {
+      cacheBox.addAll(_allTickets);
+    });
+
+    if (_lastSyncTime != null) {
+      syncBox.put(
+        'history_last_sync_$_currentStatus',
+        _lastSyncTime!.toIso8601String(),
+      );
+    }
   }
 
   Future<List<HistoryItem>> _fetchTickets({
@@ -41,6 +81,9 @@ class HistoryController extends _$HistoryController {
           _allTickets
             ..clear()
             ..addAll(response.data);
+
+          // Only sync cache for page 1 to ensure offline shows freshest first 20 items
+          _saveToCache();
         } else {
           _allTickets.addAll(response.data);
         }
@@ -93,7 +136,13 @@ class HistoryController extends _$HistoryController {
             state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
           }
         }
+
+        // Update sync time
         _lastSyncTime = DateTime.now().toUtc();
+
+        // Save merged updates and new sync time to cache
+        _saveToCache();
+
         return hasData;
       },
     );

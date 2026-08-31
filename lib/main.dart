@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/storage/hive_adapters.dart';
+import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/router/router.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -17,6 +20,16 @@ import 'package:slipwise/firebase_options.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  // Initialize Hive for insanely fast offline caching
+  await Hive.initFlutter();
+  Hive.registerAdapter(HistoryItemAdapter());
+  // Open cache boxes synchronously on boot
+  await Hive.openBox<HistoryItem>('tickets_cache_ALL');
+  await Hive.openBox<HistoryItem>('tickets_cache_PENDING');
+  await Hive.openBox<HistoryItem>('tickets_cache_WON');
+  await Hive.openBox<HistoryItem>('tickets_cache_LOST');
+  await Hive.openBox<String>('sync_cache'); // for storing lastSyncTime strings
 
   // Disable Google Fonts runtime fetching to force offline fonts
   GoogleFonts.config.allowRuntimeFetching = false;

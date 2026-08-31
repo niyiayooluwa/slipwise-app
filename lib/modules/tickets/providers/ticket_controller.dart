@@ -1,3 +1,4 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/repositories/ticket_repository.dart';
@@ -14,8 +15,42 @@ class TicketController extends _$TicketController {
 
   @override
   Future<List<HistoryItem>> build() async {
+    // 1. Load instantly from Offline Cache
+    final cacheBox = Hive.box<HistoryItem>('tickets_cache_ALL');
+    final syncBox = Hive.box<String>('sync_cache');
+
+    final cachedTickets = cacheBox.values.toList();
+    if (cachedTickets.isNotEmpty) {
+      _allTickets.clear();
+      _allTickets.addAll(cachedTickets);
+
+      final savedTime = syncBox.get('ticket_last_sync');
+      if (savedTime != null) {
+        _lastSyncTime = DateTime.tryParse(savedTime);
+      }
+
+      // 2. Fire the Delta-Sync in the background without blocking the UI
+      Future.microtask(() => fetchUpdates());
+
+      return List<HistoryItem>.from(_allTickets);
+    }
+
     // Initial Load
     return _fetchTickets(page: 1);
+  }
+
+  void _saveToCache() {
+    final cacheBox = Hive.box<HistoryItem>('tickets_cache_ALL');
+    final syncBox = Hive.box<String>('sync_cache');
+
+    // Overwrite box safely
+    cacheBox.clear().then((_) {
+      cacheBox.addAll(_allTickets);
+    });
+
+    if (_lastSyncTime != null) {
+      syncBox.put('ticket_last_sync', _lastSyncTime!.toIso8601String());
+    }
   }
 
   Future<List<HistoryItem>> _fetchTickets({
@@ -44,6 +79,9 @@ class TicketController extends _$TicketController {
           _allTickets
             ..clear()
             ..addAll(response.data);
+
+          // Save to cache for offline first load
+          _saveToCache();
         } else {
           _allTickets.addAll(response.data);
         }
@@ -96,6 +134,10 @@ class TicketController extends _$TicketController {
           }
         }
         _lastSyncTime = DateTime.now().toUtc();
+
+        // Save merged list to cache
+        _saveToCache();
+
         return hasData;
       },
     );
