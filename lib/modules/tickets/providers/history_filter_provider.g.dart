@@ -128,7 +128,7 @@ final class FilteredHistoryProvider
   }
 }
 
-String _$filteredHistoryHash() => r'0d92aa473178eba146414b742d632fab5f1ac1b9';
+String _$filteredHistoryHash() => r'ea6a8b489c26429977647f0b2fc674cc03a9ce0d';
 
 final class FilteredHistoryFamily extends $Family
     with $FunctionalFamilyOverride<AsyncValue<List<HistoryItem>>, String> {

@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/providers/user_notifier.dart';
 import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
+import 'package:slipwise/modules/profile/providers/user_stats_provider.dart';
 import 'package:slipwise/modules/profile/screens/widgets/feedback_modal.dart';
 import 'package:slipwise/modules/profile/screens/widgets/personal_info_modal.dart';
 import 'package:slipwise/modules/profile/screens/widgets/security_modal.dart';
@@ -91,6 +92,11 @@ class ProfileScreen extends HookConsumerWidget {
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 16),
+
+                  // Stats Card
+                  _buildStatsCard(theme, colorScheme, ref),
 
                   const SizedBox(height: 32),
 
@@ -231,6 +237,138 @@ class ProfileScreen extends HookConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatsCard(
+    ShadThemeData theme,
+    ShadColorScheme colorScheme,
+    WidgetRef ref,
+  ) {
+    final statsAsync = ref.watch(userStatsProvider);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        color: colorScheme.card,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.border),
+      ),
+      child: statsAsync.when(
+        loading: () => const SizedBox(
+          height: 72,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+        error: (_, __) => const SizedBox.shrink(),
+        data: (stats) {
+          final isProfit = stats.netProfit >= 0;
+          final profitColor = isProfit
+              ? const Color(0xFF22c55e)
+              : const Color(0xFFef4444);
+
+          return Column(
+            children: [
+              // Net profit headline
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Net Profit',
+                    style: theme.textTheme.small.copyWith(
+                      color: colorScheme.mutedForeground,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    '${isProfit ? '+' : ''}₦${stats.netProfit.toStringAsFixed(2)}',
+                    style: theme.textTheme.large.copyWith(
+                      color: profitColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+              Divider(height: 1, color: colorScheme.border),
+              const SizedBox(height: 16),
+
+              // 4-stat grid
+              Row(
+                children: [
+                  _buildStatCell(
+                    'Total',
+                    '${stats.totalTickets}',
+                    theme,
+                    colorScheme,
+                  ),
+                  _buildStatDivider(colorScheme),
+                  _buildStatCell(
+                    'Won',
+                    '${stats.wonTickets}',
+                    theme,
+                    colorScheme,
+                    color: const Color(0xFF22c55e),
+                  ),
+                  _buildStatDivider(colorScheme),
+                  _buildStatCell(
+                    'Lost',
+                    '${stats.lostTickets}',
+                    theme,
+                    colorScheme,
+                    color: const Color(0xFFef4444),
+                  ),
+                  _buildStatDivider(colorScheme),
+                  _buildStatCell(
+                    'Pending',
+                    '${stats.pendingTickets}',
+                    theme,
+                    colorScheme,
+                    color: colorScheme.primary,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatCell(
+    String label,
+    String value,
+    ShadThemeData theme,
+    ShadColorScheme colorScheme, {
+    Color? color,
+  }) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: theme.textTheme.large.copyWith(
+              fontWeight: FontWeight.bold,
+              color: color ?? colorScheme.foreground,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: theme.textTheme.muted.copyWith(
+              fontSize: 11,
+              color: colorScheme.mutedForeground,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatDivider(ShadColorScheme colorScheme) {
+    return SizedBox(
+      height: 36,
+      child: VerticalDivider(width: 1, color: colorScheme.border),
     );
   }
 
