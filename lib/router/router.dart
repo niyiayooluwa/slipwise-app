@@ -142,12 +142,14 @@ GoRouter router(Ref ref) {
               return TicketDetailsScreen(
                 initialTicket: state.extra as HistoryItem,
               );
-            } else if (state.extra is Map<String, dynamic>) {
-              final extra = state.extra as Map<String, dynamic>;
-              return TicketDetailsScreen(
-                initialTicket: extra['ticket'] as HistoryItem,
-                heroTag: extra['heroTag'] as String?,
-              );
+            } else if (state.extra is Map) {
+              final extra = state.extra as Map;
+              if (extra.containsKey('ticket') && extra['ticket'] != null) {
+                return TicketDetailsScreen(
+                  initialTicket: extra['ticket'] as HistoryItem,
+                  heroTag: extra['heroTag'] as String?,
+                );
+              }
             }
           }
           {
