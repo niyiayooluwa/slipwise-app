@@ -509,29 +509,25 @@ class TicketDetailsScreen extends HookConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            selection.homeTeam,
-                            textAlign: TextAlign.right,
+                    // Teams and Score
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${selection.homeTeam}   ',
                             style: theme.textTheme.small.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: colorScheme.foreground,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            selection.matchStatus == 'NOT_STARTED'
+                          TextSpan(
+                            text: selection.matchStatus == 'NOT_STARTED'
                                 ? 'vs'
                                 : '${selection.homeScore} - ${selection.awayScore}',
                             style: TextStyle(
                               fontSize: selection.matchStatus == 'NOT_STARTED'
                                   ? 12
-                                  : 20,
+                                  : 18,
                               fontStyle: selection.matchStatus == 'NOT_STARTED'
                                   ? FontStyle.italic
                                   : FontStyle.normal,
@@ -541,17 +537,15 @@ class TicketDetailsScreen extends HookConsumerWidget {
                                   : colorScheme.foreground,
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            selection.awayTeam,
-                            textAlign: TextAlign.left,
+                          TextSpan(
+                            text: '   ${selection.awayTeam}',
                             style: theme.textTheme.small.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: colorScheme.foreground,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 16),
                     const Divider(height: 1),
