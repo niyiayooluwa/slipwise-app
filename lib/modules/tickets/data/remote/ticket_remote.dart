@@ -25,11 +25,17 @@ class TicketRemote {
     int page = 1,
     int limit = 20,
     String? status,
+    String? since,
   }) async {
     try {
       final response = await _dio.get(
         '/v1/tickets',
-        queryParameters: {'page': page, 'limit': limit, 'status': ?status},
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          if (status != null) 'status': status,
+          if (since != null) 'since': since,
+        },
       );
       return Right(PaginatedHistoryResponse.fromJson(response.data));
     } on DioException catch (e) {

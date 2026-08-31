@@ -22,8 +22,14 @@ class TicketRepository {
     int page = 1,
     int limit = 20,
     String? status,
+    String? since,
   }) async {
-    return _ticketRemote.getTickets(page: page, limit: limit, status: status);
+    return _ticketRemote.getTickets(
+      page: page,
+      limit: limit,
+      status: status,
+      since: since,
+    );
   }
 
   Future<Either<Failure, MessageResponse>> deleteTicket(String id) async {

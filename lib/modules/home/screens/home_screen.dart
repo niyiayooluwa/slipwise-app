@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -57,6 +58,14 @@ class HomeScreen extends HookConsumerWidget {
       scrollController.addListener(listener);
       return () => scrollController.removeListener(listener);
     }, [scrollController]);
+
+    // Setup smart polling timer
+    useEffect(() {
+      final timer = Timer.periodic(const Duration(seconds: 10), (_) {
+        ref.read(ticketControllerProvider.notifier).fetchUpdates();
+      });
+      return timer.cancel;
+    }, const []);
 
     final userAsync = ref.watch(userProvider);
     final unreadCount =

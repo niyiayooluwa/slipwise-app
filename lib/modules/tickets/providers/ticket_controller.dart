@@ -10,6 +10,7 @@ class TicketController extends _$TicketController {
   final List<HistoryItem> _allTickets = [];
   bool _hasNextPage = true;
   bool _isLoadingMore = false;
+  DateTime? _lastSyncTime;
 
   @override
   Future<List<HistoryItem>> build() async {
@@ -37,6 +38,7 @@ class TicketController extends _$TicketController {
       ifRight: (response) {
         _currentPage = response.meta.page;
         _hasNextPage = response.meta.hasNext;
+        _lastSyncTime = DateTime.now().toUtc();
 
         if (page == 1) {
           _allTickets
@@ -47,6 +49,44 @@ class TicketController extends _$TicketController {
         }
 
         return List<HistoryItem>.from(_allTickets);
+      },
+    );
+  }
+
+  Future<void> fetchUpdates() async {
+    if (_lastSyncTime == null) return;
+
+    final sinceIso = _lastSyncTime!.toUtc().toIso8601String();
+    final repository = ref.read(ticketRepositoryProvider);
+
+    final result = await repository.getTickets(
+      page: 1,
+      limit: 50,
+      since: sinceIso,
+    );
+
+    result.fold(
+      ifLeft: (_) {}, // Silently ignore polling errors
+      ifRight: (response) {
+        if (response.data.isNotEmpty) {
+          bool updated = false;
+          for (final updatedTicket in response.data) {
+            final index = _allTickets.indexWhere(
+              (t) => t.ticketId == updatedTicket.ticketId,
+            );
+            if (index != -1) {
+              _allTickets[index] = updatedTicket;
+              updated = true;
+            } else {
+              _allTickets.insert(0, updatedTicket);
+              updated = true;
+            }
+          }
+          if (updated) {
+            state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
+          }
+        }
+        _lastSyncTime = DateTime.now().toUtc();
       },
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -173,6 +174,13 @@ class _TicketList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ticketsAsync = ref.watch(filteredHistoryProvider(status));
     final controller = ref.watch(historyControllerProvider(status).notifier);
+
+    useEffect(() {
+      final timer = Timer.periodic(const Duration(seconds: 10), (_) {
+        controller.fetchUpdates();
+      });
+      return timer.cancel;
+    }, [controller]);
 
     return ticketsAsync.when(
       data: (tickets) {
