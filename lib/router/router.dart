@@ -144,10 +144,35 @@ GoRouter router(Ref ref) {
               );
             } else if (state.extra is Map) {
               final extra = state.extra as Map;
+
               if (extra.containsKey('ticket') && extra['ticket'] != null) {
+                // It's the map from history_screen.dart {'ticket': ..., 'heroTag': ...}
+                final ticketData = extra['ticket'];
+
+                HistoryItem ticket;
+                if (ticketData is HistoryItem) {
+                  ticket = ticketData;
+                } else if (ticketData is Map<String, dynamic>) {
+                  // GoRouter state restoration converts objects to JSON maps
+                  ticket = HistoryItem.fromJson(ticketData);
+                } else {
+                  // Fallback for weird dynamic casts
+                  ticket = HistoryItem.fromJson(
+                    Map<String, dynamic>.from(ticketData as Map),
+                  );
+                }
+
                 return TicketDetailsScreen(
-                  initialTicket: extra['ticket'] as HistoryItem,
+                  initialTicket: ticket,
                   heroTag: extra['heroTag'] as String?,
+                );
+              } else if (extra.containsKey('ticket_id') ||
+                  extra.containsKey('overall_status')) {
+                // The entire extra object was serialized directly from a HistoryItem (home_screen.dart)
+                return TicketDetailsScreen(
+                  initialTicket: HistoryItem.fromJson(
+                    Map<String, dynamic>.from(extra),
+                  ),
                 );
               }
             }
