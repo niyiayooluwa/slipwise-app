@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:slipwise/modules/profile/screens/legal_document_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/providers/user_notifier.dart';
@@ -171,6 +172,50 @@ class ProfileScreen extends HookConsumerWidget {
                           'Anonymous Feedback',
                           const FeedbackModal(),
                         ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  _buildMenuGroup(
+                    title: 'Legal',
+                    theme: theme,
+                    colorScheme: colorScheme,
+                    items: [
+                      _buildMenuItem(
+                        icon: LucideIcons.fileText,
+                        label: 'Terms of Service',
+                        theme: theme,
+                        colorScheme: colorScheme,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LegalDocumentScreen(
+                                title: 'Terms of Service',
+                                assetPath: 'assets/legal/terms_of_service.md',
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      _buildMenuItem(
+                        icon: LucideIcons.shieldCheck,
+                        label: 'Privacy Policy',
+                        theme: theme,
+                        colorScheme: colorScheme,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LegalDocumentScreen(
+                                title: 'Privacy Policy',
+                                assetPath: 'assets/legal/privacy_policy.md',
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
