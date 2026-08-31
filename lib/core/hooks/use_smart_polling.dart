@@ -33,6 +33,11 @@ void useSmartPolling({
       return;
     }
 
+    // Reset backoff to fast polling when app is resumed
+    if (currentState == AppLifecycleState.resumed) {
+      emptyResponsesCount.value = 0;
+    }
+
     // Exponential Backoff calculation
     int delaySeconds = 10;
     if (emptyResponsesCount.value == 1) {

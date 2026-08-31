@@ -10,7 +10,7 @@ import 'package:slipwise/core/ui/theme_gradients.dart';
 import 'package:slipwise/core/ui/empty_state_widget.dart';
 import 'package:slipwise/core/ui/error_state_widget.dart';
 import 'package:slipwise/modules/tickets/providers/filtered_tickets_provider.dart';
-import 'package:slipwise/modules/tickets/providers/ticket_controller.dart';
+import 'package:slipwise/modules/tickets/providers/history_controller.dart';
 import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
 import 'package:slipwise/core/hooks/use_smart_polling.dart';
 
@@ -22,13 +22,13 @@ class HomeScreen extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final ticketAsync = ref.watch(ticketControllerProvider);
+    final ticketAsync = ref.watch(historyControllerProvider('ALL'));
     final pendingCount = ref.watch(pendingTicketsCountProvider);
 
     final scrollController = useScrollController();
 
     // Show errors as SnackBar
-    ref.listen(ticketControllerProvider, (previous, next) {
+    ref.listen(historyControllerProvider('ALL'), (previous, next) {
       next.when(
         error: (error, stack) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -48,7 +48,7 @@ class HomeScreen extends HookConsumerWidget {
       void listener() {
         if (scrollController.position.pixels >=
             scrollController.position.maxScrollExtent - 200) {
-          final controller = ref.read(ticketControllerProvider.notifier);
+          final controller = ref.read(historyControllerProvider('ALL').notifier);
           if (controller.hasMorePages && !controller.isLoadingMore) {
             controller.loadMore();
           }
@@ -66,7 +66,7 @@ class HomeScreen extends HookConsumerWidget {
     // Setup smart polling timer
     useSmartPolling(
       fetchUpdates: () =>
-          ref.read(ticketControllerProvider.notifier).fetchUpdates(),
+          ref.read(historyControllerProvider('ALL').notifier).fetchUpdates(),
       shouldPoll: shouldPoll,
     );
 
@@ -273,7 +273,7 @@ class HomeScreen extends HookConsumerWidget {
                   child: RefreshIndicator(
                     onRefresh: () async {
                       await ref
-                          .read(ticketControllerProvider.notifier)
+                          .read(historyControllerProvider('ALL').notifier)
                           .refresh();
                     },
                     color: colorScheme.primary,
@@ -301,7 +301,7 @@ class HomeScreen extends HookConsumerWidget {
                           itemBuilder: (context, index) {
                             if (index == tickets.length) {
                               final controller = ref.watch(
-                                ticketControllerProvider.notifier,
+                                historyControllerProvider('ALL').notifier,
                               );
                               return controller.hasMorePages
                                   ? Padding(
@@ -348,7 +348,7 @@ class HomeScreen extends HookConsumerWidget {
                       error: (error, stack) => ErrorStateWidget(
                         error: error,
                         onRetry: () {
-                          ref.invalidate(ticketControllerProvider);
+                          ref.invalidate(historyControllerProvider('ALL'));
                         },
                       ),
                     ),

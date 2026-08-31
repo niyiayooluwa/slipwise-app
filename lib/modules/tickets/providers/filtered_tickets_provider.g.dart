@@ -54,7 +54,7 @@ final class PendingTicketsProvider
   }
 }
 
-String _$pendingTicketsHash() => r'de97f5e3ae36bd7ac2d16430ad5f4d3b3fdc1734';
+String _$pendingTicketsHash() => r'6632ac4054376cf24774ea68d5bea550ce447620';
 
 @ProviderFor(wonTickets)
 const wonTicketsProvider = WonTicketsProvider._();
@@ -101,7 +101,7 @@ final class WonTicketsProvider
   }
 }
 
-String _$wonTicketsHash() => r'3a144f11bfa95823ce387fb87e7ae8aa1bdb3608';
+String _$wonTicketsHash() => r'd9a39c238638286ac431d08c0cda35cb83f50612';
 
 @ProviderFor(pendingTicketsCount)
 const pendingTicketsCountProvider = PendingTicketsCountProvider._();

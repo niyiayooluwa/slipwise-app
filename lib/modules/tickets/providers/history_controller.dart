@@ -105,14 +105,10 @@ class HistoryController extends _$HistoryController {
   }
 
   Future<bool> fetchUpdates() async {
-    if (_lastSyncTime == null) return false;
-
-    // Rule 3: Conditional Polling (Only poll if there are active tickets)
-    final hasActiveTickets = _allTickets.any(
-      (t) => t.overallStatus == 'pending',
-    );
-    if (!hasActiveTickets) {
-      return false; // Don't even hit the network
+    // If no last sync time, fallback to a full fetch to populate cache
+    if (_lastSyncTime == null) {
+      await _fetchTickets(page: 1, status: _currentStatus);
+      return true; // We fetched data
     }
 
     final sinceIso = _lastSyncTime!.toUtc().toIso8601String();

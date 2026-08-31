@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/tickets/data/models/preview.dart';
 import 'package:slipwise/modules/tickets/data/models/track.dart';
+import 'package:slipwise/modules/tickets/providers/history_controller.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_action_controller.dart';
-import 'package:slipwise/modules/tickets/providers/ticket_controller.dart';
 
 part 'track_form_controller.g.dart';
 
@@ -110,7 +110,7 @@ class TrackFormController extends _$TrackFormController {
 
       if (response != null) {
         state = state.copyWith(isTracking: false, isSuccess: true);
-        ref.invalidate(ticketControllerProvider);
+        ref.invalidate(historyControllerProvider('ALL'));
       } else {
         state = state.copyWith(isTracking: false);
       }
