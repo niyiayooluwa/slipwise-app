@@ -130,7 +130,7 @@ class AuthRemote {
 
   Future<Either<Failure, dynamic>> getUserStats() async {
     try {
-      final response = await _dio.get('/users/me/stats');
+      final response = await _dio.get('/v1/users/me/stats');
       return Right(response.data);
     } on DioException catch (e) {
       return Left(mapDioException(e));

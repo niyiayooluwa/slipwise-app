@@ -255,11 +255,8 @@ class ProfileScreen extends HookConsumerWidget {
         border: Border.all(color: colorScheme.border),
       ),
       child: statsAsync.when(
-        loading: () => const SizedBox(
-          height: 72,
-          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-        ),
-        error: (e, _) => const SizedBox.shrink(),
+        loading: () => _buildStatsSkeleton(theme, colorScheme),
+        error: (e, _) => _buildStatsFallback(theme, colorScheme),
         data: (stats) {
           final isProfit = stats.netProfit >= 0;
           final profitColor = isProfit
@@ -332,6 +329,132 @@ class ProfileScreen extends HookConsumerWidget {
           );
         },
       ),
+    );
+  }
+
+  // Reusable shimmer block
+  Widget _shimmerBox(
+    ShadColorScheme colorScheme, {
+    double width = double.infinity,
+    double height = 14,
+  }) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.3, end: 0.9),
+      duration: const Duration(milliseconds: 900),
+      builder: (_, value, _) => AnimatedOpacity(
+        opacity: value,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: colorScheme.muted,
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatsSkeleton(ShadThemeData theme, ShadColorScheme colorScheme) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _shimmerBox(colorScheme, width: 64, height: 13),
+            _shimmerBox(colorScheme, width: 80, height: 16),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Divider(height: 1, color: colorScheme.border),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: _shimmerBox(colorScheme, width: 32, height: 20),
+              ),
+            ),
+            _buildStatDivider(colorScheme),
+            Expanded(
+              child: Center(
+                child: _shimmerBox(colorScheme, width: 32, height: 20),
+              ),
+            ),
+            _buildStatDivider(colorScheme),
+            Expanded(
+              child: Center(
+                child: _shimmerBox(colorScheme, width: 32, height: 20),
+              ),
+            ),
+            _buildStatDivider(colorScheme),
+            Expanded(
+              child: Center(
+                child: _shimmerBox(colorScheme, width: 32, height: 20),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatsFallback(ShadThemeData theme, ShadColorScheme colorScheme) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Net Profit',
+              style: theme.textTheme.small.copyWith(
+                color: colorScheme.mutedForeground,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              '-',
+              style: theme.textTheme.large.copyWith(
+                color: colorScheme.mutedForeground,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Divider(height: 1, color: colorScheme.border),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            _buildStatCell('Total', '-', theme, colorScheme),
+            _buildStatDivider(colorScheme),
+            _buildStatCell(
+              'Won',
+              '-',
+              theme,
+              colorScheme,
+              color: const Color(0xFF22c55e),
+            ),
+            _buildStatDivider(colorScheme),
+            _buildStatCell(
+              'Lost',
+              '-',
+              theme,
+              colorScheme,
+              color: const Color(0xFFef4444),
+            ),
+            _buildStatDivider(colorScheme),
+            _buildStatCell(
+              'Pending',
+              '-',
+              theme,
+              colorScheme,
+              color: colorScheme.primary,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
