@@ -13,6 +13,7 @@ import 'package:slipwise/core/ui/error_state_widget.dart';
 import 'package:slipwise/modules/tickets/providers/filtered_tickets_provider.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_controller.dart';
 import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
+import 'package:slipwise/core/hooks/use_smart_polling.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
@@ -59,13 +60,16 @@ class HomeScreen extends HookConsumerWidget {
       return () => scrollController.removeListener(listener);
     }, [scrollController]);
 
+    // Conditional Polling: Only poll if there are pending/live tickets
+    final shouldPoll =
+        ticketAsync.value?.any((t) => t.overallStatus == 'pending') ?? false;
+
     // Setup smart polling timer
-    useEffect(() {
-      final timer = Timer.periodic(const Duration(seconds: 10), (_) {
-        ref.read(ticketControllerProvider.notifier).fetchUpdates();
-      });
-      return timer.cancel;
-    }, const []);
+    useSmartPolling(
+      fetchUpdates: () =>
+          ref.read(ticketControllerProvider.notifier).fetchUpdates(),
+      shouldPoll: shouldPoll,
+    );
 
     final userAsync = ref.watch(userProvider);
     final unreadCount =

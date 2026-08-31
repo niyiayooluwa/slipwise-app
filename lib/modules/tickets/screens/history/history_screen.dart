@@ -12,6 +12,7 @@ import 'package:slipwise/modules/tickets/screens/history/widgets/history_filter_
 import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
 import 'package:slipwise/core/ui/empty_state_widget.dart';
 import 'package:slipwise/core/ui/error_state_widget.dart';
+import 'package:slipwise/core/hooks/use_smart_polling.dart';
 
 class HistoryScreen extends HookConsumerWidget {
   const HistoryScreen({super.key});
@@ -175,12 +176,14 @@ class _TicketList extends HookConsumerWidget {
     final ticketsAsync = ref.watch(filteredHistoryProvider(status));
     final controller = ref.watch(historyControllerProvider(status).notifier);
 
-    useEffect(() {
-      final timer = Timer.periodic(const Duration(seconds: 10), (_) {
-        controller.fetchUpdates();
-      });
-      return timer.cancel;
-    }, [controller]);
+    // Conditional Polling: Only poll if there are pending/live tickets
+    final shouldPoll =
+        ticketsAsync.value?.any((t) => t.overallStatus == 'pending') ?? false;
+
+    useSmartPolling(
+      fetchUpdates: () => controller.fetchUpdates(),
+      shouldPoll: shouldPoll,
+    );
 
     return ticketsAsync.when(
       data: (tickets) {

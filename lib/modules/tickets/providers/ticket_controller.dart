@@ -53,8 +53,16 @@ class TicketController extends _$TicketController {
     );
   }
 
-  Future<void> fetchUpdates() async {
-    if (_lastSyncTime == null) return;
+  Future<bool> fetchUpdates() async {
+    if (_lastSyncTime == null) return false;
+
+    // Rule 3: Conditional Polling (Only poll if there are active tickets)
+    final hasActiveTickets = _allTickets.any(
+      (t) => t.overallStatus == 'pending',
+    );
+    if (!hasActiveTickets) {
+      return false; // Don't even hit the network
+    }
 
     final sinceIso = _lastSyncTime!.toUtc().toIso8601String();
     final repository = ref.read(ticketRepositoryProvider);
@@ -65,10 +73,11 @@ class TicketController extends _$TicketController {
       since: sinceIso,
     );
 
-    result.fold(
-      ifLeft: (_) {}, // Silently ignore polling errors
+    return result.fold(
+      ifLeft: (_) => false, // Silently ignore polling errors and treat as empty
       ifRight: (response) {
-        if (response.data.isNotEmpty) {
+        bool hasData = response.data.isNotEmpty;
+        if (hasData) {
           bool updated = false;
           for (final updatedTicket in response.data) {
             final index = _allTickets.indexWhere(
@@ -87,6 +96,7 @@ class TicketController extends _$TicketController {
           }
         }
         _lastSyncTime = DateTime.now().toUtc();
+        return hasData;
       },
     );
   }
