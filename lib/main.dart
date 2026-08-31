@@ -84,6 +84,7 @@ class MainApp extends ConsumerWidget {
 
     return ShadApp.router(
       title: 'SlipWise',
+      debugShowCheckedModeBanner: true,
       //themeMode: ThemeMode.system,
       theme: ShadThemeData(
         // Set the current color scheme to ShadCn's Dark green
