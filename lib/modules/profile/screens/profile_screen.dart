@@ -259,7 +259,7 @@ class ProfileScreen extends HookConsumerWidget {
           height: 72,
           child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
         ),
-        error: (_, __) => const SizedBox.shrink(),
+        error: (e, _) => const SizedBox.shrink(),
         data: (stats) {
           final isProfit = stats.netProfit >= 0;
           final profitColor = isProfit
