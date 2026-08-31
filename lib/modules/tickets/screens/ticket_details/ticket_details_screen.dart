@@ -442,14 +442,62 @@ class TicketDetailsScreen extends HookConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                'vs',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
-                                  color: colorScheme.mutedForeground,
+                              if (selection.matchStatus == 'NOT_STARTED')
+                                Text(
+                                  'vs',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                    color: colorScheme.mutedForeground,
+                                  ),
+                                )
+                              else
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      '${selection.homeScore} - ${selection.awayScore}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: colorScheme.foreground,
+                                      ),
+                                    ),
+                                    if (selection.matchStatus == 'LIVE') ...[
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red.withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 6,
+                                              height: 6,
+                                              decoration: const BoxDecoration(
+                                                color: Colors.red,
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              selection.liveTime ?? 'LIVE',
+                                              style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
-                              ),
                               const SizedBox(height: 4),
                               Text(
                                 selection.awayTeam,

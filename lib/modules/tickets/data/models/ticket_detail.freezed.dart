@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TicketDetailItem {
 
-@JsonKey(name: 'away_team') String get awayTeam;@JsonKey(name: 'home_team') String get homeTeam;@JsonKey(name: 'market_spec') String? get marketSpec;@JsonKey(name: 'market_type') String get marketType;@JsonKey(name: 'match_status') String get matchStatus; double get odds; String get selection;@JsonKey(name: 'selection_id') String get selectionId;@JsonKey(name: 'selection_status') String get selectionStatus;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'display_selection') String? get displaySelection;
+@JsonKey(name: 'away_team') String get awayTeam;@JsonKey(name: 'home_team') String get homeTeam;@JsonKey(name: 'market_spec') String? get marketSpec;@JsonKey(name: 'market_type') String get marketType;@JsonKey(name: 'match_status') String get matchStatus;@JsonKey(name: 'home_score', defaultValue: 0) int get homeScore;@JsonKey(name: 'away_score', defaultValue: 0) int get awayScore;@JsonKey(name: 'live_time') String? get liveTime; double get odds; String get selection;@JsonKey(name: 'selection_id') String get selectionId;@JsonKey(name: 'selection_status') String get selectionStatus;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'display_selection') String? get displaySelection;
 /// Create a copy of TicketDetailItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TicketDetailItemCopyWith<TicketDetailItem> get copyWith => _$TicketDetailItemCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TicketDetailItem&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.matchStatus, matchStatus) || other.matchStatus == matchStatus)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.selectionId, selectionId) || other.selectionId == selectionId)&&(identical(other.selectionStatus, selectionStatus) || other.selectionStatus == selectionStatus)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.displaySelection, displaySelection) || other.displaySelection == displaySelection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TicketDetailItem&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.matchStatus, matchStatus) || other.matchStatus == matchStatus)&&(identical(other.homeScore, homeScore) || other.homeScore == homeScore)&&(identical(other.awayScore, awayScore) || other.awayScore == awayScore)&&(identical(other.liveTime, liveTime) || other.liveTime == liveTime)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.selectionId, selectionId) || other.selectionId == selectionId)&&(identical(other.selectionStatus, selectionStatus) || other.selectionStatus == selectionStatus)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.displaySelection, displaySelection) || other.displaySelection == displaySelection));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketSpec,marketType,matchStatus,odds,selection,selectionId,selectionStatus,startTime,displaySelection);
+int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketSpec,marketType,matchStatus,homeScore,awayScore,liveTime,odds,selection,selectionId,selectionStatus,startTime,displaySelection);
 
 @override
 String toString() {
-  return 'TicketDetailItem(awayTeam: $awayTeam, homeTeam: $homeTeam, marketSpec: $marketSpec, marketType: $marketType, matchStatus: $matchStatus, odds: $odds, selection: $selection, selectionId: $selectionId, selectionStatus: $selectionStatus, startTime: $startTime, displaySelection: $displaySelection)';
+  return 'TicketDetailItem(awayTeam: $awayTeam, homeTeam: $homeTeam, marketSpec: $marketSpec, marketType: $marketType, matchStatus: $matchStatus, homeScore: $homeScore, awayScore: $awayScore, liveTime: $liveTime, odds: $odds, selection: $selection, selectionId: $selectionId, selectionStatus: $selectionStatus, startTime: $startTime, displaySelection: $displaySelection)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TicketDetailItemCopyWith<$Res>  {
   factory $TicketDetailItemCopyWith(TicketDetailItem value, $Res Function(TicketDetailItem) _then) = _$TicketDetailItemCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_spec') String? marketSpec,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'match_status') String matchStatus, double odds, String selection,@JsonKey(name: 'selection_id') String selectionId,@JsonKey(name: 'selection_status') String selectionStatus,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'display_selection') String? displaySelection
+@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_spec') String? marketSpec,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'match_status') String matchStatus,@JsonKey(name: 'home_score', defaultValue: 0) int homeScore,@JsonKey(name: 'away_score', defaultValue: 0) int awayScore,@JsonKey(name: 'live_time') String? liveTime, double odds, String selection,@JsonKey(name: 'selection_id') String selectionId,@JsonKey(name: 'selection_status') String selectionStatus,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'display_selection') String? displaySelection
 });
 
 
@@ -65,14 +65,17 @@ class _$TicketDetailItemCopyWithImpl<$Res>
 
 /// Create a copy of TicketDetailItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketSpec = freezed,Object? marketType = null,Object? matchStatus = null,Object? odds = null,Object? selection = null,Object? selectionId = null,Object? selectionStatus = null,Object? startTime = null,Object? displaySelection = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketSpec = freezed,Object? marketType = null,Object? matchStatus = null,Object? homeScore = null,Object? awayScore = null,Object? liveTime = freezed,Object? odds = null,Object? selection = null,Object? selectionId = null,Object? selectionStatus = null,Object? startTime = null,Object? displaySelection = freezed,}) {
   return _then(_self.copyWith(
 awayTeam: null == awayTeam ? _self.awayTeam : awayTeam // ignore: cast_nullable_to_non_nullable
 as String,homeTeam: null == homeTeam ? _self.homeTeam : homeTeam // ignore: cast_nullable_to_non_nullable
 as String,marketSpec: freezed == marketSpec ? _self.marketSpec : marketSpec // ignore: cast_nullable_to_non_nullable
 as String?,marketType: null == marketType ? _self.marketType : marketType // ignore: cast_nullable_to_non_nullable
 as String,matchStatus: null == matchStatus ? _self.matchStatus : matchStatus // ignore: cast_nullable_to_non_nullable
-as String,odds: null == odds ? _self.odds : odds // ignore: cast_nullable_to_non_nullable
+as String,homeScore: null == homeScore ? _self.homeScore : homeScore // ignore: cast_nullable_to_non_nullable
+as int,awayScore: null == awayScore ? _self.awayScore : awayScore // ignore: cast_nullable_to_non_nullable
+as int,liveTime: freezed == liveTime ? _self.liveTime : liveTime // ignore: cast_nullable_to_non_nullable
+as String?,odds: null == odds ? _self.odds : odds // ignore: cast_nullable_to_non_nullable
 as double,selection: null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
 as String,selectionId: null == selectionId ? _self.selectionId : selectionId // ignore: cast_nullable_to_non_nullable
 as String,selectionStatus: null == selectionStatus ? _self.selectionStatus : selectionStatus // ignore: cast_nullable_to_non_nullable
@@ -163,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_spec')  String? marketSpec, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'match_status')  String matchStatus,  double odds,  String selection, @JsonKey(name: 'selection_id')  String selectionId, @JsonKey(name: 'selection_status')  String selectionStatus, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'display_selection')  String? displaySelection)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_spec')  String? marketSpec, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'match_status')  String matchStatus, @JsonKey(name: 'home_score', defaultValue: 0)  int homeScore, @JsonKey(name: 'away_score', defaultValue: 0)  int awayScore, @JsonKey(name: 'live_time')  String? liveTime,  double odds,  String selection, @JsonKey(name: 'selection_id')  String selectionId, @JsonKey(name: 'selection_status')  String selectionStatus, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'display_selection')  String? displaySelection)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TicketDetailItem() when $default != null:
-return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,_that.matchStatus,_that.odds,_that.selection,_that.selectionId,_that.selectionStatus,_that.startTime,_that.displaySelection);case _:
+return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,_that.matchStatus,_that.homeScore,_that.awayScore,_that.liveTime,_that.odds,_that.selection,_that.selectionId,_that.selectionStatus,_that.startTime,_that.displaySelection);case _:
   return orElse();
 
 }
@@ -184,10 +187,10 @@ return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_spec')  String? marketSpec, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'match_status')  String matchStatus,  double odds,  String selection, @JsonKey(name: 'selection_id')  String selectionId, @JsonKey(name: 'selection_status')  String selectionStatus, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'display_selection')  String? displaySelection)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_spec')  String? marketSpec, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'match_status')  String matchStatus, @JsonKey(name: 'home_score', defaultValue: 0)  int homeScore, @JsonKey(name: 'away_score', defaultValue: 0)  int awayScore, @JsonKey(name: 'live_time')  String? liveTime,  double odds,  String selection, @JsonKey(name: 'selection_id')  String selectionId, @JsonKey(name: 'selection_status')  String selectionStatus, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'display_selection')  String? displaySelection)  $default,) {final _that = this;
 switch (_that) {
 case _TicketDetailItem():
-return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,_that.matchStatus,_that.odds,_that.selection,_that.selectionId,_that.selectionStatus,_that.startTime,_that.displaySelection);case _:
+return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,_that.matchStatus,_that.homeScore,_that.awayScore,_that.liveTime,_that.odds,_that.selection,_that.selectionId,_that.selectionStatus,_that.startTime,_that.displaySelection);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +207,10 @@ return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_spec')  String? marketSpec, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'match_status')  String matchStatus,  double odds,  String selection, @JsonKey(name: 'selection_id')  String selectionId, @JsonKey(name: 'selection_status')  String selectionStatus, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'display_selection')  String? displaySelection)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'away_team')  String awayTeam, @JsonKey(name: 'home_team')  String homeTeam, @JsonKey(name: 'market_spec')  String? marketSpec, @JsonKey(name: 'market_type')  String marketType, @JsonKey(name: 'match_status')  String matchStatus, @JsonKey(name: 'home_score', defaultValue: 0)  int homeScore, @JsonKey(name: 'away_score', defaultValue: 0)  int awayScore, @JsonKey(name: 'live_time')  String? liveTime,  double odds,  String selection, @JsonKey(name: 'selection_id')  String selectionId, @JsonKey(name: 'selection_status')  String selectionStatus, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'display_selection')  String? displaySelection)?  $default,) {final _that = this;
 switch (_that) {
 case _TicketDetailItem() when $default != null:
-return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,_that.matchStatus,_that.odds,_that.selection,_that.selectionId,_that.selectionStatus,_that.startTime,_that.displaySelection);case _:
+return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,_that.matchStatus,_that.homeScore,_that.awayScore,_that.liveTime,_that.odds,_that.selection,_that.selectionId,_that.selectionStatus,_that.startTime,_that.displaySelection);case _:
   return null;
 
 }
@@ -219,7 +222,7 @@ return $default(_that.awayTeam,_that.homeTeam,_that.marketSpec,_that.marketType,
 @JsonSerializable()
 
 class _TicketDetailItem implements TicketDetailItem {
-  const _TicketDetailItem({@JsonKey(name: 'away_team') required this.awayTeam, @JsonKey(name: 'home_team') required this.homeTeam, @JsonKey(name: 'market_spec') this.marketSpec, @JsonKey(name: 'market_type') required this.marketType, @JsonKey(name: 'match_status') required this.matchStatus, required this.odds, required this.selection, @JsonKey(name: 'selection_id') required this.selectionId, @JsonKey(name: 'selection_status') required this.selectionStatus, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'display_selection') this.displaySelection});
+  const _TicketDetailItem({@JsonKey(name: 'away_team') required this.awayTeam, @JsonKey(name: 'home_team') required this.homeTeam, @JsonKey(name: 'market_spec') this.marketSpec, @JsonKey(name: 'market_type') required this.marketType, @JsonKey(name: 'match_status') required this.matchStatus, @JsonKey(name: 'home_score', defaultValue: 0) this.homeScore = 0, @JsonKey(name: 'away_score', defaultValue: 0) this.awayScore = 0, @JsonKey(name: 'live_time') this.liveTime, required this.odds, required this.selection, @JsonKey(name: 'selection_id') required this.selectionId, @JsonKey(name: 'selection_status') required this.selectionStatus, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'display_selection') this.displaySelection});
   factory _TicketDetailItem.fromJson(Map<String, dynamic> json) => _$TicketDetailItemFromJson(json);
 
 @override@JsonKey(name: 'away_team') final  String awayTeam;
@@ -227,6 +230,9 @@ class _TicketDetailItem implements TicketDetailItem {
 @override@JsonKey(name: 'market_spec') final  String? marketSpec;
 @override@JsonKey(name: 'market_type') final  String marketType;
 @override@JsonKey(name: 'match_status') final  String matchStatus;
+@override@JsonKey(name: 'home_score', defaultValue: 0) final  int homeScore;
+@override@JsonKey(name: 'away_score', defaultValue: 0) final  int awayScore;
+@override@JsonKey(name: 'live_time') final  String? liveTime;
 @override final  double odds;
 @override final  String selection;
 @override@JsonKey(name: 'selection_id') final  String selectionId;
@@ -247,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TicketDetailItem&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.matchStatus, matchStatus) || other.matchStatus == matchStatus)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.selectionId, selectionId) || other.selectionId == selectionId)&&(identical(other.selectionStatus, selectionStatus) || other.selectionStatus == selectionStatus)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.displaySelection, displaySelection) || other.displaySelection == displaySelection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TicketDetailItem&&(identical(other.awayTeam, awayTeam) || other.awayTeam == awayTeam)&&(identical(other.homeTeam, homeTeam) || other.homeTeam == homeTeam)&&(identical(other.marketSpec, marketSpec) || other.marketSpec == marketSpec)&&(identical(other.marketType, marketType) || other.marketType == marketType)&&(identical(other.matchStatus, matchStatus) || other.matchStatus == matchStatus)&&(identical(other.homeScore, homeScore) || other.homeScore == homeScore)&&(identical(other.awayScore, awayScore) || other.awayScore == awayScore)&&(identical(other.liveTime, liveTime) || other.liveTime == liveTime)&&(identical(other.odds, odds) || other.odds == odds)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.selectionId, selectionId) || other.selectionId == selectionId)&&(identical(other.selectionStatus, selectionStatus) || other.selectionStatus == selectionStatus)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.displaySelection, displaySelection) || other.displaySelection == displaySelection));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketSpec,marketType,matchStatus,odds,selection,selectionId,selectionStatus,startTime,displaySelection);
+int get hashCode => Object.hash(runtimeType,awayTeam,homeTeam,marketSpec,marketType,matchStatus,homeScore,awayScore,liveTime,odds,selection,selectionId,selectionStatus,startTime,displaySelection);
 
 @override
 String toString() {
-  return 'TicketDetailItem(awayTeam: $awayTeam, homeTeam: $homeTeam, marketSpec: $marketSpec, marketType: $marketType, matchStatus: $matchStatus, odds: $odds, selection: $selection, selectionId: $selectionId, selectionStatus: $selectionStatus, startTime: $startTime, displaySelection: $displaySelection)';
+  return 'TicketDetailItem(awayTeam: $awayTeam, homeTeam: $homeTeam, marketSpec: $marketSpec, marketType: $marketType, matchStatus: $matchStatus, homeScore: $homeScore, awayScore: $awayScore, liveTime: $liveTime, odds: $odds, selection: $selection, selectionId: $selectionId, selectionStatus: $selectionStatus, startTime: $startTime, displaySelection: $displaySelection)';
 }
 
 
@@ -267,7 +273,7 @@ abstract mixin class _$TicketDetailItemCopyWith<$Res> implements $TicketDetailIt
   factory _$TicketDetailItemCopyWith(_TicketDetailItem value, $Res Function(_TicketDetailItem) _then) = __$TicketDetailItemCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_spec') String? marketSpec,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'match_status') String matchStatus, double odds, String selection,@JsonKey(name: 'selection_id') String selectionId,@JsonKey(name: 'selection_status') String selectionStatus,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'display_selection') String? displaySelection
+@JsonKey(name: 'away_team') String awayTeam,@JsonKey(name: 'home_team') String homeTeam,@JsonKey(name: 'market_spec') String? marketSpec,@JsonKey(name: 'market_type') String marketType,@JsonKey(name: 'match_status') String matchStatus,@JsonKey(name: 'home_score', defaultValue: 0) int homeScore,@JsonKey(name: 'away_score', defaultValue: 0) int awayScore,@JsonKey(name: 'live_time') String? liveTime, double odds, String selection,@JsonKey(name: 'selection_id') String selectionId,@JsonKey(name: 'selection_status') String selectionStatus,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'display_selection') String? displaySelection
 });
 
 
@@ -284,14 +290,17 @@ class __$TicketDetailItemCopyWithImpl<$Res>
 
 /// Create a copy of TicketDetailItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketSpec = freezed,Object? marketType = null,Object? matchStatus = null,Object? odds = null,Object? selection = null,Object? selectionId = null,Object? selectionStatus = null,Object? startTime = null,Object? displaySelection = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? awayTeam = null,Object? homeTeam = null,Object? marketSpec = freezed,Object? marketType = null,Object? matchStatus = null,Object? homeScore = null,Object? awayScore = null,Object? liveTime = freezed,Object? odds = null,Object? selection = null,Object? selectionId = null,Object? selectionStatus = null,Object? startTime = null,Object? displaySelection = freezed,}) {
   return _then(_TicketDetailItem(
 awayTeam: null == awayTeam ? _self.awayTeam : awayTeam // ignore: cast_nullable_to_non_nullable
 as String,homeTeam: null == homeTeam ? _self.homeTeam : homeTeam // ignore: cast_nullable_to_non_nullable
 as String,marketSpec: freezed == marketSpec ? _self.marketSpec : marketSpec // ignore: cast_nullable_to_non_nullable
 as String?,marketType: null == marketType ? _self.marketType : marketType // ignore: cast_nullable_to_non_nullable
 as String,matchStatus: null == matchStatus ? _self.matchStatus : matchStatus // ignore: cast_nullable_to_non_nullable
-as String,odds: null == odds ? _self.odds : odds // ignore: cast_nullable_to_non_nullable
+as String,homeScore: null == homeScore ? _self.homeScore : homeScore // ignore: cast_nullable_to_non_nullable
+as int,awayScore: null == awayScore ? _self.awayScore : awayScore // ignore: cast_nullable_to_non_nullable
+as int,liveTime: freezed == liveTime ? _self.liveTime : liveTime // ignore: cast_nullable_to_non_nullable
+as String?,odds: null == odds ? _self.odds : odds // ignore: cast_nullable_to_non_nullable
 as double,selection: null == selection ? _self.selection : selection // ignore: cast_nullable_to_non_nullable
 as String,selectionId: null == selectionId ? _self.selectionId : selectionId // ignore: cast_nullable_to_non_nullable
 as String,selectionStatus: null == selectionStatus ? _self.selectionStatus : selectionStatus // ignore: cast_nullable_to_non_nullable
