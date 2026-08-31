@@ -65,16 +65,17 @@ class TicketCard extends StatelessWidget {
       // InkWell basically make the card clickable. Clicking a ticket should take
       //  the user to the ticket page
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         onTap: onTap,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             color: const Color(0xff0E0C0B),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: scheme.border),
           ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -85,29 +86,37 @@ class TicketCard extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: scheme.secondary,
-                            borderRadius: BorderRadius.circular(8),
+                        if (provider.toLowerCase() == 'sportybet')
+                          SvgPicture.asset(
+                            'assets/drawables/sportybet.svg',
+                            height: 24,
+                            alignment: Alignment.centerLeft,
+                          )
+                        else ...[
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: scheme.secondary,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              LucideIcons.ticket,
+                              size: 14,
+                              color: scheme.foreground,
+                            ),
                           ),
-                          child: Icon(
-                            LucideIcons.ticket,
-                            size: 14,
-                            color: scheme.foreground,
+                          const SizedBox(width: 8),
+                          Text(
+                            provider.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.small.copyWith(
+                              color: scheme.mutedForeground,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          provider.toUpperCase(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.small.copyWith(
-                            color: scheme.mutedForeground,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
@@ -227,11 +236,11 @@ class TicketCard extends StatelessWidget {
                   letterSpacing: 0.5,
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ], // Column children
+          ), // Column
+        ), // Container
+      ), // InkWell
+    ); // Material
   }
 
   Widget _buildStat(
