@@ -229,9 +229,10 @@ class TicketCard extends StatelessWidget {
               Divider(color: scheme.border, height: 1, thickness: 1),
               const SizedBox(height: 16),
               Text(
-                'Tracking started about ${_relativeTime(trackedAt)}',
+                'Tracking began about ${_relativeTime(trackedAt)}',
                 style: theme.textTheme.small.copyWith(
                   color: scheme.mutedForeground,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                 ),

@@ -1,0 +1,62 @@
+name: Shorebird Build (Release / Patch)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Choose build type'
+        required: true
+        type: choice
+        options:
+          - release
+          - patch
+
+jobs:
+  build:
+    name: Build Shorebird ${{ github.event.inputs.build_type }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Setup Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Shorebird Release
+        if: ${{ github.event.inputs.build_type == 'release' }}
+        run: shorebird release android --artifact=apk --force
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Shorebird Patch
+        if: ${{ github.event.inputs.build_type == 'patch' }}
+        run: shorebird patch android --force
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      # Only upload an APK if it was a full release. Patches go straight to users OTA.
+      - name: Upload APK Artifact
+        if: ${{ github.event.inputs.build_type == 'release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: slipwise-shorebird-apk
+          path: build/app/outputs/apk/release/app-release.apk
+          retention-days: 7
