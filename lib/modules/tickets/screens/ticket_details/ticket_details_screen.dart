@@ -8,7 +8,9 @@ import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/ticket_detail.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_detail_controller.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_ticket_modal.dart';
+import 'package:slipwise/core/hooks/use_smart_polling.dart';
 import 'package:slipwise/core/ui/error_state_widget.dart';
+import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/live_time_ticker.dart';
 
 class TicketDetailsScreen extends HookConsumerWidget {
   final HistoryItem initialTicket;
@@ -31,6 +33,20 @@ class TicketDetailsScreen extends HookConsumerWidget {
 
     final selectionsAsync = ref.watch(
       ticketDetailControllerProvider(ticket.ticketId),
+    );
+
+    // Only poll if there's at least one match that isn't finished
+    final shouldPoll =
+        selectionsAsync.value?.any(
+          (s) => s.matchStatus == 'LIVE' || s.matchStatus == 'NOT_STARTED',
+        ) ??
+        true; // Default to true while loading so it initiates at least
+
+    useSmartPolling(
+      fetchUpdates: () => ref
+          .read(ticketDetailControllerProvider(ticket.ticketId).notifier)
+          .fetchUpdates(),
+      shouldPoll: shouldPoll,
     );
 
     return Scaffold(
@@ -212,21 +228,31 @@ class TicketDetailsScreen extends HookConsumerWidget {
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  ticket.provider,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.foreground,
+              if (ticket.provider.toLowerCase() == 'sportybet')
+                SvgPicture.asset(
+                  'assets/drawables/sportybet.svg',
+                  height: 20,
+                  alignment: Alignment.centerRight,
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    ticket.provider,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.foreground,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -455,8 +481,9 @@ class TicketDetailsScreen extends HookConsumerWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 4),
-                                Text(
-                                  selection.liveTime ?? 'LIVE',
+                                LiveTimeTicker(
+                                  matchStatus: selection.matchStatus,
+                                  liveTime: selection.liveTime,
                                   style: const TextStyle(
                                     color: Colors.red,
                                     fontSize: 10,
