@@ -44,8 +44,9 @@ class PersonalInfoModal extends HookConsumerWidget {
       final localError = validators.validateUsername(value);
       if (localError != null ||
           value.trim().isEmpty ||
-          value == currentUsername)
+          value == currentUsername) {
         return;
+      }
 
       debounce.value = Timer(const Duration(milliseconds: 1000), () {
         ref.read(utilityProvider.notifier).checkUsername(value.trim());

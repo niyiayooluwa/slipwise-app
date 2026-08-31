@@ -66,7 +66,7 @@ class ProfileScreen extends ConsumerWidget {
               'Net Profit',
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -93,8 +93,8 @@ class ProfileScreen extends ConsumerWidget {
                     child: CircularProgressIndicator(
                       value: winRate,
                       strokeWidth: 14,
-                      backgroundColor: theme.colorScheme.onSurface.withOpacity(
-                        0.1,
+                      backgroundColor: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.1,
                       ),
                       valueColor: AlwaysStoppedAnimation<Color>(
                         theme.colorScheme.primary,
@@ -115,7 +115,9 @@ class ProfileScreen extends ConsumerWidget {
                       Text(
                         'Win Rate',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.6,
+                          ),
                         ),
                       ),
                     ],
@@ -128,7 +130,7 @@ class ProfileScreen extends ConsumerWidget {
               'Won ${stats.wonTickets} of ${stats.totalTickets} tickets',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
 
@@ -138,12 +140,12 @@ class ProfileScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest.withOpacity(
-                  0.4,
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.4,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: theme.colorScheme.outline.withOpacity(0.2),
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
                 ),
               ),
               child: Column(
@@ -218,7 +220,7 @@ class ProfileScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: theme.colorScheme.onSurface.withOpacity(0.1),
+            backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.1),
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 10,
           ),

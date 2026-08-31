@@ -4,7 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/core/errors/failures.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/modules/auth/data/remote/auth_remote.dart';
-import 'package:slipwise/modules/auth/data/models/user_model.dart';
 import 'package:slipwise/modules/profile/data/models/user_stats.dart';
 
 import '../models/login.dart';
@@ -132,7 +131,10 @@ class AuthRepository {
 
   Future<Either<Failure, UserStats>> getUserStats() async {
     final result = await _remote.getUserStats();
-    return result.fold((l) => Left(l), (r) => Right(UserStats.fromJson(r)));
+    return result.fold(
+      ifLeft: (l) => Left(l),
+      ifRight: (r) => Right(UserStats.fromJson(r)),
+    );
   }
 
   Future<Either<Failure, MessageResponse>> forgotPassword(

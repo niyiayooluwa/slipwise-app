@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/storage/hive_adapters.dart';
+import 'package:slipwise/modules/auth/data/models/user_model.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/router/router.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';

@@ -33,9 +33,9 @@ class TicketRemote {
         queryParameters: {
           'page': page,
           'limit': limit,
-          if (status != null) 'status': status,
-          if (since != null) 'since': since,
-        },
+          'status': status,
+          'since': since,
+        }..removeWhere((_, v) => v == null),
       );
       return Right(PaginatedHistoryResponse.fromJson(response.data));
     } on DioException catch (e) {

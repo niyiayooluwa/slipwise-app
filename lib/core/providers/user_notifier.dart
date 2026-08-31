@@ -2,6 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/auth/data/models/user_model.dart';
+import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/services/push_notification_service.dart';
