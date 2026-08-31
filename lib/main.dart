@@ -24,12 +24,15 @@ Future<void> main() async {
   // Initialize Hive for insanely fast offline caching
   await Hive.initFlutter();
   Hive.registerAdapter(HistoryItemAdapter());
+  Hive.registerAdapter(UserModelAdapter());
+
   // Open cache boxes synchronously on boot
   await Hive.openBox<HistoryItem>('tickets_cache_ALL');
   await Hive.openBox<HistoryItem>('tickets_cache_PENDING');
   await Hive.openBox<HistoryItem>('tickets_cache_WON');
   await Hive.openBox<HistoryItem>('tickets_cache_LOST');
   await Hive.openBox<String>('sync_cache'); // for storing lastSyncTime strings
+  await Hive.openBox<UserModel>('user_cache'); // for offline user data
 
   // Disable Google Fonts runtime fetching to force offline fonts
   GoogleFonts.config.allowRuntimeFetching = false;
