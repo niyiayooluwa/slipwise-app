@@ -180,12 +180,25 @@ class HomeScreen extends HookConsumerWidget {
                               ),
                               const SizedBox(width: 12),
                               // Profile Avatar
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: SvgPicture.network(
-                                  profileUrl,
-                                  width: 40,
-                                  height: 40,
+                              Container(
+                                height: 40,
+                                width: 40,
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: colorScheme.primary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(40),
+                                  child: SvgPicture.network(
+                                    profileUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ],
