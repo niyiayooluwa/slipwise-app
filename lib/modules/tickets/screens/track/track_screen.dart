@@ -60,7 +60,7 @@ class TrackScreen extends HookConsumerWidget {
         );
         formNotifier.resetSuccess();
         if (context.mounted) {
-          context.pop();
+          context.go('/home');
         }
       }
     });

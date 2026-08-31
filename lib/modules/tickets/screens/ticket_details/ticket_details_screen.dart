@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -429,91 +430,61 @@ class TicketDetailsScreen extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                selection.homeTeam,
-                                style: theme.textTheme.small.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              if (selection.matchStatus == 'NOT_STARTED')
-                                Text(
-                                  'vs',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontStyle: FontStyle.italic,
-                                    color: colorScheme.mutedForeground,
+                        if (selection.matchStatus == 'LIVE')
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
                                   ),
-                                )
-                              else
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '${selection.homeScore} - ${selection.awayScore}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: colorScheme.foreground,
-                                      ),
-                                    ),
-                                    if (selection.matchStatus == 'LIVE') ...[
-                                      const SizedBox(width: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red.withValues(
-                                            alpha: 0.1,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              width: 6,
-                                              height: 6,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              selection.liveTime ?? 'LIVE',
-                                              style: const TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ],
                                 ),
-                              const SizedBox(height: 4),
-                              Text(
-                                selection.awayTeam,
-                                style: theme.textTheme.small.copyWith(
-                                  fontWeight: FontWeight.bold,
+                                const SizedBox(width: 4),
+                                Text(
+                                  selection.liveTime ?? 'LIVE',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          )
+                        else if (selection.matchStatus == 'ENDED')
+                          Text(
+                            'FT',
+                            style: theme.textTheme.small.copyWith(
+                              color: colorScheme.mutedForeground,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        else
+                          Text(
+                            DateFormat(
+                              'dd MMM yyyy, HH:mm',
+                            ).format(selection.startTime),
+                            style: theme.textTheme.small.copyWith(
+                              color: colorScheme.mutedForeground,
+                              fontSize: 11,
+                            ),
                           ),
-                        ),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -532,6 +503,51 @@ class TicketDetailsScreen extends HookConsumerWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                               color: statusColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            selection.homeTeam,
+                            textAlign: TextAlign.right,
+                            style: theme.textTheme.small.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            selection.matchStatus == 'NOT_STARTED'
+                                ? 'vs'
+                                : '${selection.homeScore} - ${selection.awayScore}',
+                            style: TextStyle(
+                              fontSize: selection.matchStatus == 'NOT_STARTED'
+                                  ? 12
+                                  : 20,
+                              fontStyle: selection.matchStatus == 'NOT_STARTED'
+                                  ? FontStyle.italic
+                                  : FontStyle.normal,
+                              fontWeight: FontWeight.bold,
+                              color: selection.matchStatus == 'NOT_STARTED'
+                                  ? colorScheme.mutedForeground
+                                  : colorScheme.foreground,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            selection.awayTeam,
+                            textAlign: TextAlign.left,
+                            style: theme.textTheme.small.copyWith(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
