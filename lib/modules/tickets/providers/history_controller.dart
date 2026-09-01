@@ -22,7 +22,18 @@ class HistoryController extends _$HistoryController {
     final cacheBox = Hive.box<HistoryItem>('tickets_cache_$status');
     final syncBox = Hive.box<String>('sync_cache');
 
-    final cachedTickets = cacheBox.values.toList();
+    final rawCachedTickets = cacheBox.values.toList();
+
+    // Self-healing cache: For filtered boxes (PENDING/WON/LOST), silently drop any
+    // ticket whose overallStatus no longer matches. This handles status transitions
+    // that happened while the app was closed, without requiring a reinstall or
+    // manual refresh. The ALL box accepts every status so no filtering needed.
+    final cachedTickets = status == 'ALL'
+        ? rawCachedTickets
+        : rawCachedTickets
+            .where((t) => t.overallStatus.toUpperCase() == status)
+            .toList();
+
     if (cachedTickets.isNotEmpty) {
       _allTickets.clear();
       _allTickets.addAll(cachedTickets);
@@ -124,24 +135,39 @@ class HistoryController extends _$HistoryController {
     return result.fold(
       ifLeft: (_) => false, // Silently ignore polling errors
       ifRight: (response) {
-        bool hasData = response.data.isNotEmpty;
-        if (hasData) {
-          bool updated = false;
+        bool updated = false;
+
+        if (response.data.isNotEmpty) {
           for (final updatedTicket in response.data) {
             final index = _allTickets.indexWhere(
               (t) => t.ticketId == updatedTicket.ticketId,
             );
+
+            // Check if this ticket still belongs in this status list.
+            // For 'ALL' every status belongs. For filtered lists (PENDING, WON, LOST),
+            // a ticket whose status changed must be REMOVED from this list.
+            final belongsHere = _currentStatus == 'ALL' ||
+                updatedTicket.overallStatus.toUpperCase() == _currentStatus;
+
             if (index != -1) {
-              _allTickets[index] = updatedTicket;
+              if (belongsHere) {
+                // Update in-place — status is still correct for this list
+                _allTickets[index] = updatedTicket;
+              } else {
+                // Ticket changed status — remove it from this list
+                _allTickets.removeAt(index);
+              }
               updated = true;
-            } else {
+            } else if (belongsHere) {
+              // New ticket that belongs here — add it to the top
               _allTickets.insert(0, updatedTicket);
               updated = true;
             }
           }
-          if (updated) {
-            state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
-          }
+        }
+
+        if (updated) {
+          state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
         }
 
         // Update sync time
@@ -150,7 +176,7 @@ class HistoryController extends _$HistoryController {
         // Save merged updates and new sync time to cache
         _saveToCache();
 
-        return hasData;
+        return response.data.isNotEmpty;
       },
     );
   }
