@@ -362,87 +362,106 @@ class ProfileScreen extends HookConsumerWidget {
   ) {
     final statsAsync = ref.watch(userStatsProvider);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: BoxDecoration(
-        color: colorScheme.card,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.border),
-      ),
-      child: statsAsync.when(
-        loading: () => _buildStatsSkeleton(theme, colorScheme),
-        error: (e, _) => _buildStatsFallback(theme, colorScheme),
-        data: (stats) {
-          final isProfit = stats.netProfit >= 0;
-          final profitColor = isProfit
-              ? const Color(0xFF22c55e)
-              : const Color(0xFFef4444);
-
-          return Column(
-            children: [
-              // Net profit headline
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Net Profit',
-                    style: theme.textTheme.small.copyWith(
-                      color: colorScheme.mutedForeground,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    '${isProfit ? '+' : ''}₦${stats.netProfit.toStringAsFixed(2)}',
-                    style: theme.textTheme.large.copyWith(
-                      color: profitColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-              Divider(height: 1, color: colorScheme.border),
-              const SizedBox(height: 16),
-
-              // 4-stat grid
-              Row(
-                children: [
-                  _buildStatCell(
-                    'Total',
-                    '${stats.totalTickets}',
-                    theme,
-                    colorScheme,
-                  ),
-                  _buildStatDivider(colorScheme),
-                  _buildStatCell(
-                    'Won',
-                    '${stats.wonTickets}',
-                    theme,
-                    colorScheme,
-                    color: const Color(0xFF22c55e),
-                  ),
-                  _buildStatDivider(colorScheme),
-                  _buildStatCell(
-                    'Lost',
-                    '${stats.lostTickets}',
-                    theme,
-                    colorScheme,
-                    color: const Color(0xFFef4444),
-                  ),
-                  _buildStatDivider(colorScheme),
-                  _buildStatCell(
-                    'Pending',
-                    '${stats.pendingTickets}',
-                    theme,
-                    colorScheme,
-                    color: colorScheme.primary,
-                  ),
-                ],
-              ),
-            ],
-          );
+        onTap: () {
+          ref.invalidate(userStatsProvider);
         },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: colorScheme.card,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: colorScheme.border),
+          ),
+          child: statsAsync.when(
+            loading: () => _buildStatsSkeleton(theme, colorScheme),
+            error: (e, _) => _buildStatsFallback(theme, colorScheme),
+            data: (stats) {
+              final isProfit = stats.netProfit >= 0;
+              final profitColor = isProfit
+                  ? const Color(0xFF22c55e)
+                  : const Color(0xFFef4444);
+
+              return Column(
+                children: [
+                  // Net profit headline
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Net Profit',
+                            style: theme.textTheme.small.copyWith(
+                              color: colorScheme.mutedForeground,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(
+                            LucideIcons.refreshCw,
+                            size: 12,
+                            color: colorScheme.mutedForeground.withValues(alpha: 0.6),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '${isProfit ? '+' : ''}₦${stats.netProfit.toStringAsFixed(2)}',
+                        style: theme.textTheme.large.copyWith(
+                          color: profitColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+                  Divider(height: 1, color: colorScheme.border),
+                  const SizedBox(height: 16),
+
+                  // 4-stat grid
+                  Row(
+                    children: [
+                      _buildStatCell(
+                        'Total',
+                        '${stats.totalTickets}',
+                        theme,
+                        colorScheme,
+                      ),
+                      _buildStatDivider(colorScheme),
+                      _buildStatCell(
+                        'Won',
+                        '${stats.wonTickets}',
+                        theme,
+                        colorScheme,
+                        color: const Color(0xFF22c55e),
+                      ),
+                      _buildStatDivider(colorScheme),
+                      _buildStatCell(
+                        'Lost',
+                        '${stats.lostTickets}',
+                        theme,
+                        colorScheme,
+                        color: const Color(0xFFef4444),
+                      ),
+                      _buildStatDivider(colorScheme),
+                      _buildStatCell(
+                        'Pending',
+                        '${stats.pendingTickets}',
+                        theme,
+                        colorScheme,
+                        color: colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }
