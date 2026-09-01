@@ -9,6 +9,8 @@ import 'package:slipwise/modules/profile/providers/user_stats_provider.dart';
 import 'package:slipwise/modules/profile/screens/widgets/feedback_modal.dart';
 import 'package:slipwise/modules/profile/screens/widgets/personal_info_modal.dart';
 import 'package:slipwise/modules/profile/screens/widgets/security_modal.dart';
+import 'package:slipwise/modules/profile/providers/app_version_provider.dart';
+import 'package:slipwise/modules/profile/screens/widgets/app_update_modal.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
@@ -214,6 +216,74 @@ class ProfileScreen extends HookConsumerWidget {
                                 assetPath: 'assets/legal/privacy_policy.md',
                               ),
                             ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  _buildMenuGroup(
+                    title: 'App Info',
+                    theme: theme,
+                    colorScheme: colorScheme,
+                    items: [
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final versionAsync = ref.watch(appVersionProvider);
+                          final info = versionAsync.value;
+
+                          return _buildMenuItem(
+                            icon: LucideIcons.smartphone,
+                            label: info != null
+                                ? info.formattedVersion
+                                : 'SlipWise App',
+                            subtitle: info?.formattedPatch,
+                            theme: theme,
+                            colorScheme: colorScheme,
+                            trailing: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(100),
+                                border: Border.all(
+                                  color: colorScheme.primary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    LucideIcons.refreshCw,
+                                    size: 11,
+                                    color: colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Updates',
+                                    style: theme.textTheme.small.copyWith(
+                                      color: colorScheme.primary,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              ref
+                                  .read(appVersionProvider.notifier)
+                                  .resetStatus();
+                              _showBottomSheetModal(
+                                context,
+                                'App Version & Updates',
+                                const AppUpdateModal(),
+                              );
+                            },
                           );
                         },
                       ),
@@ -596,6 +666,8 @@ class ProfileScreen extends HookConsumerWidget {
   Widget _buildMenuItem({
     required IconData icon,
     required String label,
+    String? subtitle,
+    Widget? trailing,
     required VoidCallback onTap,
     required ShadThemeData theme,
     required ShadColorScheme colorScheme,
@@ -617,19 +689,37 @@ class ProfileScreen extends HookConsumerWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(
-                label,
-                style: theme.textTheme.small.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.foreground,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: theme.textTheme.small.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.foreground,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.small.copyWith(
+                        color: colorScheme.mutedForeground,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            Icon(
-              LucideIcons.chevronRight,
-              size: 18,
-              color: colorScheme.mutedForeground,
-            ),
+            if (trailing != null)
+              trailing
+            else
+              Icon(
+                LucideIcons.chevronRight,
+                size: 18,
+                color: colorScheme.mutedForeground,
+              ),
           ],
         ),
       ),

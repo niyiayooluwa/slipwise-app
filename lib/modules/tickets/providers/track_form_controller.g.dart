@@ -42,7 +42,7 @@ final class TrackFormControllerProvider
 }
 
 String _$trackFormControllerHash() =>
-    r'90216fe9b84f8d39a4b502ce6419f2e1a3a0b18a';
+    r'23e6aff96347a874c844b52d2071c4776d6b1198';
 
 abstract class _$TrackFormController extends $Notifier<TrackFormState> {
   TrackFormState build();
