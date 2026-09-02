@@ -8,6 +8,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/storage/settings_service.dart';
 import 'package:slipwise/core/providers/user_notifier.dart';
+import 'package:slipwise/core/services/push_notification_service.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
@@ -54,6 +55,13 @@ class SplashScreen extends HookConsumerWidget {
           } else {
             if (!context.mounted) return;
             context.go('/home');
+            
+            // Check for pending deep links from push notifications
+            final pendingId = ref.read(pushNotificationServiceProvider).pendingTicketId;
+            if (pendingId != null) {
+              context.push('/ticket-details?id=$pendingId');
+              ref.read(pushNotificationServiceProvider).pendingTicketId = null;
+            }
           }
         } else {
           if (!context.mounted) return;

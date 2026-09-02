@@ -126,6 +126,8 @@ class PushNotificationService {
     }
   }
 
+  String? pendingTicketId;
+
   void _setupMessageHandlers() {
     // A. Handle messages while the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -134,7 +136,7 @@ class PushNotificationService {
         name: 'PushNotification',
       );
 
-      final ticketId = message.data['ticket_id'] as String?;
+      final ticketId = (message.data['ticket_id'] ?? message.data['ticketId'] ?? message.data['id'])?.toString();
       final type = message.data['type'] as String? ?? 'ticket_update';
 
       _ref
@@ -169,15 +171,22 @@ class PushNotificationService {
     );
 
     final data = message.data;
-    final type = data['type'];
-    final ticketId = data['ticket_id'];
+    final type = data['type']?.toString() ?? 'ticket_update';
+    final ticketId = (data['ticket_id'] ?? data['ticketId'] ?? data['id'])?.toString();
 
-    if (type == 'ticket_update' && ticketId != null) {
+    if (ticketId != null && ticketId.isNotEmpty) {
       // Use the global navigator key to push the deep link
       final context = navigatorKey.currentContext;
       if (context != null) {
-        // Redirect to our loader screen which handles ticket ID fetching
-        context.push('/ticket-details?id=$ticketId');
+        // If we are currently on splash, defer it. Otherwise push instantly.
+        final location = GoRouterState.of(context).uri.path;
+        if (location == '/splash') {
+          pendingTicketId = ticketId;
+        } else {
+          context.push('/ticket-details?id=$ticketId');
+        }
+      } else {
+        pendingTicketId = ticketId;
       }
     }
   }
