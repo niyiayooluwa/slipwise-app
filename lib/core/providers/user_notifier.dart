@@ -6,6 +6,9 @@ import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/auth/data/repositories/auth_repository.dart';
 import 'package:slipwise/core/storage/secure_storage.dart';
 import 'package:slipwise/core/services/push_notification_service.dart';
+import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
+import 'package:slipwise/modules/notifications/data/repositories/notification_repository.dart';
+import 'package:slipwise/modules/tickets/providers/history_controller.dart';
 
 part 'user_notifier.g.dart';
 
@@ -109,6 +112,13 @@ class UserNotifier extends _$UserNotifier {
     await Hive.box<HistoryItem>('tickets_cache_WON').clear();
     await Hive.box<HistoryItem>('tickets_cache_LOST').clear();
     await Hive.box<String>('sync_cache').clear();
+
+    // Also clear notifications stored in SharedPreferences
+    await ref.read(notificationRepositoryProvider.notifier).clearNotifications();
+
+    // Invalidate keep-alive providers so they are wiped from memory
+    ref.invalidate(historyControllerProvider);
+    ref.invalidate(notificationControllerProvider);
   }
 
   // This is the heart of the app. Feedback sending
