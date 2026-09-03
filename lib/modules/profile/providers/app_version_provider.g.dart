@@ -34,7 +34,7 @@ final class AppVersionNotifierProvider
 }
 
 String _$appVersionNotifierHash() =>
-    r'a729af674e6e47d7720c63ee17843e84c8222bbe';
+    r'2ac775ad634e685a0bbf6c5d388103ae1f0b11e1';
 
 abstract class _$AppVersionNotifier extends $AsyncNotifier<AppVersionState> {
   FutureOr<AppVersionState> build();

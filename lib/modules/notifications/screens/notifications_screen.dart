@@ -106,7 +106,7 @@ class _NotificationTile extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xff1A1A1A),
+                color: theme.colorScheme.card,
                 shape: BoxShape.circle,
                 border: Border.all(color: theme.colorScheme.border),
               ),

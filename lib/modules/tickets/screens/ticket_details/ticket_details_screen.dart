@@ -11,6 +11,7 @@ import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_tic
 import 'package:slipwise/core/hooks/use_smart_polling.dart';
 import 'package:slipwise/core/ui/error_state_widget.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/live_time_ticker.dart';
+import 'package:slipwise/core/utils/semantic_colors.dart';
 
 class TicketDetailsScreen extends HookConsumerWidget {
   final HistoryItem initialTicket;
@@ -194,12 +195,12 @@ class TicketDetailsScreen extends HookConsumerWidget {
     ShadThemeData theme,
     ShadColorScheme colorScheme,
   ) {
-    final statusColor = _getStatusColor(ticket.overallStatus);
+    final statusColor = _getStatusColor(context, ticket.overallStatus);
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xff0E0C0B),
+        color: colorScheme.card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colorScheme.border),
       ),
@@ -233,6 +234,10 @@ class TicketDetailsScreen extends HookConsumerWidget {
                   'assets/drawables/sportybet.svg',
                   height: 20,
                   alignment: Alignment.centerRight,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.foreground,
+                    BlendMode.srcIn,
+                  ),
                 )
               else
                 Container(
@@ -331,7 +336,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(bottom: 12.0),
       decoration: BoxDecoration(
-        color: const Color(0xff0E0C0B),
+        color: colorScheme.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.border),
       ),
@@ -432,12 +437,12 @@ class TicketDetailsScreen extends HookConsumerWidget {
     ShadThemeData theme,
     ShadColorScheme colorScheme,
   ) {
-    final statusColor = _getStatusColor(selection.selectionStatus);
+    final statusColor = _getStatusColor(context, selection.selectionStatus);
 
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xff0E0C0B),
+        color: colorScheme.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.border),
       ),
@@ -618,14 +623,14 @@ class TicketDetailsScreen extends HookConsumerWidget {
     );
   }
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'won':
-        return const Color(0xff4ade80);
+        return context.statusWon;
       case 'lost':
-        return const Color(0xfff87171);
+        return context.statusLost;
       default:
-        return const Color(0xfffbbf24);
+        return context.statusPending;
     }
   }
 }

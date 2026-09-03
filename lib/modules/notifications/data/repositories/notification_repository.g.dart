@@ -34,7 +34,7 @@ final class NotificationRepositoryProvider
 }
 
 String _$notificationRepositoryHash() =>
-    r'c9c8919a11f7715a228b87fd1b60ec1b5da80cec';
+    r'd33c793810d980ee69005e5893fa284a2d7e3656';
 
 abstract class _$NotificationRepository
     extends $AsyncNotifier<SharedPreferences> {

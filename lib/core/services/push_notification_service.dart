@@ -171,7 +171,6 @@ class PushNotificationService {
     );
 
     final data = message.data;
-    final type = data['type']?.toString() ?? 'ticket_update';
     final ticketId = (data['ticket_id'] ?? data['ticketId'] ?? data['id'])?.toString();
 
     if (ticketId != null && ticketId.isNotEmpty) {

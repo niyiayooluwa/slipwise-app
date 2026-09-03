@@ -126,7 +126,7 @@ class LoginScreen extends HookConsumerWidget {
           decoration: ShadDecoration(
             border: ShadBorder.all(color: theme.colorScheme.primary),
           ),
-          foregroundColor: Colors.white,
+          foregroundColor: theme.colorScheme.foreground,
           size: ShadButtonSize.lg,
           onPressed: isGoogleLoading
               ? null
@@ -141,8 +141,8 @@ class LoginScreen extends HookConsumerWidget {
                   width: 18,
                 ),
           child: isGoogleLoading
-              ? const SizedBox(
-                  child: SpinKitThreeBounce(size: 16, color: Colors.white),
+              ? SizedBox(
+                  child: SpinKitThreeBounce(size: 16, color: theme.colorScheme.foreground),
                 )
               : const Text("Continue with Google"),
         ),
@@ -273,7 +273,7 @@ class LoginScreen extends HookConsumerWidget {
                     ? SizedBox(
                         child: SpinKitThreeBounce(
                           size: 16,
-                          color: Colors.white,
+                          color: theme.colorScheme.primaryForeground,
                         ),
                       )
                     : const Text('Sign In'),

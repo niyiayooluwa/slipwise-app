@@ -26,6 +26,14 @@ class SettingsService {
 
   bool get hasCompletedOnboarding =>
       _sharedPrefs.getBool(hasCompletedOnboardingKey) ?? false;
+
+  static const themeModeKey = 'theme_mode';
+
+  Future<void> setThemeMode(String mode) async {
+    await _sharedPrefs.setString(themeModeKey, mode);
+  }
+
+  String get themeMode => _sharedPrefs.getString(themeModeKey) ?? 'system';
 }
 
 @Riverpod(keepAlive: true)

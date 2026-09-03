@@ -11,6 +11,7 @@ import 'package:slipwise/modules/profile/screens/widgets/personal_info_modal.dar
 import 'package:slipwise/modules/profile/screens/widgets/security_modal.dart';
 import 'package:slipwise/modules/profile/providers/app_version_provider.dart';
 import 'package:slipwise/modules/profile/screens/widgets/app_update_modal.dart';
+import 'package:slipwise/core/providers/theme_mode_provider.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
@@ -140,6 +141,45 @@ class ProfileScreen extends HookConsumerWidget {
                         theme: theme,
                         colorScheme: colorScheme,
                         onTap: () {},
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  _buildMenuGroup(
+                    theme: theme,
+                    colorScheme: colorScheme,
+                    title: 'Preferences',
+                    items: [
+                      _buildMenuItem(
+                        icon: LucideIcons.moon,
+                        label: 'Appearance',
+                        theme: theme,
+                        colorScheme: colorScheme,
+                        trailing: ShadSelect<ThemeMode>(
+                          initialValue: ref.watch(themeModeProvider),
+                          onChanged: (mode) {
+                            if (mode != null) {
+                              ref.read(themeModeProvider.notifier).setThemeMode(mode);
+                            }
+                          },
+                          options: const [
+                            ShadOption(value: ThemeMode.system, child: Text('System')),
+                            ShadOption(value: ThemeMode.light, child: Text('Light')),
+                            ShadOption(value: ThemeMode.dark, child: Text('Dark')),
+                          ],
+                          selectedOptionBuilder: (context, value) {
+                            return Text(
+                              value == ThemeMode.system
+                                  ? 'System'
+                                  : value == ThemeMode.light
+                                      ? 'Light'
+                                      : 'Dark',
+                            );
+                          },
+                        ),
+                        onTap: () {}, // Handled by select
                       ),
                     ],
                   ),

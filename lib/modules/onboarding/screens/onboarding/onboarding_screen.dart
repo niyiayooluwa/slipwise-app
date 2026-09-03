@@ -23,20 +23,20 @@ class OnboardingScreen extends HookConsumerWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.transparent, // 1. Top edge (fully clear)
-                Colors.black.withValues(
+                theme.colorScheme.background.withValues(alpha: 0.0), // 1. Top edge (fully clear)
+                theme.colorScheme.background.withValues(
                   alpha: 0.4,
-                ), // 2. Middle (slight darkening)
-                Colors.black.withValues(
+                ), // 2. Middle (slight tint)
+                theme.colorScheme.background.withValues(
                   alpha: 0.9,
-                ), // 3. The sudden drop to pure black
-                Colors.black, // 4. Bottom edge (stays solid)
+                ), // 3. The sudden drop to background
+                theme.colorScheme.background, // 4. Bottom edge (stays solid)
               ],
               stops: const [
                 0.0, // Start clear at the very top
                 0.45, // Slowly transition to a slight tint by the 50% mark
-                0.65, // BAM! Suddenly transition to pure black in just this 15% window
-                1.0, // Keep it pure black from 65% all the way to the bottom (100%)
+                0.65, // BAM! Suddenly transition to solid in just this 15% window
+                1.0, // Keep it solid from 65% all the way to the bottom (100%)
               ],
             ),
           ),
@@ -46,20 +46,20 @@ class OnboardingScreen extends HookConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Spacer(),
+                const Spacer(),
                 Text(
                   'Track & Analyze matches. Master your bets.',
-                  style: theme.textTheme.h1.copyWith(color: Colors.white),
+                  style: theme.textTheme.h1.copyWith(color: theme.colorScheme.foreground),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 Text(
                   'Import your tickets instantly to get real-time status updates and deep betting insights all in one place.',
-                  style: theme.textTheme.p.copyWith(color: Colors.white70),
+                  style: theme.textTheme.p.copyWith(color: theme.colorScheme.mutedForeground),
                 ),
-                SizedBox(height: 48),
+                const SizedBox(height: 48),
 
                 // Login
                 SizedBox(

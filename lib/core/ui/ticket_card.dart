@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/semantic_colors.dart';
 
 // A simple enum describing the status a ticket can be in
 enum Status { pending, won, lost }
@@ -37,20 +38,20 @@ class TicketCard extends StatelessWidget {
 
     final (badgeBg, badgeFg, label, statusIcon) = switch (status) {
       Status.pending => (
-        const Color(0xfffbbf24).withValues(alpha: 0.15),
-        const Color(0xfffbbf24),
+        context.statusPending.withValues(alpha: 0.15),
+        context.statusPending,
         'Pending',
         LucideIcons.activity,
       ),
       Status.won => (
-        const Color(0xff4ade80).withValues(alpha: 0.15),
-        const Color(0xff4ade80),
+        context.statusWon.withValues(alpha: 0.15),
+        context.statusWon,
         'Won',
         LucideIcons.checkCircle2,
       ),
       Status.lost => (
-        const Color(0xfff87171).withValues(alpha: 0.15),
-        const Color(0xfff87171),
+        context.statusLost.withValues(alpha: 0.15),
+        context.statusLost,
         'Lost',
         LucideIcons.xCircle,
       ),
@@ -71,7 +72,7 @@ class TicketCard extends StatelessWidget {
           width: double.infinity,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            color: const Color(0xff0E0C0B),
+            color: scheme.card,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: scheme.border),
           ),
@@ -91,6 +92,10 @@ class TicketCard extends StatelessWidget {
                             'assets/drawables/sportybet.svg',
                             height: 24,
                             alignment: Alignment.centerLeft,
+                            colorFilter: ColorFilter.mode(
+                              scheme.foreground,
+                              BlendMode.srcIn,
+                            ),
                           )
                         else ...[
                           Container(
@@ -221,7 +226,7 @@ class TicketCard extends StatelessWidget {
                     context,
                     'Est. Payout',
                     '₦${NumberFormat('#,##0.00').format(totalOdds * betAmount)}',
-                    const Color(0xff4ade80), // Green for payout
+                    context.statusWon, // Green for payout
                   ),
                 ],
               ),

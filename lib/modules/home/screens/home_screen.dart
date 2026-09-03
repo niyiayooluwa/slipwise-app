@@ -117,7 +117,7 @@ class HomeScreen extends HookConsumerWidget {
                                 Text(
                                   today,
                                   style: theme.textTheme.muted.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.8),
+                                    color: colorScheme.foreground.withValues(alpha: 0.8),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -126,7 +126,7 @@ class HomeScreen extends HookConsumerWidget {
                                   'Hello, @$username',
                                   style: theme.textTheme.large.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: colorScheme.foreground,
                                   ),
                                 ),
                               ],
@@ -134,7 +134,7 @@ class HomeScreen extends HookConsumerWidget {
                           ),
                           // Right Side (Icons)
                           Row(
-                            crossAxisAlignment: .end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               // Notification Icon
                               Stack(
@@ -143,8 +143,8 @@ class HomeScreen extends HookConsumerWidget {
                                     width: 40,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.3,
+                                      color: colorScheme.foreground.withValues(
+                                        alpha: 0.1,
                                       ),
                                       shape: BoxShape.circle,
                                     ),
@@ -155,7 +155,7 @@ class HomeScreen extends HookConsumerWidget {
                                       ),
                                       onPressed: () =>
                                           context.push('/notifications'),
-                                      color: Colors.white,
+                                      color: colorScheme.foreground,
                                       constraints: const BoxConstraints(
                                         minWidth: 20,
                                         minHeight: 20,
