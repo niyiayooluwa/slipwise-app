@@ -33,11 +33,6 @@ void useSmartPolling({
       return;
     }
 
-    // Reset backoff to fast polling when app is resumed
-    if (currentState == AppLifecycleState.resumed) {
-      emptyResponsesCount.value = 0;
-    }
-
     // Exponential Backoff calculation
     int delaySeconds = 10;
     if (emptyResponsesCount.value == 1) {
@@ -64,6 +59,11 @@ void useSmartPolling({
   }
 
   useEffect(() {
+    // Reset backoff when the app comes back to the foreground
+    if (appLifecycleState == AppLifecycleState.resumed) {
+      emptyResponsesCount.value = 0;
+    }
+
     // Start or restart polling when lifecycle changes or conditional flag changes
     scheduleNextPoll();
 
