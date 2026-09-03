@@ -48,6 +48,16 @@ jobs:
           echo "tag=v${VERSION}+${BUILD_NUMBER}" >> $GITHUB_OUTPUT
           echo "title=Release v${VERSION} (Build ${BUILD_NUMBER})" >> $GITHUB_OUTPUT
 
+      - name: Setup Android Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+          cat << EOF > android/key.properties
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
       - name: Shorebird Release
         if: ${{ github.event.inputs.build_type == 'release' }}
         run: shorebird release android --artifact=apk
@@ -62,12 +72,16 @@ jobs:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
+      - name: Rename APK
+        if: ${{ github.event.inputs.build_type == 'release' }}
+        run: mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/SlipWise.apk
+
       - name: Upload APK Artifact
         if: ${{ github.event.inputs.build_type == 'release' }}
         uses: actions/upload-artifact@v4
         with:
           name: slipwise-shorebird-apk
-          path: build/app/outputs/apk/release/app-release.apk
+          path: build/app/outputs/apk/release/SlipWise.apk
           retention-days: 7
 
       # Automatically publish to GitHub Releases
@@ -77,7 +91,7 @@ jobs:
         with:
           tag_name: ${{ steps.get_version.outputs.tag }}
           name: ${{ steps.get_version.outputs.title }}
-          files: build/app/outputs/apk/release/app-release.apk
+          files: build/app/outputs/apk/release/SlipWise.apk
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

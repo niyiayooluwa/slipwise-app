@@ -46,3 +46,7 @@ app.*.map.json
 /agent
 /docs
 sentry.properties
+
+# Keystore and keys
+*.jks
+key.properties
