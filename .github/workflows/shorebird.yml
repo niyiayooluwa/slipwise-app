@@ -54,7 +54,7 @@ jobs:
           cat << EOF > android/key.properties
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
+          keyAlias=upload
           storeFile=upload-keystore.jks
           EOF
 
