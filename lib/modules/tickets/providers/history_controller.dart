@@ -128,7 +128,8 @@ class HistoryController extends _$HistoryController {
     final result = await repository.getTickets(
       page: 1,
       limit: 50,
-      status: _currentStatus == 'ALL' ? null : _currentStatus,
+      // Fetch ALL updates regardless of current tab to catch status transitions
+      status: null, 
       since: sinceIso,
     );
 
@@ -217,6 +218,8 @@ class HistoryController extends _$HistoryController {
   }
 
   Future<void> refresh() async {
+    final syncBox = Hive.box<String>('sync_cache');
+    await syncBox.delete('history_last_sync_$_currentStatus');
     ref.invalidateSelf();
     await future;
   }
