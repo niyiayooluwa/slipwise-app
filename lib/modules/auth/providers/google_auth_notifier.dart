@@ -16,7 +16,6 @@ class GoogleAuthNotifier extends _$GoogleAuthNotifier {
     state = const AsyncValue.loading();
     try {
       final googleSignIn = GoogleSignIn(
-        clientId: ApiConstants.googleAppClientId,
         serverClientId: ApiConstants.googleServerClientId,
       );
       final account = await googleSignIn.signIn();
