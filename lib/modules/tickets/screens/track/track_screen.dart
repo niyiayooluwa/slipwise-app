@@ -23,6 +23,9 @@ class TrackScreen extends HookConsumerWidget {
     final stakeController = useTextEditingController();
     final descriptionController = useTextEditingController();
 
+    useListenable(stakeController);
+    useListenable(descriptionController);
+
     // State
     final formState = ref.watch(trackFormControllerProvider);
     final formNotifier = ref.read(trackFormControllerProvider.notifier);
@@ -135,7 +138,10 @@ class TrackScreen extends HookConsumerWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: ShadButton(
-                            onPressed: formState.isTracking
+                            onPressed:
+                                formState.isTracking ||
+                                    stakeController.text.trim().isEmpty ||
+                                    descriptionController.text.trim().isEmpty
                                 ? null
                                 : () => formNotifier.trackTicket(
                                     stakeController.text,

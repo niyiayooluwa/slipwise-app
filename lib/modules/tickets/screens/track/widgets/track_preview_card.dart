@@ -191,7 +191,7 @@ class TrackPreviewCard extends HookWidget {
 
         // Optional Fields
         Text(
-          'Stake Amount (Optional)',
+          'Stake Amount',
           style: theme.textTheme.small.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
@@ -213,7 +213,7 @@ class TrackPreviewCard extends HookWidget {
         const SizedBox(height: 16),
 
         Text(
-          'Description (Optional)',
+          'Description',
           style: theme.textTheme.small.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),

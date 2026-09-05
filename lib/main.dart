@@ -84,12 +84,12 @@ class MainApp extends ConsumerWidget {
           ),
         ),
         primaryToastTheme: const ShadToastTheme(
-          alignment: Alignment.topCenter,
-          duration: Duration(milliseconds: 1500),
+          alignment: Alignment.bottomCenter,
+          duration: Duration(milliseconds: 1300),
         ),
         destructiveToastTheme: const ShadToastTheme(
-          alignment: Alignment.topCenter,
-          duration: Duration(milliseconds: 1500),
+          alignment: Alignment.bottomCenter,
+          duration: Duration(milliseconds: 1300),
         ),
       ),
       darkTheme: ShadThemeData(
@@ -108,12 +108,12 @@ class MainApp extends ConsumerWidget {
           ),
         ),
         primaryToastTheme: const ShadToastTheme(
-          alignment: Alignment.topCenter,
-          duration: Duration(milliseconds: 1500),
+          alignment: Alignment.bottomCenter,
+          duration: Duration(milliseconds: 1300),
         ),
         destructiveToastTheme: const ShadToastTheme(
-          alignment: Alignment.topCenter,
-          duration: Duration(milliseconds: 1500),
+          alignment: Alignment.bottomCenter,
+          duration: Duration(milliseconds: 1300),
         ),
       ),
       routerConfig: router,
