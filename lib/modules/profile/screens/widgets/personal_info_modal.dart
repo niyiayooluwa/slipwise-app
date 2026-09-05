@@ -134,6 +134,7 @@ class PersonalInfoModal extends HookConsumerWidget {
                 Navigator.pop(context);
                 ShadToaster.of(context).show(
                   const ShadToast(
+                    duration: Duration(milliseconds: 500),
                     title: Text('Success'),
                     description: Text('Profile updated successfully.'),
                   ),
@@ -141,6 +142,7 @@ class PersonalInfoModal extends HookConsumerWidget {
               } else {
                 ShadToaster.of(context).show(
                   ShadToast(
+                    duration: const Duration(milliseconds: 500),
                     title: const Text('Error'),
                     description: Text(error),
                   ),
@@ -149,9 +151,9 @@ class PersonalInfoModal extends HookConsumerWidget {
             }
           },
           child: isSubmitting.value
-              ? SpinKitThreeBounce(
+              ? const SpinKitThreeBounce(
                   size: 16,
-                  color: theme.colorScheme.primary,
+                  color: Colors.white,
                 )
               : const Text('Save Changes'),
         ),

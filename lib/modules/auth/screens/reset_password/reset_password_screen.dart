@@ -26,6 +26,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
       onSuccess: (context, state) {
         ShadToaster.of(context).show(
           const ShadToast(
+            duration: Duration(milliseconds: 500),
             title: Text('Password Reset'),
             description: Text(
               'Your password has been successfully reset. Please log in.',
@@ -246,10 +247,10 @@ class ResetPasswordScreen extends HookConsumerWidget {
                     },
               width: double.infinity,
               child: isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       child: SpinKitThreeBounce(
                         size: 16,
-                        color: ShadTheme.of(context).colorScheme.primary,
+                        color: Colors.white,
                       ),
                     )
                   : const Text('Reset Password'),

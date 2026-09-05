@@ -129,10 +129,10 @@ class SetUsernameScreen extends HookConsumerWidget {
                                 }
                               : null,
                           child: isSubmitting
-                              ? SizedBox(
+                              ? const SizedBox(
                                   child: SpinKitThreeBounce(
                                     size: 16,
-                                    color: theme.colorScheme.primary,
+                                    color: Colors.white,
                                   ),
                                 )
                               : const Text('Continue'),

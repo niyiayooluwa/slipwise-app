@@ -39,12 +39,9 @@ class TrackScreen extends HookConsumerWidget {
       if (next != null) {
         ShadToaster.of(context).show(
           ShadToast.destructive(
+            duration: const Duration(milliseconds: 500),
             title: Text(formState.isTimeout ? 'Timeout' : 'Error'),
             description: Text(next),
-            action: ShadButton.outline(
-              onPressed: formNotifier.clearError,
-              child: const Text('Close'),
-            ),
           ),
         );
       }
@@ -57,6 +54,7 @@ class TrackScreen extends HookConsumerWidget {
       if (next == true) {
         ShadToaster.of(context).show(
           const ShadToast(
+            duration: Duration(milliseconds: 500),
             title: Text('Success'),
             description: Text('Ticket tracked successfully!'),
           ),
@@ -105,12 +103,12 @@ class TrackScreen extends HookConsumerWidget {
                               selectedProvider.value,
                             ),
                       child: formState.isPreviewing
-                          ? SizedBox(
+                          ? const SizedBox(
                               height: 20,
                               width: 20,
                               child: SpinKitThreeBounce(
                                 size: 16,
-                                color: colorScheme.primary,
+                                color: Colors.white,
                               ),
                             )
                           : const Text('Preview Ticket'),
@@ -150,12 +148,12 @@ class TrackScreen extends HookConsumerWidget {
                                   )
                                 : null,
                             child: formState.isTracking
-                                ? SizedBox(
+                                ? const SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: SpinKitThreeBounce(
                                       size: 16,
-                                      color: colorScheme.primary,
+                                      color: Colors.white,
                                     ),
                                   )
                                 : const Text('Track Ticket'),

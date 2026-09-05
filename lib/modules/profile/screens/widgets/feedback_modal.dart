@@ -48,6 +48,7 @@ class FeedbackModal extends HookConsumerWidget {
                 Navigator.pop(context);
                 ShadToaster.of(context).show(
                   const ShadToast(
+                    duration: Duration(milliseconds: 500),
                     title: Text('Success'),
                     description: Text('Thank you for your feedback!'),
                   ),
@@ -55,6 +56,7 @@ class FeedbackModal extends HookConsumerWidget {
               } else {
                 ShadToaster.of(context).show(
                   ShadToast(
+                    duration: const Duration(milliseconds: 500),
                     title: const Text('Error'),
                     description: Text(error),
                   ),
@@ -63,9 +65,9 @@ class FeedbackModal extends HookConsumerWidget {
             }
           },
           child: isSubmitting.value
-              ? SpinKitThreeBounce(
+              ? const SpinKitThreeBounce(
                   size: 16,
-                  color: ShadTheme.of(context).colorScheme.primary,
+                  color: Colors.white,
                 )
               : const Text('Send Feedback'),
         ),

@@ -28,6 +28,7 @@ class AuthErrorListener<T> extends ConsumerWidget {
         if (!handled) {
           ShadToaster.of(context).show(
             ShadToast.destructive(
+              duration: const Duration(milliseconds: 500),
               title: Text(errorTitle),
               description: Text(error.toString()),
             ),

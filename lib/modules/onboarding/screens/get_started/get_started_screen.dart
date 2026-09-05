@@ -37,6 +37,7 @@ class GetStartedScreen extends HookConsumerWidget {
       if (next is AsyncError) {
         ShadToaster.of(context).show(
           ShadToast.destructive(
+            duration: const Duration(milliseconds: 500),
             title: const Text('Google Sign-In Failed'),
             description: Text(next.error.toString()),
           ),

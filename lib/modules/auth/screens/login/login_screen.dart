@@ -279,10 +279,10 @@ class LoginScreen extends HookConsumerWidget {
                 width: double.infinity,
                 size: ShadButtonSize.lg,
                 child: isLoading
-                    ? SizedBox(
+                    ? const SizedBox(
                         child: SpinKitThreeBounce(
                           size: 16,
-                          color: theme.colorScheme.primary,
+                          color: Colors.white,
                         ),
                       )
                     : const Text('Sign In'),

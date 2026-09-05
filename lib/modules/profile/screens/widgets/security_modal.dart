@@ -40,6 +40,7 @@ class SecurityModal extends HookConsumerWidget {
               } else {
                 ShadToaster.of(context).show(
                   ShadToast(
+                    duration: const Duration(milliseconds: 500),
                     title: const Text('Error'),
                     description: Text(error),
                   ),
@@ -48,12 +49,12 @@ class SecurityModal extends HookConsumerWidget {
             }
           },
           child: isSubmitting.value
-              ? SizedBox(
+              ? const SizedBox(
                   height: 16,
                   width: 16,
                   child: SpinKitThreeBounce(
                     size: 16,
-                    color: ShadTheme.of(context).colorScheme.primary,
+                    color: Colors.white,
                   ),
                 )
               : const Text('Send Reset Code'),

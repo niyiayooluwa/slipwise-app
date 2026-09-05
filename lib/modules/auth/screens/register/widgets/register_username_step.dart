@@ -92,10 +92,10 @@ class RegisterUsernameStep extends HookConsumerWidget {
             enabled: canContinue,
             onPressed: canContinue ? notifier.nextStep : null,
             child: isChecking
-                ? SizedBox(
+                ? const SizedBox(
                     child: SpinKitThreeBounce(
                       size: 16,
-                      color: theme.colorScheme.primary,
+                      color: Colors.white,
                     ),
                   )
                 : const Text('Continue'),

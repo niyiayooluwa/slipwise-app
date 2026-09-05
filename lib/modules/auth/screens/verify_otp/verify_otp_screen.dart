@@ -29,6 +29,7 @@ class VerifyOtpScreen extends HookConsumerWidget {
         if (context.mounted) {
           ShadToaster.of(context).show(
             const ShadToast(
+              duration: Duration(milliseconds: 500),
               title: Text('OTP Sent'),
               description: Text('A fresh code has been sent to your email.'),
             ),
@@ -129,6 +130,7 @@ class VerifyOtpScreen extends HookConsumerWidget {
                 ref.read(verifyOtpControllerProvider.notifier).resendOtp(email);
                 ShadToaster.of(context).show(
                   const ShadToast(
+                    duration: Duration(milliseconds: 500),
                     title: Text('OTP Sent'),
                     description: Text(
                       'A fresh code has been sent to your email.',
@@ -208,10 +210,10 @@ class VerifyOtpScreen extends HookConsumerWidget {
                       },
                 width: double.infinity,
                 child: isLoading
-                    ? SizedBox(
+                    ? const SizedBox(
                         child: SpinKitThreeBounce(
                           size: 16,
-                          color: ShadTheme.of(context).colorScheme.primary,
+                          color: Colors.white,
                         ),
                       )
                     : const Text('Verify Account'),

@@ -56,6 +56,7 @@ class EditTicketModal extends HookConsumerWidget {
           ifLeft: (error) {
             ShadToaster.of(context).show(
               ShadToast.destructive(
+                duration: const Duration(milliseconds: 500),
                 title: const Text('Failed to update ticket'),
                 description: Text(error.message),
               ),
@@ -77,6 +78,7 @@ class EditTicketModal extends HookConsumerWidget {
 
             ShadToaster.of(context).show(
               const ShadToast(
+                duration: Duration(milliseconds: 500),
                 title: Text('Success'),
                 description: Text('Ticket updated successfully'),
               ),
@@ -91,6 +93,7 @@ class EditTicketModal extends HookConsumerWidget {
         if (context.mounted) {
           ShadToaster.of(context).show(
             const ShadToast.destructive(
+              duration: Duration(milliseconds: 500),
               title: Text('Error'),
               description: Text('An unexpected error occurred.'),
             ),
@@ -171,7 +174,7 @@ class EditTicketModal extends HookConsumerWidget {
             ShadButton(
               onPressed: isSaving.value ? null : handleSave,
               child: isSaving.value
-                  ? SpinKitThreeBounce(size: 16, color: colorScheme.primary)
+                  ? const SpinKitThreeBounce(size: 16, color: Colors.white)
                   : const Text('Save Changes'),
             ),
           ],

@@ -187,6 +187,7 @@ class TicketCard extends StatelessWidget {
                       Clipboard.setData(ClipboardData(text: bookingCode));
                       ShadToaster.of(context).show(
                         const ShadToast(
+                          duration: Duration(milliseconds: 500),
                           description: Text('Booking code copied to clipboard'),
                         ),
                       );
