@@ -32,13 +32,13 @@ class TicketDetailsScreen extends HookConsumerWidget {
     final ticketState = useState<HistoryItem>(initialTicket);
     final ticket = ticketState.value;
 
-    final selectionsAsync = ref.watch(
+    final detailsAsync = ref.watch(
       ticketDetailControllerProvider(ticket.ticketId),
     );
 
     // Only poll if there's at least one match that isn't finished
     final shouldPoll =
-        selectionsAsync.value?.any(
+        detailsAsync.value?.selections.any(
           (s) => s.matchStatus == 'LIVE' || s.matchStatus == 'NOT_STARTED',
         ) ??
         true; // Default to true while loading so it initiates at least
@@ -99,6 +99,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
                     child: _buildSummaryCard(
                       context,
                       ticket,
+                      detailsAsync.value?.summary,
                       theme,
                       colorScheme,
                     ),
@@ -123,8 +124,9 @@ class TicketDetailsScreen extends HookConsumerWidget {
               ),
             ),
 
-            selectionsAsync.when(
-              data: (selections) {
+            detailsAsync.when(
+              data: (response) {
+                final selections = response.selections;
                 if (selections.isEmpty) {
                   return SliverFillRemaining(
                     hasScrollBody: false,
@@ -192,10 +194,17 @@ class TicketDetailsScreen extends HookConsumerWidget {
   Widget _buildSummaryCard(
     BuildContext context,
     HistoryItem ticket,
+    TicketSummary? summary,
     ShadThemeData theme,
     ShadColorScheme colorScheme,
   ) {
     final statusColor = _getStatusColor(context, ticket.overallStatus);
+    final totalLegs = summary != null && summary.totalLegs > 0
+        ? summary.totalLegs
+        : ticket.totalLegs;
+    final wonLegs = summary?.wonLegs ?? ticket.wonLegs;
+    final lostLegs = summary?.lostLegs ?? ticket.lostLegs;
+    final pendingLegs = summary?.pendingLegs ?? ticket.pendingLegs;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -297,7 +306,78 @@ class TicketDetailsScreen extends HookConsumerWidget {
               ),
             ],
           ),
+          if (totalLegs > 0) ...[
+            const SizedBox(height: 16),
+            Divider(color: colorScheme.border, height: 1),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Text(
+                  'Legs ($totalLegs)',
+                  style: theme.textTheme.small.copyWith(
+                    color: colorScheme.mutedForeground,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+                const Spacer(),
+                _buildLegPill('$wonLegs Won', context.statusWon),
+                const SizedBox(width: 6),
+                _buildLegPill('$pendingLegs Pending', context.statusPending),
+                if (lostLegs > 0) ...[
+                  const SizedBox(width: 6),
+                  _buildLegPill('$lostLegs Lost', context.statusLost),
+                ],
+              ],
+            ),
+            const SizedBox(height: 10),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: SizedBox(
+                height: 4,
+                child: Row(
+                  children: [
+                    if (wonLegs > 0)
+                      Expanded(
+                        flex: wonLegs,
+                        child: Container(color: context.statusWon),
+                      ),
+                    if (lostLegs > 0)
+                      Expanded(
+                        flex: lostLegs,
+                        child: Container(color: context.statusLost),
+                      ),
+                    if (pendingLegs > 0)
+                      Expanded(
+                        flex: pendingLegs,
+                        child: Container(
+                          color: colorScheme.border.withValues(alpha: 0.8),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildLegPill(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

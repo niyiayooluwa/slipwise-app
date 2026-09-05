@@ -15,6 +15,10 @@ _HistoryItem _$HistoryItemFromJson(Map<String, dynamic> json) => _HistoryItem(
   ticketId: json['ticket_id'] as String,
   totalOdds: (json['total_odds'] as num).toDouble(),
   trackedAt: DateTime.parse(json['tracked_at'] as String),
+  totalLegs: (json['total_legs'] as num?)?.toInt() ?? 0,
+  wonLegs: (json['won_legs'] as num?)?.toInt() ?? 0,
+  lostLegs: (json['lost_legs'] as num?)?.toInt() ?? 0,
+  pendingLegs: (json['pending_legs'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$HistoryItemToJson(_HistoryItem instance) =>
@@ -27,6 +31,10 @@ Map<String, dynamic> _$HistoryItemToJson(_HistoryItem instance) =>
       'ticket_id': instance.ticketId,
       'total_odds': instance.totalOdds,
       'tracked_at': instance.trackedAt.toIso8601String(),
+      'total_legs': instance.totalLegs,
+      'won_legs': instance.wonLegs,
+      'lost_legs': instance.lostLegs,
+      'pending_legs': instance.pendingLegs,
     };
 
 _PaginationMeta _$PaginationMetaFromJson(Map<String, dynamic> json) =>

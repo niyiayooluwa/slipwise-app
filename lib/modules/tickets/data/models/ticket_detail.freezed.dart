@@ -313,4 +313,566 @@ as String?,
 
 }
 
+
+/// @nodoc
+mixin _$TicketSummary {
+
+@JsonKey(name: 'total_legs', defaultValue: 0) int get totalLegs;@JsonKey(name: 'won_legs', defaultValue: 0) int get wonLegs;@JsonKey(name: 'lost_legs', defaultValue: 0) int get lostLegs;@JsonKey(name: 'pending_legs', defaultValue: 0) int get pendingLegs;
+/// Create a copy of TicketSummary
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TicketSummaryCopyWith<TicketSummary> get copyWith => _$TicketSummaryCopyWithImpl<TicketSummary>(this as TicketSummary, _$identity);
+
+  /// Serializes this TicketSummary to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TicketSummary&&(identical(other.totalLegs, totalLegs) || other.totalLegs == totalLegs)&&(identical(other.wonLegs, wonLegs) || other.wonLegs == wonLegs)&&(identical(other.lostLegs, lostLegs) || other.lostLegs == lostLegs)&&(identical(other.pendingLegs, pendingLegs) || other.pendingLegs == pendingLegs));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,totalLegs,wonLegs,lostLegs,pendingLegs);
+
+@override
+String toString() {
+  return 'TicketSummary(totalLegs: $totalLegs, wonLegs: $wonLegs, lostLegs: $lostLegs, pendingLegs: $pendingLegs)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TicketSummaryCopyWith<$Res>  {
+  factory $TicketSummaryCopyWith(TicketSummary value, $Res Function(TicketSummary) _then) = _$TicketSummaryCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: 'total_legs', defaultValue: 0) int totalLegs,@JsonKey(name: 'won_legs', defaultValue: 0) int wonLegs,@JsonKey(name: 'lost_legs', defaultValue: 0) int lostLegs,@JsonKey(name: 'pending_legs', defaultValue: 0) int pendingLegs
+});
+
+
+
+
+}
+/// @nodoc
+class _$TicketSummaryCopyWithImpl<$Res>
+    implements $TicketSummaryCopyWith<$Res> {
+  _$TicketSummaryCopyWithImpl(this._self, this._then);
+
+  final TicketSummary _self;
+  final $Res Function(TicketSummary) _then;
+
+/// Create a copy of TicketSummary
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? totalLegs = null,Object? wonLegs = null,Object? lostLegs = null,Object? pendingLegs = null,}) {
+  return _then(_self.copyWith(
+totalLegs: null == totalLegs ? _self.totalLegs : totalLegs // ignore: cast_nullable_to_non_nullable
+as int,wonLegs: null == wonLegs ? _self.wonLegs : wonLegs // ignore: cast_nullable_to_non_nullable
+as int,lostLegs: null == lostLegs ? _self.lostLegs : lostLegs // ignore: cast_nullable_to_non_nullable
+as int,pendingLegs: null == pendingLegs ? _self.pendingLegs : pendingLegs // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TicketSummary].
+extension TicketSummaryPatterns on TicketSummary {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TicketSummary value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TicketSummary() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TicketSummary value)  $default,){
+final _that = this;
+switch (_that) {
+case _TicketSummary():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TicketSummary value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TicketSummary() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_legs', defaultValue: 0)  int totalLegs, @JsonKey(name: 'won_legs', defaultValue: 0)  int wonLegs, @JsonKey(name: 'lost_legs', defaultValue: 0)  int lostLegs, @JsonKey(name: 'pending_legs', defaultValue: 0)  int pendingLegs)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TicketSummary() when $default != null:
+return $default(_that.totalLegs,_that.wonLegs,_that.lostLegs,_that.pendingLegs);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'total_legs', defaultValue: 0)  int totalLegs, @JsonKey(name: 'won_legs', defaultValue: 0)  int wonLegs, @JsonKey(name: 'lost_legs', defaultValue: 0)  int lostLegs, @JsonKey(name: 'pending_legs', defaultValue: 0)  int pendingLegs)  $default,) {final _that = this;
+switch (_that) {
+case _TicketSummary():
+return $default(_that.totalLegs,_that.wonLegs,_that.lostLegs,_that.pendingLegs);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'total_legs', defaultValue: 0)  int totalLegs, @JsonKey(name: 'won_legs', defaultValue: 0)  int wonLegs, @JsonKey(name: 'lost_legs', defaultValue: 0)  int lostLegs, @JsonKey(name: 'pending_legs', defaultValue: 0)  int pendingLegs)?  $default,) {final _that = this;
+switch (_that) {
+case _TicketSummary() when $default != null:
+return $default(_that.totalLegs,_that.wonLegs,_that.lostLegs,_that.pendingLegs);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TicketSummary implements TicketSummary {
+  const _TicketSummary({@JsonKey(name: 'total_legs', defaultValue: 0) this.totalLegs = 0, @JsonKey(name: 'won_legs', defaultValue: 0) this.wonLegs = 0, @JsonKey(name: 'lost_legs', defaultValue: 0) this.lostLegs = 0, @JsonKey(name: 'pending_legs', defaultValue: 0) this.pendingLegs = 0});
+  factory _TicketSummary.fromJson(Map<String, dynamic> json) => _$TicketSummaryFromJson(json);
+
+@override@JsonKey(name: 'total_legs', defaultValue: 0) final  int totalLegs;
+@override@JsonKey(name: 'won_legs', defaultValue: 0) final  int wonLegs;
+@override@JsonKey(name: 'lost_legs', defaultValue: 0) final  int lostLegs;
+@override@JsonKey(name: 'pending_legs', defaultValue: 0) final  int pendingLegs;
+
+/// Create a copy of TicketSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TicketSummaryCopyWith<_TicketSummary> get copyWith => __$TicketSummaryCopyWithImpl<_TicketSummary>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TicketSummaryToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TicketSummary&&(identical(other.totalLegs, totalLegs) || other.totalLegs == totalLegs)&&(identical(other.wonLegs, wonLegs) || other.wonLegs == wonLegs)&&(identical(other.lostLegs, lostLegs) || other.lostLegs == lostLegs)&&(identical(other.pendingLegs, pendingLegs) || other.pendingLegs == pendingLegs));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,totalLegs,wonLegs,lostLegs,pendingLegs);
+
+@override
+String toString() {
+  return 'TicketSummary(totalLegs: $totalLegs, wonLegs: $wonLegs, lostLegs: $lostLegs, pendingLegs: $pendingLegs)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TicketSummaryCopyWith<$Res> implements $TicketSummaryCopyWith<$Res> {
+  factory _$TicketSummaryCopyWith(_TicketSummary value, $Res Function(_TicketSummary) _then) = __$TicketSummaryCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: 'total_legs', defaultValue: 0) int totalLegs,@JsonKey(name: 'won_legs', defaultValue: 0) int wonLegs,@JsonKey(name: 'lost_legs', defaultValue: 0) int lostLegs,@JsonKey(name: 'pending_legs', defaultValue: 0) int pendingLegs
+});
+
+
+
+
+}
+/// @nodoc
+class __$TicketSummaryCopyWithImpl<$Res>
+    implements _$TicketSummaryCopyWith<$Res> {
+  __$TicketSummaryCopyWithImpl(this._self, this._then);
+
+  final _TicketSummary _self;
+  final $Res Function(_TicketSummary) _then;
+
+/// Create a copy of TicketSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? totalLegs = null,Object? wonLegs = null,Object? lostLegs = null,Object? pendingLegs = null,}) {
+  return _then(_TicketSummary(
+totalLegs: null == totalLegs ? _self.totalLegs : totalLegs // ignore: cast_nullable_to_non_nullable
+as int,wonLegs: null == wonLegs ? _self.wonLegs : wonLegs // ignore: cast_nullable_to_non_nullable
+as int,lostLegs: null == lostLegs ? _self.lostLegs : lostLegs // ignore: cast_nullable_to_non_nullable
+as int,pendingLegs: null == pendingLegs ? _self.pendingLegs : pendingLegs // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TicketDetailsResponse {
+
+ TicketSummary get summary; List<TicketDetailItem> get selections;
+/// Create a copy of TicketDetailsResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TicketDetailsResponseCopyWith<TicketDetailsResponse> get copyWith => _$TicketDetailsResponseCopyWithImpl<TicketDetailsResponse>(this as TicketDetailsResponse, _$identity);
+
+  /// Serializes this TicketDetailsResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TicketDetailsResponse&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other.selections, selections));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,summary,const DeepCollectionEquality().hash(selections));
+
+@override
+String toString() {
+  return 'TicketDetailsResponse(summary: $summary, selections: $selections)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TicketDetailsResponseCopyWith<$Res>  {
+  factory $TicketDetailsResponseCopyWith(TicketDetailsResponse value, $Res Function(TicketDetailsResponse) _then) = _$TicketDetailsResponseCopyWithImpl;
+@useResult
+$Res call({
+ TicketSummary summary, List<TicketDetailItem> selections
+});
+
+
+$TicketSummaryCopyWith<$Res> get summary;
+
+}
+/// @nodoc
+class _$TicketDetailsResponseCopyWithImpl<$Res>
+    implements $TicketDetailsResponseCopyWith<$Res> {
+  _$TicketDetailsResponseCopyWithImpl(this._self, this._then);
+
+  final TicketDetailsResponse _self;
+  final $Res Function(TicketDetailsResponse) _then;
+
+/// Create a copy of TicketDetailsResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? summary = null,Object? selections = null,}) {
+  return _then(_self.copyWith(
+summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as TicketSummary,selections: null == selections ? _self.selections : selections // ignore: cast_nullable_to_non_nullable
+as List<TicketDetailItem>,
+  ));
+}
+/// Create a copy of TicketDetailsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TicketSummaryCopyWith<$Res> get summary {
+  
+  return $TicketSummaryCopyWith<$Res>(_self.summary, (value) {
+    return _then(_self.copyWith(summary: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [TicketDetailsResponse].
+extension TicketDetailsResponsePatterns on TicketDetailsResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TicketDetailsResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TicketDetailsResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TicketDetailsResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _TicketDetailsResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TicketDetailsResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TicketDetailsResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TicketSummary summary,  List<TicketDetailItem> selections)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TicketDetailsResponse() when $default != null:
+return $default(_that.summary,_that.selections);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TicketSummary summary,  List<TicketDetailItem> selections)  $default,) {final _that = this;
+switch (_that) {
+case _TicketDetailsResponse():
+return $default(_that.summary,_that.selections);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TicketSummary summary,  List<TicketDetailItem> selections)?  $default,) {final _that = this;
+switch (_that) {
+case _TicketDetailsResponse() when $default != null:
+return $default(_that.summary,_that.selections);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TicketDetailsResponse implements TicketDetailsResponse {
+  const _TicketDetailsResponse({required this.summary, required final  List<TicketDetailItem> selections}): _selections = selections;
+  factory _TicketDetailsResponse.fromJson(Map<String, dynamic> json) => _$TicketDetailsResponseFromJson(json);
+
+@override final  TicketSummary summary;
+ final  List<TicketDetailItem> _selections;
+@override List<TicketDetailItem> get selections {
+  if (_selections is EqualUnmodifiableListView) return _selections;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selections);
+}
+
+
+/// Create a copy of TicketDetailsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TicketDetailsResponseCopyWith<_TicketDetailsResponse> get copyWith => __$TicketDetailsResponseCopyWithImpl<_TicketDetailsResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TicketDetailsResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TicketDetailsResponse&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other._selections, _selections));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,summary,const DeepCollectionEquality().hash(_selections));
+
+@override
+String toString() {
+  return 'TicketDetailsResponse(summary: $summary, selections: $selections)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TicketDetailsResponseCopyWith<$Res> implements $TicketDetailsResponseCopyWith<$Res> {
+  factory _$TicketDetailsResponseCopyWith(_TicketDetailsResponse value, $Res Function(_TicketDetailsResponse) _then) = __$TicketDetailsResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ TicketSummary summary, List<TicketDetailItem> selections
+});
+
+
+@override $TicketSummaryCopyWith<$Res> get summary;
+
+}
+/// @nodoc
+class __$TicketDetailsResponseCopyWithImpl<$Res>
+    implements _$TicketDetailsResponseCopyWith<$Res> {
+  __$TicketDetailsResponseCopyWithImpl(this._self, this._then);
+
+  final _TicketDetailsResponse _self;
+  final $Res Function(_TicketDetailsResponse) _then;
+
+/// Create a copy of TicketDetailsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? summary = null,Object? selections = null,}) {
+  return _then(_TicketDetailsResponse(
+summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as TicketSummary,selections: null == selections ? _self._selections : selections // ignore: cast_nullable_to_non_nullable
+as List<TicketDetailItem>,
+  ));
+}
+
+/// Create a copy of TicketDetailsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TicketSummaryCopyWith<$Res> get summary {
+  
+  return $TicketSummaryCopyWith<$Res>(_self.summary, (value) {
+    return _then(_self.copyWith(summary: value));
+  });
+}
+}
+
 // dart format on

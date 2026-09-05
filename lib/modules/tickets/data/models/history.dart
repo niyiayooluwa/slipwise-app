@@ -14,6 +14,10 @@ abstract class HistoryItem with _$HistoryItem {
     @JsonKey(name: 'ticket_id') required String ticketId,
     @JsonKey(name: 'total_odds') required double totalOdds,
     @JsonKey(name: 'tracked_at') required DateTime trackedAt,
+    @JsonKey(name: 'total_legs', defaultValue: 0) @Default(0) int totalLegs,
+    @JsonKey(name: 'won_legs', defaultValue: 0) @Default(0) int wonLegs,
+    @JsonKey(name: 'lost_legs', defaultValue: 0) @Default(0) int lostLegs,
+    @JsonKey(name: 'pending_legs', defaultValue: 0) @Default(0) int pendingLegs,
   }) = _HistoryItem;
 
   factory HistoryItem.fromJson(Map<String, dynamic> json) =>

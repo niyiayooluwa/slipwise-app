@@ -25,3 +25,27 @@ abstract class TicketDetailItem with _$TicketDetailItem {
   factory TicketDetailItem.fromJson(Map<String, dynamic> json) =>
       _$TicketDetailItemFromJson(json);
 }
+
+@freezed
+abstract class TicketSummary with _$TicketSummary {
+  const factory TicketSummary({
+    @JsonKey(name: 'total_legs', defaultValue: 0) @Default(0) int totalLegs,
+    @JsonKey(name: 'won_legs', defaultValue: 0) @Default(0) int wonLegs,
+    @JsonKey(name: 'lost_legs', defaultValue: 0) @Default(0) int lostLegs,
+    @JsonKey(name: 'pending_legs', defaultValue: 0) @Default(0) int pendingLegs,
+  }) = _TicketSummary;
+
+  factory TicketSummary.fromJson(Map<String, dynamic> json) =>
+      _$TicketSummaryFromJson(json);
+}
+
+@freezed
+abstract class TicketDetailsResponse with _$TicketDetailsResponse {
+  const factory TicketDetailsResponse({
+    required TicketSummary summary,
+    required List<TicketDetailItem> selections,
+  }) = _TicketDetailsResponse;
+
+  factory TicketDetailsResponse.fromJson(Map<String, dynamic> json) =>
+      _$TicketDetailsResponseFromJson(json);
+}

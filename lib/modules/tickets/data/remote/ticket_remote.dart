@@ -61,16 +61,47 @@ class TicketRemote {
     }
   }
 
-  Future<Either<Failure, List<TicketDetailItem>>> getTicketDetails(
+  Future<Either<Failure, TicketDetailsResponse>> getTicketDetails(
     String id,
   ) async {
     try {
       final response = await _dio.get('/v1/tickets/$id');
-      final data = response.data as List;
-      final items = data
-          .map((e) => TicketDetailItem.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return Right(items);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return Right(TicketDetailsResponse.fromJson(data));
+      } else if (data is Map) {
+        return Right(
+          TicketDetailsResponse.fromJson(Map<String, dynamic>.from(data)),
+        );
+      } else if (data is List) {
+        // Fallback for legacy raw array response
+        final items = data
+            .map((e) => TicketDetailItem.fromJson(e as Map<String, dynamic>))
+            .toList();
+        final won = items
+            .where((i) => i.selectionStatus.toLowerCase() == 'won')
+            .length;
+        final lost = items
+            .where(
+              (i) =>
+                  i.selectionStatus.toLowerCase() == 'lost' ||
+                  i.selectionStatus.toLowerCase() == 'cut',
+            )
+            .length;
+        final pending = items.length - won - lost;
+        return Right(
+          TicketDetailsResponse(
+            summary: TicketSummary(
+              totalLegs: items.length,
+              wonLegs: won,
+              lostLegs: lost,
+              pendingLegs: pending > 0 ? pending : 0,
+            ),
+            selections: items,
+          ),
+        );
+      }
+      return const Left(ServerFailure('Invalid response format from server'));
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (e) {

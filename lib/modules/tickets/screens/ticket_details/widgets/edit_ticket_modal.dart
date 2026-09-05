@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/update_ticket.dart';
 import 'package:slipwise/modules/tickets/providers/history_controller.dart';
@@ -54,12 +55,9 @@ class EditTicketModal extends HookConsumerWidget {
 
         result.fold(
           ifLeft: (error) {
-            ShadToaster.of(context).show(
-              ShadToast.destructive(
-                duration: const Duration(milliseconds: 500),
-                title: const Text('Failed to update ticket'),
-                description: Text(error.message),
-              ),
+            context.showErrorToast(
+              title: 'Failed to update ticket',
+              description: error.message,
             );
           },
           ifRight: (messageResp) {
@@ -76,12 +74,9 @@ class EditTicketModal extends HookConsumerWidget {
             // or just invalidate the providers so they fetch on next focus.
             ref.invalidate(historyControllerProvider);
 
-            ShadToaster.of(context).show(
-              const ShadToast(
-                duration: Duration(milliseconds: 500),
-                title: Text('Success'),
-                description: Text('Ticket updated successfully'),
-              ),
+            context.showToast(
+              title: 'Success',
+              description: 'Ticket updated successfully',
             );
 
             if (context.mounted) {
@@ -91,12 +86,9 @@ class EditTicketModal extends HookConsumerWidget {
         );
       } catch (e) {
         if (context.mounted) {
-          ShadToaster.of(context).show(
-            const ShadToast.destructive(
-              duration: Duration(milliseconds: 500),
-              title: Text('Error'),
-              description: Text('An unexpected error occurred.'),
-            ),
+          context.showErrorToast(
+            title: 'Error',
+            description: 'An unexpected error occurred.',
           );
         }
       } finally {
@@ -172,6 +164,8 @@ class EditTicketModal extends HookConsumerWidget {
             const SizedBox(height: 32),
 
             ShadButton(
+              size: ShadButtonSize.lg,
+              width: double.infinity,
               onPressed: isSaving.value ? null : handleSave,
               child: isSaving.value
                   ? const SpinKitThreeBounce(size: 16, color: Colors.white)

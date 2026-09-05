@@ -50,7 +50,7 @@ final class HistoryControllerProvider
   }
 }
 
-String _$historyControllerHash() => r'e62104999053b405014d5899beb84beb8715e6de';
+String _$historyControllerHash() => r'725ac78215a1ffc0c6384878f9a4b881118f6c21';
 
 final class HistoryControllerFamily extends $Family
     with

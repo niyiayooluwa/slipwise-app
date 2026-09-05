@@ -36,7 +36,7 @@ class TicketRepository {
     return _ticketRemote.deleteTicket(id);
   }
 
-  Future<Either<Failure, List<TicketDetailItem>>> getTicketDetails(
+  Future<Either<Failure, TicketDetailsResponse>> getTicketDetails(
     String id,
   ) async {
     return _ticketRemote.getTicketDetails(id);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/utils/semantic_colors.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 
 // A simple enum describing the status a ticket can be in
 enum Status { pending, won, lost }
@@ -16,6 +17,10 @@ class TicketCard extends StatelessWidget {
   final double totalOdds;
   final String provider;
   final Status status;
+  final int totalLegs;
+  final int wonLegs;
+  final int lostLegs;
+  final int pendingLegs;
   final VoidCallback? onTap;
 
   const TicketCard({
@@ -28,6 +33,10 @@ class TicketCard extends StatelessWidget {
     required this.totalOdds,
     required this.provider,
     required this.status,
+    this.totalLegs = 0,
+    this.wonLegs = 0,
+    this.lostLegs = 0,
+    this.pendingLegs = 0,
     this.onTap,
   });
 
@@ -57,30 +66,24 @@ class TicketCard extends StatelessWidget {
       ),
     };
 
-    // Simple material widget to wrap our actual widget
     return Material(
-      // Im setting the transparency here to override it. I dont like not knowing
-      // if it is clear or not
       color: Colors.transparent,
-
-      // InkWell basically make the card clickable. Clicking a ticket should take
-      //  the user to the ticket page
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Container(
           width: double.infinity,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             color: scheme.card,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(color: scheme.border),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Row: Provider & Status Badge
+              // Top Row: Provider + Relative Time & Status Badge
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -90,7 +93,7 @@ class TicketCard extends StatelessWidget {
                         if (provider.toLowerCase() == 'sportybet')
                           SvgPicture.asset(
                             'assets/drawables/sportybet.svg',
-                            height: 24,
+                            height: 20,
                             alignment: Alignment.centerLeft,
                             colorFilter: ColorFilter.mode(
                               scheme.foreground,
@@ -99,29 +102,51 @@ class TicketCard extends StatelessWidget {
                           )
                         else ...[
                           Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               color: scheme.secondary,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             child: Icon(
                               LucideIcons.ticket,
-                              size: 14,
+                              size: 13,
                               color: scheme.foreground,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            provider.toUpperCase(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.small.copyWith(
-                              color: scheme.mutedForeground,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              provider.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.small.copyWith(
+                                color: scheme.mutedForeground,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                           ),
                         ],
+                        const SizedBox(width: 8),
+                        Text(
+                          '•',
+                          style: TextStyle(
+                            color: scheme.mutedForeground.withValues(
+                              alpha: 0.5,
+                            ),
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _relativeTime(trackedAt),
+                          style: theme.textTheme.small.copyWith(
+                            color: scheme.mutedForeground,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -145,6 +170,7 @@ class TicketCard extends StatelessWidget {
                           style: theme.textTheme.small.copyWith(
                             color: badgeFg,
                             fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -152,31 +178,36 @@ class TicketCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
 
               // Booking Code & Copy Action
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          description.isNotEmpty ? description : 'Booking Code',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.small.copyWith(
-                            color: scheme.mutedForeground,
+                        if (description.isNotEmpty) ...[
+                          Text(
+                            description,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.small.copyWith(
+                              color: scheme.mutedForeground,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
+                          const SizedBox(height: 3),
+                        ],
                         Text(
                           bookingCode,
-                          style: theme.textTheme.large.copyWith(
+                          style: theme.textTheme.h4.copyWith(
                             color: scheme.foreground,
-                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                            fontSize: 18,
                           ),
                         ),
                       ],
@@ -185,11 +216,8 @@ class TicketCard extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: bookingCode));
-                      ShadToaster.of(context).show(
-                        const ShadToast(
-                          duration: Duration(milliseconds: 500),
-                          description: Text('Booking code copied to clipboard'),
-                        ),
+                      context.showToast(
+                        description: 'Booking code copied to clipboard',
                       );
                     },
                     icon: Icon(
@@ -197,17 +225,74 @@ class TicketCard extends StatelessWidget {
                       size: 18,
                       color: scheme.mutedForeground,
                     ),
-                    padding: EdgeInsets.zero,
+                    padding: const EdgeInsets.all(6),
                     constraints: const BoxConstraints(),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 20),
-              Divider(color: scheme.border, height: 1, thickness: 1),
-              const SizedBox(height: 16),
+              // Real-time Leg Progress Indicator (if legs available)
+              if (totalLegs > 0) ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: SizedBox(
+                          height: 5,
+                          child: Row(
+                            children: [
+                              if (wonLegs > 0)
+                                Expanded(
+                                  flex: wonLegs,
+                                  child: Container(color: context.statusWon),
+                                ),
+                              if (lostLegs > 0)
+                                Expanded(
+                                  flex: lostLegs,
+                                  child: Container(color: context.statusLost),
+                                ),
+                              if (pendingLegs > 0)
+                                Expanded(
+                                  flex: pendingLegs,
+                                  child: Container(
+                                    color: scheme.border.withValues(alpha: 0.9),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      _formatLegProgress(
+                        wonLegs,
+                        lostLegs,
+                        pendingLegs,
+                        totalLegs,
+                      ),
+                      style: theme.textTheme.small.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: _legTextColor(
+                          context,
+                          wonLegs,
+                          lostLegs,
+                          pendingLegs,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
 
-              // Bottom Stats Row: Odds, Stake, Payout
+              const SizedBox(height: 14),
+              Divider(color: scheme.border, height: 1, thickness: 1),
+              const SizedBox(height: 12),
+
+              // Bottom Stats Row: Odds, Stake, Est. Payout
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -227,27 +312,31 @@ class TicketCard extends StatelessWidget {
                     context,
                     'Est. Payout',
                     '₦${NumberFormat('#,##0.00').format(totalOdds * betAmount)}',
-                    context.statusWon, // Green for payout
+                    context.statusWon,
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Divider(color: scheme.border, height: 1, thickness: 1),
-              const SizedBox(height: 16),
-              Text(
-                'Tracking began about ${_relativeTime(trackedAt)}',
-                style: theme.textTheme.small.copyWith(
-                  color: scheme.mutedForeground,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ], // Column children
-          ), // Column
-        ), // Container
-      ), // InkWell
-    ); // Material
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatLegProgress(int won, int lost, int pending, int total) {
+    if (lost > 0) {
+      return won > 0 ? '$won Won • $lost Lost' : '$lost Lost';
+    }
+    if (won > 0) {
+      return '$won/$total Won';
+    }
+    return '$pending Pending';
+  }
+
+  Color _legTextColor(BuildContext context, int won, int lost, int pending) {
+    if (lost > 0) return context.statusLost;
+    if (won > 0) return context.statusWon;
+    return context.statusPending;
   }
 
   Widget _buildStat(
@@ -269,12 +358,13 @@ class TicketCard extends StatelessWidget {
             fontSize: 12,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 3),
         Text(
           value,
           style: theme.textTheme.small.copyWith(
             color: valueColor,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
           ),
         ),
       ],

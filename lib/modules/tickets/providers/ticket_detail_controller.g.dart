@@ -14,7 +14,7 @@ const ticketDetailControllerProvider = TicketDetailControllerFamily._();
 
 final class TicketDetailControllerProvider
     extends
-        $AsyncNotifierProvider<TicketDetailController, List<TicketDetailItem>> {
+        $AsyncNotifierProvider<TicketDetailController, TicketDetailsResponse> {
   const TicketDetailControllerProvider._({
     required TicketDetailControllerFamily super.from,
     required String super.argument,
@@ -53,15 +53,15 @@ final class TicketDetailControllerProvider
 }
 
 String _$ticketDetailControllerHash() =>
-    r'6e7ca51cc022087ce3f71e8c5ad3a95429d77801';
+    r'60c32669d450eec9f022e8e951ff66f4f4a11e76';
 
 final class TicketDetailControllerFamily extends $Family
     with
         $ClassFamilyOverride<
           TicketDetailController,
-          AsyncValue<List<TicketDetailItem>>,
-          List<TicketDetailItem>,
-          FutureOr<List<TicketDetailItem>>,
+          AsyncValue<TicketDetailsResponse>,
+          TicketDetailsResponse,
+          FutureOr<TicketDetailsResponse>,
           String
         > {
   const TicketDetailControllerFamily._()
@@ -81,26 +81,26 @@ final class TicketDetailControllerFamily extends $Family
 }
 
 abstract class _$TicketDetailController
-    extends $AsyncNotifier<List<TicketDetailItem>> {
+    extends $AsyncNotifier<TicketDetailsResponse> {
   late final _$args = ref.$arg as String;
   String get ticketId => _$args;
 
-  FutureOr<List<TicketDetailItem>> build(String ticketId);
+  FutureOr<TicketDetailsResponse> build(String ticketId);
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build(_$args);
     final ref =
         this.ref
-            as $Ref<AsyncValue<List<TicketDetailItem>>, List<TicketDetailItem>>;
+            as $Ref<AsyncValue<TicketDetailsResponse>, TicketDetailsResponse>;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<List<TicketDetailItem>>,
-                List<TicketDetailItem>
+                AsyncValue<TicketDetailsResponse>,
+                TicketDetailsResponse
               >,
-              AsyncValue<List<TicketDetailItem>>,
+              AsyncValue<TicketDetailsResponse>,
               Object?,
               Object?
             >;
@@ -163,7 +163,7 @@ final class SingleTicketProvider
   }
 }
 
-String _$singleTicketHash() => r'b2d9ecb45c3b3904b2bc3f78214130db226982b4';
+String _$singleTicketHash() => r'38f7cf399120115b457ae5591faeb385d398f4d3';
 
 final class SingleTicketFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<HistoryItem>, String> {

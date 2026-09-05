@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HistoryItem {
 
- String get code; String? get description;@JsonKey(name: 'overall_status') String get overallStatus; String get provider; double? get stake;@JsonKey(name: 'ticket_id') String get ticketId;@JsonKey(name: 'total_odds') double get totalOdds;@JsonKey(name: 'tracked_at') DateTime get trackedAt;
+ String get code; String? get description;@JsonKey(name: 'overall_status') String get overallStatus; String get provider; double? get stake;@JsonKey(name: 'ticket_id') String get ticketId;@JsonKey(name: 'total_odds') double get totalOdds;@JsonKey(name: 'tracked_at') DateTime get trackedAt;@JsonKey(name: 'total_legs', defaultValue: 0) int get totalLegs;@JsonKey(name: 'won_legs', defaultValue: 0) int get wonLegs;@JsonKey(name: 'lost_legs', defaultValue: 0) int get lostLegs;@JsonKey(name: 'pending_legs', defaultValue: 0) int get pendingLegs;
 /// Create a copy of HistoryItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $HistoryItemCopyWith<HistoryItem> get copyWith => _$HistoryItemCopyWithImpl<Hist
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoryItem&&(identical(other.code, code) || other.code == code)&&(identical(other.description, description) || other.description == description)&&(identical(other.overallStatus, overallStatus) || other.overallStatus == overallStatus)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.stake, stake) || other.stake == stake)&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.totalOdds, totalOdds) || other.totalOdds == totalOdds)&&(identical(other.trackedAt, trackedAt) || other.trackedAt == trackedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoryItem&&(identical(other.code, code) || other.code == code)&&(identical(other.description, description) || other.description == description)&&(identical(other.overallStatus, overallStatus) || other.overallStatus == overallStatus)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.stake, stake) || other.stake == stake)&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.totalOdds, totalOdds) || other.totalOdds == totalOdds)&&(identical(other.trackedAt, trackedAt) || other.trackedAt == trackedAt)&&(identical(other.totalLegs, totalLegs) || other.totalLegs == totalLegs)&&(identical(other.wonLegs, wonLegs) || other.wonLegs == wonLegs)&&(identical(other.lostLegs, lostLegs) || other.lostLegs == lostLegs)&&(identical(other.pendingLegs, pendingLegs) || other.pendingLegs == pendingLegs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,description,overallStatus,provider,stake,ticketId,totalOdds,trackedAt);
+int get hashCode => Object.hash(runtimeType,code,description,overallStatus,provider,stake,ticketId,totalOdds,trackedAt,totalLegs,wonLegs,lostLegs,pendingLegs);
 
 @override
 String toString() {
-  return 'HistoryItem(code: $code, description: $description, overallStatus: $overallStatus, provider: $provider, stake: $stake, ticketId: $ticketId, totalOdds: $totalOdds, trackedAt: $trackedAt)';
+  return 'HistoryItem(code: $code, description: $description, overallStatus: $overallStatus, provider: $provider, stake: $stake, ticketId: $ticketId, totalOdds: $totalOdds, trackedAt: $trackedAt, totalLegs: $totalLegs, wonLegs: $wonLegs, lostLegs: $lostLegs, pendingLegs: $pendingLegs)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $HistoryItemCopyWith<$Res>  {
   factory $HistoryItemCopyWith(HistoryItem value, $Res Function(HistoryItem) _then) = _$HistoryItemCopyWithImpl;
 @useResult
 $Res call({
- String code, String? description,@JsonKey(name: 'overall_status') String overallStatus, String provider, double? stake,@JsonKey(name: 'ticket_id') String ticketId,@JsonKey(name: 'total_odds') double totalOdds,@JsonKey(name: 'tracked_at') DateTime trackedAt
+ String code, String? description,@JsonKey(name: 'overall_status') String overallStatus, String provider, double? stake,@JsonKey(name: 'ticket_id') String ticketId,@JsonKey(name: 'total_odds') double totalOdds,@JsonKey(name: 'tracked_at') DateTime trackedAt,@JsonKey(name: 'total_legs', defaultValue: 0) int totalLegs,@JsonKey(name: 'won_legs', defaultValue: 0) int wonLegs,@JsonKey(name: 'lost_legs', defaultValue: 0) int lostLegs,@JsonKey(name: 'pending_legs', defaultValue: 0) int pendingLegs
 });
 
 
@@ -65,7 +65,7 @@ class _$HistoryItemCopyWithImpl<$Res>
 
 /// Create a copy of HistoryItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? description = freezed,Object? overallStatus = null,Object? provider = null,Object? stake = freezed,Object? ticketId = null,Object? totalOdds = null,Object? trackedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? description = freezed,Object? overallStatus = null,Object? provider = null,Object? stake = freezed,Object? ticketId = null,Object? totalOdds = null,Object? trackedAt = null,Object? totalLegs = null,Object? wonLegs = null,Object? lostLegs = null,Object? pendingLegs = null,}) {
   return _then(_self.copyWith(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,11 @@ as String,stake: freezed == stake ? _self.stake : stake // ignore: cast_nullable
 as double?,ticketId: null == ticketId ? _self.ticketId : ticketId // ignore: cast_nullable_to_non_nullable
 as String,totalOdds: null == totalOdds ? _self.totalOdds : totalOdds // ignore: cast_nullable_to_non_nullable
 as double,trackedAt: null == trackedAt ? _self.trackedAt : trackedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,totalLegs: null == totalLegs ? _self.totalLegs : totalLegs // ignore: cast_nullable_to_non_nullable
+as int,wonLegs: null == wonLegs ? _self.wonLegs : wonLegs // ignore: cast_nullable_to_non_nullable
+as int,lostLegs: null == lostLegs ? _self.lostLegs : lostLegs // ignore: cast_nullable_to_non_nullable
+as int,pendingLegs: null == pendingLegs ? _self.pendingLegs : pendingLegs // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -160,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String code,  String? description, @JsonKey(name: 'overall_status')  String overallStatus,  String provider,  double? stake, @JsonKey(name: 'ticket_id')  String ticketId, @JsonKey(name: 'total_odds')  double totalOdds, @JsonKey(name: 'tracked_at')  DateTime trackedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String code,  String? description, @JsonKey(name: 'overall_status')  String overallStatus,  String provider,  double? stake, @JsonKey(name: 'ticket_id')  String ticketId, @JsonKey(name: 'total_odds')  double totalOdds, @JsonKey(name: 'tracked_at')  DateTime trackedAt, @JsonKey(name: 'total_legs', defaultValue: 0)  int totalLegs, @JsonKey(name: 'won_legs', defaultValue: 0)  int wonLegs, @JsonKey(name: 'lost_legs', defaultValue: 0)  int lostLegs, @JsonKey(name: 'pending_legs', defaultValue: 0)  int pendingLegs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HistoryItem() when $default != null:
-return $default(_that.code,_that.description,_that.overallStatus,_that.provider,_that.stake,_that.ticketId,_that.totalOdds,_that.trackedAt);case _:
+return $default(_that.code,_that.description,_that.overallStatus,_that.provider,_that.stake,_that.ticketId,_that.totalOdds,_that.trackedAt,_that.totalLegs,_that.wonLegs,_that.lostLegs,_that.pendingLegs);case _:
   return orElse();
 
 }
@@ -181,10 +185,10 @@ return $default(_that.code,_that.description,_that.overallStatus,_that.provider,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String code,  String? description, @JsonKey(name: 'overall_status')  String overallStatus,  String provider,  double? stake, @JsonKey(name: 'ticket_id')  String ticketId, @JsonKey(name: 'total_odds')  double totalOdds, @JsonKey(name: 'tracked_at')  DateTime trackedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String code,  String? description, @JsonKey(name: 'overall_status')  String overallStatus,  String provider,  double? stake, @JsonKey(name: 'ticket_id')  String ticketId, @JsonKey(name: 'total_odds')  double totalOdds, @JsonKey(name: 'tracked_at')  DateTime trackedAt, @JsonKey(name: 'total_legs', defaultValue: 0)  int totalLegs, @JsonKey(name: 'won_legs', defaultValue: 0)  int wonLegs, @JsonKey(name: 'lost_legs', defaultValue: 0)  int lostLegs, @JsonKey(name: 'pending_legs', defaultValue: 0)  int pendingLegs)  $default,) {final _that = this;
 switch (_that) {
 case _HistoryItem():
-return $default(_that.code,_that.description,_that.overallStatus,_that.provider,_that.stake,_that.ticketId,_that.totalOdds,_that.trackedAt);case _:
+return $default(_that.code,_that.description,_that.overallStatus,_that.provider,_that.stake,_that.ticketId,_that.totalOdds,_that.trackedAt,_that.totalLegs,_that.wonLegs,_that.lostLegs,_that.pendingLegs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +205,10 @@ return $default(_that.code,_that.description,_that.overallStatus,_that.provider,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String code,  String? description, @JsonKey(name: 'overall_status')  String overallStatus,  String provider,  double? stake, @JsonKey(name: 'ticket_id')  String ticketId, @JsonKey(name: 'total_odds')  double totalOdds, @JsonKey(name: 'tracked_at')  DateTime trackedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String code,  String? description, @JsonKey(name: 'overall_status')  String overallStatus,  String provider,  double? stake, @JsonKey(name: 'ticket_id')  String ticketId, @JsonKey(name: 'total_odds')  double totalOdds, @JsonKey(name: 'tracked_at')  DateTime trackedAt, @JsonKey(name: 'total_legs', defaultValue: 0)  int totalLegs, @JsonKey(name: 'won_legs', defaultValue: 0)  int wonLegs, @JsonKey(name: 'lost_legs', defaultValue: 0)  int lostLegs, @JsonKey(name: 'pending_legs', defaultValue: 0)  int pendingLegs)?  $default,) {final _that = this;
 switch (_that) {
 case _HistoryItem() when $default != null:
-return $default(_that.code,_that.description,_that.overallStatus,_that.provider,_that.stake,_that.ticketId,_that.totalOdds,_that.trackedAt);case _:
+return $default(_that.code,_that.description,_that.overallStatus,_that.provider,_that.stake,_that.ticketId,_that.totalOdds,_that.trackedAt,_that.totalLegs,_that.wonLegs,_that.lostLegs,_that.pendingLegs);case _:
   return null;
 
 }
@@ -216,7 +220,7 @@ return $default(_that.code,_that.description,_that.overallStatus,_that.provider,
 @JsonSerializable()
 
 class _HistoryItem implements HistoryItem {
-  const _HistoryItem({required this.code, this.description, @JsonKey(name: 'overall_status') required this.overallStatus, required this.provider, this.stake, @JsonKey(name: 'ticket_id') required this.ticketId, @JsonKey(name: 'total_odds') required this.totalOdds, @JsonKey(name: 'tracked_at') required this.trackedAt});
+  const _HistoryItem({required this.code, this.description, @JsonKey(name: 'overall_status') required this.overallStatus, required this.provider, this.stake, @JsonKey(name: 'ticket_id') required this.ticketId, @JsonKey(name: 'total_odds') required this.totalOdds, @JsonKey(name: 'tracked_at') required this.trackedAt, @JsonKey(name: 'total_legs', defaultValue: 0) this.totalLegs = 0, @JsonKey(name: 'won_legs', defaultValue: 0) this.wonLegs = 0, @JsonKey(name: 'lost_legs', defaultValue: 0) this.lostLegs = 0, @JsonKey(name: 'pending_legs', defaultValue: 0) this.pendingLegs = 0});
   factory _HistoryItem.fromJson(Map<String, dynamic> json) => _$HistoryItemFromJson(json);
 
 @override final  String code;
@@ -227,6 +231,10 @@ class _HistoryItem implements HistoryItem {
 @override@JsonKey(name: 'ticket_id') final  String ticketId;
 @override@JsonKey(name: 'total_odds') final  double totalOdds;
 @override@JsonKey(name: 'tracked_at') final  DateTime trackedAt;
+@override@JsonKey(name: 'total_legs', defaultValue: 0) final  int totalLegs;
+@override@JsonKey(name: 'won_legs', defaultValue: 0) final  int wonLegs;
+@override@JsonKey(name: 'lost_legs', defaultValue: 0) final  int lostLegs;
+@override@JsonKey(name: 'pending_legs', defaultValue: 0) final  int pendingLegs;
 
 /// Create a copy of HistoryItem
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +249,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HistoryItem&&(identical(other.code, code) || other.code == code)&&(identical(other.description, description) || other.description == description)&&(identical(other.overallStatus, overallStatus) || other.overallStatus == overallStatus)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.stake, stake) || other.stake == stake)&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.totalOdds, totalOdds) || other.totalOdds == totalOdds)&&(identical(other.trackedAt, trackedAt) || other.trackedAt == trackedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HistoryItem&&(identical(other.code, code) || other.code == code)&&(identical(other.description, description) || other.description == description)&&(identical(other.overallStatus, overallStatus) || other.overallStatus == overallStatus)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.stake, stake) || other.stake == stake)&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.totalOdds, totalOdds) || other.totalOdds == totalOdds)&&(identical(other.trackedAt, trackedAt) || other.trackedAt == trackedAt)&&(identical(other.totalLegs, totalLegs) || other.totalLegs == totalLegs)&&(identical(other.wonLegs, wonLegs) || other.wonLegs == wonLegs)&&(identical(other.lostLegs, lostLegs) || other.lostLegs == lostLegs)&&(identical(other.pendingLegs, pendingLegs) || other.pendingLegs == pendingLegs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,description,overallStatus,provider,stake,ticketId,totalOdds,trackedAt);
+int get hashCode => Object.hash(runtimeType,code,description,overallStatus,provider,stake,ticketId,totalOdds,trackedAt,totalLegs,wonLegs,lostLegs,pendingLegs);
 
 @override
 String toString() {
-  return 'HistoryItem(code: $code, description: $description, overallStatus: $overallStatus, provider: $provider, stake: $stake, ticketId: $ticketId, totalOdds: $totalOdds, trackedAt: $trackedAt)';
+  return 'HistoryItem(code: $code, description: $description, overallStatus: $overallStatus, provider: $provider, stake: $stake, ticketId: $ticketId, totalOdds: $totalOdds, trackedAt: $trackedAt, totalLegs: $totalLegs, wonLegs: $wonLegs, lostLegs: $lostLegs, pendingLegs: $pendingLegs)';
 }
 
 
@@ -261,7 +269,7 @@ abstract mixin class _$HistoryItemCopyWith<$Res> implements $HistoryItemCopyWith
   factory _$HistoryItemCopyWith(_HistoryItem value, $Res Function(_HistoryItem) _then) = __$HistoryItemCopyWithImpl;
 @override @useResult
 $Res call({
- String code, String? description,@JsonKey(name: 'overall_status') String overallStatus, String provider, double? stake,@JsonKey(name: 'ticket_id') String ticketId,@JsonKey(name: 'total_odds') double totalOdds,@JsonKey(name: 'tracked_at') DateTime trackedAt
+ String code, String? description,@JsonKey(name: 'overall_status') String overallStatus, String provider, double? stake,@JsonKey(name: 'ticket_id') String ticketId,@JsonKey(name: 'total_odds') double totalOdds,@JsonKey(name: 'tracked_at') DateTime trackedAt,@JsonKey(name: 'total_legs', defaultValue: 0) int totalLegs,@JsonKey(name: 'won_legs', defaultValue: 0) int wonLegs,@JsonKey(name: 'lost_legs', defaultValue: 0) int lostLegs,@JsonKey(name: 'pending_legs', defaultValue: 0) int pendingLegs
 });
 
 
@@ -278,7 +286,7 @@ class __$HistoryItemCopyWithImpl<$Res>
 
 /// Create a copy of HistoryItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? code = null,Object? description = freezed,Object? overallStatus = null,Object? provider = null,Object? stake = freezed,Object? ticketId = null,Object? totalOdds = null,Object? trackedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? code = null,Object? description = freezed,Object? overallStatus = null,Object? provider = null,Object? stake = freezed,Object? ticketId = null,Object? totalOdds = null,Object? trackedAt = null,Object? totalLegs = null,Object? wonLegs = null,Object? lostLegs = null,Object? pendingLegs = null,}) {
   return _then(_HistoryItem(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -288,7 +296,11 @@ as String,stake: freezed == stake ? _self.stake : stake // ignore: cast_nullable
 as double?,ticketId: null == ticketId ? _self.ticketId : ticketId // ignore: cast_nullable_to_non_nullable
 as String,totalOdds: null == totalOdds ? _self.totalOdds : totalOdds // ignore: cast_nullable_to_non_nullable
 as double,trackedAt: null == trackedAt ? _self.trackedAt : trackedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,totalLegs: null == totalLegs ? _self.totalLegs : totalLegs // ignore: cast_nullable_to_non_nullable
+as int,wonLegs: null == wonLegs ? _self.wonLegs : wonLegs // ignore: cast_nullable_to_non_nullable
+as int,lostLegs: null == lostLegs ? _self.lostLegs : lostLegs // ignore: cast_nullable_to_non_nullable
+as int,pendingLegs: null == pendingLegs ? _self.pendingLegs : pendingLegs // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

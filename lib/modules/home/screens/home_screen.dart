@@ -332,6 +332,10 @@ class HomeScreen extends HookConsumerWidget {
                                 totalOdds: ticket.totalOdds,
                                 provider: ticket.provider,
                                 status: _mapStatus(ticket.overallStatus),
+                                totalLegs: ticket.totalLegs,
+                                wonLegs: ticket.wonLegs,
+                                lostLegs: ticket.lostLegs,
+                                pendingLegs: ticket.pendingLegs,
                                 onTap: () {
                                   context.push(
                                     '/ticket-details',

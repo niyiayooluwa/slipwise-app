@@ -133,18 +133,14 @@ Failure mapDioException(DioException e) {
   }
   if (message.contains('booking code is invalid or not found')) {
     return const BadRequestFailure(
-      'Booking code is invalid or not found.',
+      'Invalid booking code. Please check and try again.',
     );
   }
   if (message.contains('booking code has expired')) {
-    return const BadRequestFailure(
-      'Booking code has expired.',
-    );
+    return const BadRequestFailure('This booking code has expired.');
   }
   if (message.contains('unsupported provider')) {
-    return const BadRequestFailure(
-      'We don\'t support this betting provider yet.',
-    );
+    return const BadRequestFailure('Unsupported provider selected.');
   }
   if (message.contains('invalid booking code id')) {
     return const BadRequestFailure(

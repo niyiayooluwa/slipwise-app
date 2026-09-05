@@ -41,3 +41,35 @@ Map<String, dynamic> _$TicketDetailItemToJson(_TicketDetailItem instance) =>
       'start_time': instance.startTime.toIso8601String(),
       'display_selection': instance.displaySelection,
     };
+
+_TicketSummary _$TicketSummaryFromJson(Map<String, dynamic> json) =>
+    _TicketSummary(
+      totalLegs: (json['total_legs'] as num?)?.toInt() ?? 0,
+      wonLegs: (json['won_legs'] as num?)?.toInt() ?? 0,
+      lostLegs: (json['lost_legs'] as num?)?.toInt() ?? 0,
+      pendingLegs: (json['pending_legs'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$TicketSummaryToJson(_TicketSummary instance) =>
+    <String, dynamic>{
+      'total_legs': instance.totalLegs,
+      'won_legs': instance.wonLegs,
+      'lost_legs': instance.lostLegs,
+      'pending_legs': instance.pendingLegs,
+    };
+
+_TicketDetailsResponse _$TicketDetailsResponseFromJson(
+  Map<String, dynamic> json,
+) => _TicketDetailsResponse(
+  summary: TicketSummary.fromJson(json['summary'] as Map<String, dynamic>),
+  selections: (json['selections'] as List<dynamic>)
+      .map((e) => TicketDetailItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$TicketDetailsResponseToJson(
+  _TicketDetailsResponse instance,
+) => <String, dynamic>{
+  'summary': instance.summary,
+  'selections': instance.selections,
+};
