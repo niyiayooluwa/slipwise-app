@@ -72,24 +72,44 @@ class MainApp extends ConsumerWidget {
       themeMode: themeMode,
       theme: ShadThemeData(
         colorScheme: const ShadGreenColorScheme.light(),
-        radius: BorderRadius.circular(26),
+        radius: BorderRadius.circular(12),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
+        primaryButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
+        secondaryButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
+        destructiveButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
+        outlineButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
         inputTheme: const ShadInputTheme(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: ShadDecoration(
-            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
             focusedBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(16)),
+              radius: BorderRadius.all(Radius.circular(26)),
             ),
             errorBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(16)),
+              radius: BorderRadius.all(Radius.circular(26)),
             ),
           ),
         ),
         selectTheme: const ShadSelectTheme(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: ShadDecoration(
-            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
           ),
         ),
         buttonSizesTheme: const ShadButtonSizesTheme(
@@ -128,24 +148,44 @@ class MainApp extends ConsumerWidget {
       ),
       darkTheme: ShadThemeData(
         colorScheme: const ShadGreenColorScheme.dark(),
-        radius: BorderRadius.circular(26),
+        radius: BorderRadius.circular(12),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
+        primaryButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
+        secondaryButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
+        destructiveButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
+        outlineButtonTheme: const ShadButtonTheme(
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
+          ),
+        ),
         inputTheme: const ShadInputTheme(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: ShadDecoration(
-            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
             focusedBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(16)),
+              radius: BorderRadius.all(Radius.circular(26)),
             ),
             errorBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(16)),
+              radius: BorderRadius.all(Radius.circular(26)),
             ),
           ),
         ),
         selectTheme: const ShadSelectTheme(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: ShadDecoration(
-            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(26))),
           ),
         ),
         buttonSizesTheme: const ShadButtonSizesTheme(

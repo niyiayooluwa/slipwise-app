@@ -178,7 +178,10 @@ class _TicketList extends HookConsumerWidget {
 
     // Conditional Polling: Only poll if there are pending/live tickets
     final shouldPoll =
-        ticketsAsync.value?.any((t) => t.overallStatus == 'pending') ?? false;
+        ticketsAsync.value?.any(
+          (t) => t.overallStatus.toLowerCase() == 'pending',
+        ) ??
+        false;
 
     useSmartPolling(
       fetchUpdates: () => controller.fetchUpdates(),

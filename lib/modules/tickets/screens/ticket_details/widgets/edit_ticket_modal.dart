@@ -157,7 +157,7 @@ class EditTicketModal extends HookConsumerWidget {
             const SizedBox(height: 8),
             ShadInput(
               controller: descriptionController,
-              placeholder: const Text('e.g. Weekend Acca'),
+              placeholder: const Text('e.g. This one in the bag'),
               maxLines: 3,
             ),
 

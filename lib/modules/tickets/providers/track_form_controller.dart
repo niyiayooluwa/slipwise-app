@@ -142,6 +142,7 @@ class TrackFormController extends _$TrackFormController {
         ifRight: (response) {
           state = state.copyWith(isTracking: false, isSuccess: true);
           ref.invalidate(historyControllerProvider('ALL'));
+          ref.invalidate(historyControllerProvider('PENDING'));
         },
       );
     } catch (e) {

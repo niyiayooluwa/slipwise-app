@@ -50,8 +50,15 @@ class HistoryController extends _$HistoryController {
         _hasNextPage = false;
       }
 
-      // 2. Fire the Delta-Sync in the background without blocking the UI
-      Future.microtask(() => fetchUpdates());
+      // 2. Fetch fresh page 1 in background and update state directly
+      Future.microtask(() async {
+        try {
+          final freshTickets = await _fetchTickets(page: 1, status: status);
+          state = AsyncValue.data(freshTickets);
+        } catch (_) {
+          // Keep cached data visible on offline/network errors
+        }
+      });
 
       return List<HistoryItem>.from(_allTickets);
     }
@@ -116,71 +123,13 @@ class HistoryController extends _$HistoryController {
   }
 
   Future<bool> fetchUpdates() async {
-    // If no last sync time, fallback to a full fetch to populate cache
-    if (_lastSyncTime == null) {
-      await _fetchTickets(page: 1, status: _currentStatus);
-      return true; // We fetched data
+    try {
+      final freshTickets = await _fetchTickets(page: 1, status: _currentStatus);
+      state = AsyncValue.data(freshTickets);
+      return true;
+    } catch (_) {
+      return false;
     }
-
-    final sinceIso = _lastSyncTime!.toUtc().toIso8601String();
-    final repository = ref.read(ticketRepositoryProvider);
-
-    final result = await repository.getTickets(
-      page: 1,
-      limit: 50,
-      // Fetch ALL updates regardless of current tab to catch status transitions
-      status: null,
-      since: sinceIso,
-    );
-
-    return result.fold(
-      ifLeft: (_) => false, // Silently ignore polling errors
-      ifRight: (response) {
-        bool updated = false;
-
-        if (response.data.isNotEmpty) {
-          for (final updatedTicket in response.data) {
-            final index = _allTickets.indexWhere(
-              (t) => t.ticketId == updatedTicket.ticketId,
-            );
-
-            // Check if this ticket still belongs in this status list.
-            // For 'ALL' every status belongs. For filtered lists (PENDING, WON, LOST),
-            // a ticket whose status changed must be REMOVED from this list.
-            final belongsHere =
-                _currentStatus == 'ALL' ||
-                updatedTicket.overallStatus.toUpperCase() == _currentStatus;
-
-            if (index != -1) {
-              if (belongsHere) {
-                // Update in-place — status is still correct for this list
-                _allTickets[index] = updatedTicket;
-              } else {
-                // Ticket changed status — remove it from this list
-                _allTickets.removeAt(index);
-              }
-              updated = true;
-            } else if (belongsHere) {
-              // New ticket that belongs here — add it to the top
-              _allTickets.insert(0, updatedTicket);
-              updated = true;
-            }
-          }
-        }
-
-        if (updated) {
-          state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
-        }
-
-        // Update sync time
-        _lastSyncTime = DateTime.now().toUtc();
-
-        // Save merged updates and new sync time to cache
-        _saveToCache();
-
-        return response.data.isNotEmpty;
-      },
-    );
   }
 
   Future<List<HistoryItem>> loadMore() async {
@@ -219,10 +168,14 @@ class HistoryController extends _$HistoryController {
   }
 
   Future<void> refresh() async {
-    final syncBox = Hive.box<String>('sync_cache');
-    await syncBox.delete('history_last_sync_$_currentStatus');
-    ref.invalidateSelf();
-    await future;
+    try {
+      final freshTickets = await _fetchTickets(page: 1, status: _currentStatus);
+      state = AsyncValue.data(freshTickets);
+    } catch (e, stack) {
+      if (_allTickets.isEmpty) {
+        state = AsyncValue.error(e, stack);
+      }
+    }
   }
 
   bool get hasMorePages => _hasNextPage;

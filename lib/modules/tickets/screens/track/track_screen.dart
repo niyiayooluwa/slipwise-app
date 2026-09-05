@@ -24,6 +24,7 @@ class TrackScreen extends HookConsumerWidget {
     final stakeController = useTextEditingController();
     final descriptionController = useTextEditingController();
 
+    useListenable(codeController);
     useListenable(stakeController);
     useListenable(descriptionController);
 
