@@ -37,11 +37,11 @@ class TicketDetailController extends _$TicketDetailController {
     list.sort((a, b) {
       final rankA = _getSortRank(a);
       final rankB = _getSortRank(b);
-      
+
       if (rankA != rankB) {
         return rankA.compareTo(rankB);
       }
-      
+
       // If same rank (e.g. both pending), sort by startTime (earliest first)
       return a.startTime.compareTo(b.startTime);
     });

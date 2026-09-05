@@ -17,9 +17,7 @@ class AppUpdateModal extends HookConsumerWidget {
     return versionAsync.when(
       loading: () => const Padding(
         padding: EdgeInsets.symmetric(vertical: 32.0),
-        child: Center(
-          child: SpinKitThreeBounce(size: 20, color: Colors.white),
-        ),
+        child: Center(child: SpinKitThreeBounce(size: 20, color: Colors.white)),
       ),
       error: (err, _) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -301,7 +299,8 @@ class AppUpdateModal extends HookConsumerWidget {
               const SizedBox(width: 14),
               Expanded(
                 child: Text(
-                  info.errorMessage ?? 'An error occurred while checking for updates.',
+                  info.errorMessage ??
+                      'An error occurred while checking for updates.',
                   style: theme.textTheme.small.copyWith(
                     color: colorScheme.destructive,
                     fontSize: 12,
@@ -353,9 +352,7 @@ class AppUpdateModal extends HookConsumerWidget {
     if (info.updateStatus == AppUpdateProgressStatus.updateAvailable) {
       return ShadButton(
         onPressed: () {
-          ref
-              .read(appVersionProvider.notifier)
-              .downloadAndInstallUpdate();
+          ref.read(appVersionProvider.notifier).downloadAndInstallUpdate();
         },
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,

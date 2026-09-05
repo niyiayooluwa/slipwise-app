@@ -48,7 +48,9 @@ class HomeScreen extends HookConsumerWidget {
       void listener() {
         if (scrollController.position.pixels >=
             scrollController.position.maxScrollExtent - 200) {
-          final controller = ref.read(historyControllerProvider('ALL').notifier);
+          final controller = ref.read(
+            historyControllerProvider('ALL').notifier,
+          );
           if (controller.hasMorePages && !controller.isLoadingMore) {
             controller.loadMore();
           }
@@ -117,7 +119,9 @@ class HomeScreen extends HookConsumerWidget {
                                 Text(
                                   today,
                                   style: theme.textTheme.muted.copyWith(
-                                    color: colorScheme.foreground.withValues(alpha: 0.8),
+                                    color: colorScheme.foreground.withValues(
+                                      alpha: 0.8,
+                                    ),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),

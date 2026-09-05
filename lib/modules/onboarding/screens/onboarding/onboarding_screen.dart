@@ -23,7 +23,9 @@ class OnboardingScreen extends HookConsumerWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                theme.colorScheme.background.withValues(alpha: 0.0), // 1. Top edge (fully clear)
+                theme.colorScheme.background.withValues(
+                  alpha: 0.0,
+                ), // 1. Top edge (fully clear)
                 theme.colorScheme.background.withValues(
                   alpha: 0.4,
                 ), // 2. Middle (slight tint)
@@ -51,13 +53,17 @@ class OnboardingScreen extends HookConsumerWidget {
                 const Spacer(),
                 Text(
                   'Track & Analyze matches. Master your bets.',
-                  style: theme.textTheme.h1.copyWith(color: theme.colorScheme.foreground),
+                  style: theme.textTheme.h1.copyWith(
+                    color: theme.colorScheme.foreground,
+                  ),
                 ),
                 const SizedBox(height: 16),
 
                 Text(
                   'Import your tickets instantly to get real-time status updates and deep betting insights all in one place.',
-                  style: theme.textTheme.p.copyWith(color: theme.colorScheme.mutedForeground),
+                  style: theme.textTheme.p.copyWith(
+                    color: theme.colorScheme.mutedForeground,
+                  ),
                 ),
                 const SizedBox(height: 48),
 

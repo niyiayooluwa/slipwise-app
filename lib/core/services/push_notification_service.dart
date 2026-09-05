@@ -136,7 +136,11 @@ class PushNotificationService {
         name: 'PushNotification',
       );
 
-      final ticketId = (message.data['ticket_id'] ?? message.data['ticketId'] ?? message.data['id'])?.toString();
+      final ticketId =
+          (message.data['ticket_id'] ??
+                  message.data['ticketId'] ??
+                  message.data['id'])
+              ?.toString();
       final type = message.data['type'] as String? ?? 'ticket_update';
 
       _ref
@@ -171,7 +175,8 @@ class PushNotificationService {
     );
 
     final data = message.data;
-    final ticketId = (data['ticket_id'] ?? data['ticketId'] ?? data['id'])?.toString();
+    final ticketId = (data['ticket_id'] ?? data['ticketId'] ?? data['id'])
+        ?.toString();
 
     if (ticketId != null && ticketId.isNotEmpty) {
       // Use the global navigator key to push the deep link

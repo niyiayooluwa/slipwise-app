@@ -9,7 +9,7 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
   @override
   ThemeMode build() {
     final settingsAsync = ref.watch(settingsServiceProvider);
-    
+
     return settingsAsync.maybeWhen(
       data: (settings) {
         final modeString = settings.themeMode;

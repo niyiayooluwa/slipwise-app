@@ -31,8 +31,8 @@ class HistoryController extends _$HistoryController {
     final cachedTickets = status == 'ALL'
         ? rawCachedTickets
         : rawCachedTickets
-            .where((t) => t.overallStatus.toUpperCase() == status)
-            .toList();
+              .where((t) => t.overallStatus.toUpperCase() == status)
+              .toList();
 
     if (cachedTickets.isNotEmpty) {
       _allTickets.clear();
@@ -129,7 +129,7 @@ class HistoryController extends _$HistoryController {
       page: 1,
       limit: 50,
       // Fetch ALL updates regardless of current tab to catch status transitions
-      status: null, 
+      status: null,
       since: sinceIso,
     );
 
@@ -147,7 +147,8 @@ class HistoryController extends _$HistoryController {
             // Check if this ticket still belongs in this status list.
             // For 'ALL' every status belongs. For filtered lists (PENDING, WON, LOST),
             // a ticket whose status changed must be REMOVED from this list.
-            final belongsHere = _currentStatus == 'ALL' ||
+            final belongsHere =
+                _currentStatus == 'ALL' ||
                 updatedTicket.overallStatus.toUpperCase() == _currentStatus;
 
             if (index != -1) {

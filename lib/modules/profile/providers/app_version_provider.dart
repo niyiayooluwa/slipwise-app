@@ -37,8 +37,8 @@ class AppVersionState {
   String get formattedPatch => currentPatchNumber != null
       ? 'Patch #$currentPatchNumber'
       : isShorebirdAvailable
-          ? 'Base Release'
-          : 'Local Dev';
+      ? 'Base Release'
+      : 'Local Dev';
 
   AppVersionState copyWith({
     String? appVersion,
@@ -92,9 +92,7 @@ class AppVersionNotifier extends _$AppVersionNotifier {
 
     if (!currentState.isShorebirdAvailable) {
       state = AsyncValue.data(
-        currentState.copyWith(
-          updateStatus: AppUpdateProgressStatus.upToDate,
-        ),
+        currentState.copyWith(updateStatus: AppUpdateProgressStatus.upToDate),
       );
       return;
     }
@@ -120,9 +118,7 @@ class AppVersionNotifier extends _$AppVersionNotifier {
         );
       } else {
         state = AsyncValue.data(
-          currentState.copyWith(
-            updateStatus: AppUpdateProgressStatus.upToDate,
-          ),
+          currentState.copyWith(updateStatus: AppUpdateProgressStatus.upToDate),
         );
       }
     } catch (e) {

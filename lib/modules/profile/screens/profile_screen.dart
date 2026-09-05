@@ -161,21 +161,32 @@ class ProfileScreen extends HookConsumerWidget {
                           initialValue: ref.watch(themeModeProvider),
                           onChanged: (mode) {
                             if (mode != null) {
-                              ref.read(themeModeProvider.notifier).setThemeMode(mode);
+                              ref
+                                  .read(themeModeProvider.notifier)
+                                  .setThemeMode(mode);
                             }
                           },
                           options: const [
-                            ShadOption(value: ThemeMode.system, child: Text('System')),
-                            ShadOption(value: ThemeMode.light, child: Text('Light')),
-                            ShadOption(value: ThemeMode.dark, child: Text('Dark')),
+                            ShadOption(
+                              value: ThemeMode.system,
+                              child: Text('System'),
+                            ),
+                            ShadOption(
+                              value: ThemeMode.light,
+                              child: Text('Light'),
+                            ),
+                            ShadOption(
+                              value: ThemeMode.dark,
+                              child: Text('Dark'),
+                            ),
                           ],
                           selectedOptionBuilder: (context, value) {
                             return Text(
                               value == ThemeMode.system
                                   ? 'System'
                                   : value == ThemeMode.light
-                                      ? 'Light'
-                                      : 'Dark',
+                                  ? 'Light'
+                                  : 'Dark',
                             );
                           },
                         ),
@@ -288,10 +299,14 @@ class ProfileScreen extends HookConsumerWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: colorScheme.primary.withValues(alpha: 0.12),
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.12,
+                                ),
                                 borderRadius: BorderRadius.circular(100),
                                 border: Border.all(
-                                  color: colorScheme.primary.withValues(alpha: 0.3),
+                                  color: colorScheme.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                               ),
                               child: Row(
@@ -444,7 +459,9 @@ class ProfileScreen extends HookConsumerWidget {
                           Icon(
                             LucideIcons.refreshCw,
                             size: 12,
-                            color: colorScheme.mutedForeground.withValues(alpha: 0.6),
+                            color: colorScheme.mutedForeground.withValues(
+                              alpha: 0.6,
+                            ),
                           ),
                         ],
                       ),

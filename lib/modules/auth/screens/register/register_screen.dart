@@ -140,8 +140,8 @@ class RegisterScreen extends HookConsumerWidget {
               width: 40,
               semanticsLabel: 'Splash Screen Logo',
               colorFilter: ColorFilter.mode(
-                Theme.of(context).brightness == Brightness.light 
-                    ? theme.colorScheme.primary 
+                Theme.of(context).brightness == Brightness.light
+                    ? theme.colorScheme.primary
                     : theme.colorScheme.foreground,
                 BlendMode.srcIn,
               ),

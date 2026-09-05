@@ -114,7 +114,9 @@ class UserNotifier extends _$UserNotifier {
     await Hive.box<String>('sync_cache').clear();
 
     // Also clear notifications stored in SharedPreferences
-    await ref.read(notificationRepositoryProvider.notifier).clearNotifications();
+    await ref
+        .read(notificationRepositoryProvider.notifier)
+        .clearNotifications();
 
     // Invalidate keep-alive providers so they are wiped from memory
     ref.invalidate(historyControllerProvider);

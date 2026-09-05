@@ -45,9 +45,7 @@ class LegalDocumentScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(
-                color: colorScheme.primary,
-              ),
+              child: CircularProgressIndicator(color: colorScheme.primary),
             );
           } else if (snapshot.hasError) {
             return Center(
@@ -63,18 +61,10 @@ class LegalDocumentScreen extends StatelessWidget {
           return Markdown(
             data: snapshot.data ?? '',
             styleSheet: MarkdownStyleSheet(
-              p: theme.textTheme.p.copyWith(
-                color: colorScheme.foreground,
-              ),
-              h1: theme.textTheme.h1.copyWith(
-                color: colorScheme.foreground,
-              ),
-              h2: theme.textTheme.h2.copyWith(
-                color: colorScheme.foreground,
-              ),
-              h3: theme.textTheme.h3.copyWith(
-                color: colorScheme.foreground,
-              ),
+              p: theme.textTheme.p.copyWith(color: colorScheme.foreground),
+              h1: theme.textTheme.h1.copyWith(color: colorScheme.foreground),
+              h2: theme.textTheme.h2.copyWith(color: colorScheme.foreground),
+              h3: theme.textTheme.h3.copyWith(color: colorScheme.foreground),
               listBullet: theme.textTheme.p.copyWith(
                 color: colorScheme.foreground,
               ),

@@ -28,11 +28,20 @@ class MatchClockState {
     final raw = liveTime.trim();
 
     // 2. Non-numeric status strings like HT / FT
-    if (raw.toUpperCase().contains('HT') || raw.toUpperCase().contains('HALF')) {
-      return MatchClockState(isTicking: false, currentSeconds: 45 * 60, displayText: 'HT');
+    if (raw.toUpperCase().contains('HT') ||
+        raw.toUpperCase().contains('HALF')) {
+      return MatchClockState(
+        isTicking: false,
+        currentSeconds: 45 * 60,
+        displayText: 'HT',
+      );
     }
     if (raw.toUpperCase().contains('FT') || raw.toUpperCase().contains('END')) {
-      return MatchClockState(isTicking: false, currentSeconds: 90 * 60, displayText: 'FT');
+      return MatchClockState(
+        isTicking: false,
+        currentSeconds: 90 * 60,
+        displayText: 'FT',
+      );
     }
 
     // 3. Normalize stoppage time (e.g. "45:00+2" or "90:00+")
@@ -100,7 +109,8 @@ class _LiveTimeTickerState extends State<LiveTimeTicker> {
   void didUpdateWidget(covariant LiveTimeTicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Correct drift when Delta-Sync fetches fresh data
-    if (widget.liveTime != oldWidget.liveTime || widget.matchStatus != oldWidget.matchStatus) {
+    if (widget.liveTime != oldWidget.liveTime ||
+        widget.matchStatus != oldWidget.matchStatus) {
       _clockState = MatchClockState.fromServer(
         matchStatus: widget.matchStatus,
         liveTime: widget.liveTime,
@@ -136,9 +146,6 @@ class _LiveTimeTickerState extends State<LiveTimeTicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      _formattedTime,
-      style: widget.style,
-    );
+    return Text(_formattedTime, style: widget.style);
   }
 }

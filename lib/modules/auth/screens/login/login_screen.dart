@@ -83,8 +83,8 @@ class LoginScreen extends HookConsumerWidget {
             width: 40,
             semanticsLabel: 'Splash Screen Logo',
             colorFilter: ColorFilter.mode(
-              Theme.of(context).brightness == Brightness.light 
-                  ? theme.colorScheme.primary 
+              Theme.of(context).brightness == Brightness.light
+                  ? theme.colorScheme.primary
                   : theme.colorScheme.foreground,
               BlendMode.srcIn,
             ),
@@ -148,7 +148,10 @@ class LoginScreen extends HookConsumerWidget {
                 ),
           child: isGoogleLoading
               ? SizedBox(
-                  child: SpinKitThreeBounce(size: 16, color: theme.colorScheme.foreground),
+                  child: SpinKitThreeBounce(
+                    size: 16,
+                    color: theme.colorScheme.foreground,
+                  ),
                 )
               : const Text("Continue with Google"),
         ),
