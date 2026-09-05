@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "3489996639-s39alb0tfdgcucadco5f21lcferiem2j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.slipwise",
+            "certificate_hash": "f2d195d0188e814a0a711affb2e8bdd0cbef356a"
+          }
+        },
+        {
           "client_id": "3489996639-ku9uumjse4cb0o41p9lfo6k5bqpsriq9.apps.googleusercontent.com",
           "client_type": 3
         }
