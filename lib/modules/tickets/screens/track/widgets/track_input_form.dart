@@ -8,6 +8,8 @@ class TrackInputForm extends StatelessWidget {
 
   final String selectedProvider;
   final Function(String?) onProviderSelected;
+  final String? errorMessage;
+  final VoidCallback? onClearError;
 
   const TrackInputForm({
     super.key,
@@ -16,6 +18,8 @@ class TrackInputForm extends StatelessWidget {
     required this.codeController,
     required this.selectedProvider,
     required this.onProviderSelected,
+    this.errorMessage,
+    this.onClearError,
   });
 
   @override
@@ -71,12 +75,49 @@ class TrackInputForm extends StatelessWidget {
           controller: codeController,
           placeholder: const Text('e.g., J6J2TN'),
           textCapitalization: TextCapitalization.characters,
+          onChanged: (_) {
+            if (errorMessage != null) {
+              onClearError?.call();
+            }
+          },
           trailing: Icon(
             LucideIcons.ticket,
             size: 16,
             color: colorScheme.mutedForeground,
           ),
         ),
+        if (errorMessage != null) ...[
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: colorScheme.destructive.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: colorScheme.destructive.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  LucideIcons.alertCircle,
+                  size: 14,
+                  color: colorScheme.destructive,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    errorMessage!,
+                    style: theme.textTheme.small.copyWith(
+                      color: colorScheme.destructive,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: 12),
         Text(
           'Enter the 6-character alphanumeric booking code',

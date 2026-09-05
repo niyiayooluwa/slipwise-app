@@ -38,7 +38,7 @@ class TrackScreen extends HookConsumerWidget {
     ) {
       if (next != null) {
         ShadToaster.of(context).show(
-          ShadToast(
+          ShadToast.destructive(
             title: Text(formState.isTimeout ? 'Timeout' : 'Error'),
             description: Text(next),
             action: ShadButton.outline(
@@ -91,6 +91,8 @@ class TrackScreen extends HookConsumerWidget {
                       onProviderSelected: (val) {
                         if (val != null) selectedProvider.value = val;
                       },
+                      errorMessage: formState.errorMessage,
+                      onClearError: formNotifier.clearError,
                     ),
 
                     const SizedBox(height: 24),

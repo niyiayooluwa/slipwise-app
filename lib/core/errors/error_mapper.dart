@@ -15,6 +15,15 @@ String _extractMessage(DioException e) {
   return '';
 }
 
+String _extractRawMessage(DioException e) {
+  final data = e.response?.data;
+  if (data is String) return data.trim();
+  if (data is Map) {
+    return (data['error'] ?? data['message'] ?? '').toString().trim();
+  }
+  return '';
+}
+
 bool _isNetworkError(DioException e) {
   return e.type == DioExceptionType.connectionError ||
       e.type == DioExceptionType.connectionTimeout ||
@@ -117,6 +126,21 @@ Failure mapDioException(DioException e) {
   // ==========================================
   // Betting Module (Tickets) Matching
   // ==========================================
+  if (message.contains('all matches on this ticket have already ended')) {
+    return const BadRequestFailure(
+      'All matches on this ticket have already ended.',
+    );
+  }
+  if (message.contains('booking code is invalid or not found')) {
+    return const BadRequestFailure(
+      'Booking code is invalid or not found.',
+    );
+  }
+  if (message.contains('booking code has expired')) {
+    return const BadRequestFailure(
+      'Booking code has expired.',
+    );
+  }
   if (message.contains('unsupported provider')) {
     return const BadRequestFailure(
       'We don\'t support this betting provider yet.',
@@ -164,7 +188,14 @@ Failure mapDioException(DioException e) {
     );
   }
 
-  if (status == 400) return const BadRequestFailure();
+  if (status == 400) {
+    final rawMessage = _extractRawMessage(e);
+    if (rawMessage.isNotEmpty) {
+      final formatted = rawMessage[0].toUpperCase() + rawMessage.substring(1);
+      return BadRequestFailure(formatted);
+    }
+    return const BadRequestFailure();
+  }
   if (status == 401) return const UnauthorizedFailure();
   if (status == 403) return const EmailNotVerifiedFailure();
   if (status == 404) return const NotFoundFailure();
