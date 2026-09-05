@@ -48,10 +48,13 @@ class SecurityModal extends HookConsumerWidget {
             }
           },
           child: isSubmitting.value
-              ? const SizedBox(
+              ? SizedBox(
                   height: 16,
                   width: 16,
-                  child: SpinKitThreeBounce(size: 16, color: Colors.white),
+                  child: SpinKitThreeBounce(
+                    size: 16,
+                    color: ShadTheme.of(context).colorScheme.primary,
+                  ),
                 )
               : const Text('Send Reset Code'),
         ),

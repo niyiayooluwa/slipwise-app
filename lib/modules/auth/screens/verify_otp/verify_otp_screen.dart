@@ -208,10 +208,10 @@ class VerifyOtpScreen extends HookConsumerWidget {
                       },
                 width: double.infinity,
                 child: isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         child: SpinKitThreeBounce(
                           size: 16,
-                          color: Colors.white,
+                          color: ShadTheme.of(context).colorScheme.primary,
                         ),
                       )
                     : const Text('Verify Account'),

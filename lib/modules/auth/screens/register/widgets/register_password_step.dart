@@ -84,8 +84,11 @@ class RegisterPasswordStep extends ConsumerWidget {
                   }
                 : null,
             child: isAnyLoading
-                ? const SizedBox(
-                    child: SpinKitThreeBounce(size: 16, color: Colors.white),
+                ? SizedBox(
+                    child: SpinKitThreeBounce(
+                      size: 16,
+                      color: ShadTheme.of(context).colorScheme.primary,
+                    ),
                   )
                 : const Text('Continue'),
           ),

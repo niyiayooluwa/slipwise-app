@@ -171,7 +171,7 @@ class EditTicketModal extends HookConsumerWidget {
             ShadButton(
               onPressed: isSaving.value ? null : handleSave,
               child: isSaving.value
-                  ? const SpinKitThreeBounce(size: 16, color: Colors.white)
+                  ? SpinKitThreeBounce(size: 16, color: colorScheme.primary)
                   : const Text('Save Changes'),
             ),
           ],

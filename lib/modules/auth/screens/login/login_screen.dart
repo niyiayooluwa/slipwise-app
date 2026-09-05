@@ -150,7 +150,7 @@ class LoginScreen extends HookConsumerWidget {
               ? SizedBox(
                   child: SpinKitThreeBounce(
                     size: 16,
-                    color: theme.colorScheme.foreground,
+                    color: theme.colorScheme.primary,
                   ),
                 )
               : const Text("Continue with Google"),
@@ -282,7 +282,7 @@ class LoginScreen extends HookConsumerWidget {
                     ? SizedBox(
                         child: SpinKitThreeBounce(
                           size: 16,
-                          color: theme.colorScheme.primaryForeground,
+                          color: theme.colorScheme.primary,
                         ),
                       )
                     : const Text('Sign In'),

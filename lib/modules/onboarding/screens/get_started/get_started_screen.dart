@@ -84,15 +84,15 @@ class GetStartedScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     'Get started',
-                    style: theme.textTheme.h3,
+                    style: theme.textTheme.h3.copyWith(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
 
                   SizedBox(height: 8),
 
                   Text(
-                    'Get started',
-                    style: theme.textTheme.p,
+                    'Your Ticket. Your Hype. Zero Wahala',
+                    style: theme.textTheme.p.copyWith(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
 
@@ -135,10 +135,10 @@ class GetStartedScreen extends HookConsumerWidget {
                               width: 18,
                             ),
                       child: isGoogleLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               child: SpinKitThreeBounce(
                                 size: 16,
-                                color: Colors.white,
+                                color: theme.colorScheme.primary,
                               ),
                             )
                           : const Text("Continue with Google"),
@@ -180,7 +180,9 @@ class GetStartedScreen extends HookConsumerWidget {
                     TextSpan(
                       // 1. The base text (inherits default color and style)
                       text: "New to SlipWise? ",
-                      //style: theme.textTheme.small.copyWith(color: Colors.white60),
+                      style: theme.textTheme.small.copyWith(
+                        color: Colors.white60,
+                      ),
                       children: [
                         // 2. First clickable part (different color)
                         TextSpan(

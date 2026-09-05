@@ -15,9 +15,11 @@ class AppUpdateModal extends HookConsumerWidget {
     final versionAsync = ref.watch(appVersionProvider);
 
     return versionAsync.when(
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 32.0),
-        child: Center(child: SpinKitThreeBounce(size: 20, color: Colors.white)),
+      loading: () => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32.0),
+        child: Center(
+          child: SpinKitThreeBounce(size: 20, color: colorScheme.primary),
+        ),
       ),
       error: (err, _) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -111,7 +113,7 @@ class AppUpdateModal extends HookConsumerWidget {
           ),
           child: Column(
             children: [
-              const SpinKitThreeBounce(size: 20, color: Colors.white),
+              SpinKitThreeBounce(size: 20, color: colorScheme.primary),
               const SizedBox(height: 12),
               Text(
                 'Checking for updates...',
@@ -178,7 +180,7 @@ class AppUpdateModal extends HookConsumerWidget {
           ),
           child: Column(
             children: [
-              const SpinKitThreeBounce(size: 20, color: Colors.white),
+              SpinKitThreeBounce(size: 20, color: colorScheme.primary),
               const SizedBox(height: 12),
               Text(
                 'Downloading & applying patch...',

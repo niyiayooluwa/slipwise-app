@@ -149,7 +149,10 @@ class PersonalInfoModal extends HookConsumerWidget {
             }
           },
           child: isSubmitting.value
-              ? const SpinKitThreeBounce(size: 16, color: Colors.white)
+              ? SpinKitThreeBounce(
+                  size: 16,
+                  color: theme.colorScheme.primary,
+                )
               : const Text('Save Changes'),
         ),
       ],

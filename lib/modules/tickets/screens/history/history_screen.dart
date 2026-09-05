@@ -172,6 +172,7 @@ class _TicketList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = ShadTheme.of(context).colorScheme;
     final ticketsAsync = ref.watch(filteredHistoryProvider(status));
     final controller = ref.watch(historyControllerProvider(status).notifier);
 
@@ -209,10 +210,13 @@ class _TicketList extends HookConsumerWidget {
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 if (index == tickets.length) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: SpinKitThreeBounce(size: 16, color: Colors.white),
+                      padding: const EdgeInsets.all(16.0),
+                      child: SpinKitThreeBounce(
+                        size: 16,
+                        color: colorScheme.primary,
+                      ),
                     ),
                   );
                 }
@@ -247,8 +251,8 @@ class _TicketList extends HookConsumerWidget {
           ),
         );
       },
-      loading: () => const Center(
-        child: SpinKitThreeBounce(size: 16, color: Colors.white),
+      loading: () => Center(
+        child: SpinKitThreeBounce(size: 16, color: colorScheme.primary),
       ),
       error: (e, stack) =>
           ErrorStateWidget(error: e, onRetry: () => controller.refresh()),

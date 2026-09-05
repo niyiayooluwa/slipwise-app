@@ -63,7 +63,10 @@ class FeedbackModal extends HookConsumerWidget {
             }
           },
           child: isSubmitting.value
-              ? const SpinKitThreeBounce(size: 16, color: Colors.white)
+              ? SpinKitThreeBounce(
+                  size: 16,
+                  color: ShadTheme.of(context).colorScheme.primary,
+                )
               : const Text('Send Feedback'),
         ),
       ],

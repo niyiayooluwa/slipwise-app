@@ -229,8 +229,11 @@ class RegisterScreen extends HookConsumerWidget {
                     width: 18,
                   ),
             child: isGoogleLoading
-                ? const SizedBox(
-                    child: SpinKitThreeBounce(size: 16, color: Colors.white),
+                ? SizedBox(
+                    child: SpinKitThreeBounce(
+                      size: 16,
+                      color: theme.colorScheme.primary,
+                    ),
                   )
                 : const Text("Continue with Google"),
           ),
