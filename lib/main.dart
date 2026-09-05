@@ -17,6 +17,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:slipwise/firebase_options.dart';
 import 'package:slipwise/core/providers/theme_mode_provider.dart';
+import 'package:slipwise/core/constants/constants.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 
 // Main entrypoint to the application
 Future<void> main() async {
@@ -70,53 +72,113 @@ class MainApp extends ConsumerWidget {
       themeMode: themeMode,
       theme: ShadThemeData(
         colorScheme: const ShadGreenColorScheme.light(),
-        radius: BorderRadius.circular(20),
+        radius: BorderRadius.circular(26),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
         inputTheme: const ShadInputTheme(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: ShadDecoration(
-            border: ShadBorder(radius: BorderRadius.all(Radius.circular(10))),
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
             focusedBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(10)),
+              radius: BorderRadius.all(Radius.circular(16)),
             ),
             errorBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(10)),
+              radius: BorderRadius.all(Radius.circular(16)),
             ),
+          ),
+        ),
+        selectTheme: const ShadSelectTheme(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
+          ),
+        ),
+        buttonSizesTheme: const ShadButtonSizesTheme(
+          regular: ShadButtonSizeTheme(
+            height: 48,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+          sm: ShadButtonSizeTheme(
+            height: 40,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          ),
+          lg: ShadButtonSizeTheme(
+            height: 52,
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          ),
+          icon: ShadButtonSizeTheme(
+            height: 44,
+            width: 44,
+            padding: EdgeInsets.zero,
           ),
         ),
         primaryToastTheme: const ShadToastTheme(
           alignment: Alignment.bottomCenter,
-          duration: Duration(milliseconds: 500),
+          duration: UiConstants.toastDuration,
+          animateIn: kToastAnimateIn,
+          animateOut: kToastAnimateOut,
           showCloseIconOnlyWhenHovered: false,
         ),
         destructiveToastTheme: const ShadToastTheme(
           alignment: Alignment.bottomCenter,
-          duration: Duration(milliseconds: 500),
+          duration: UiConstants.toastDuration,
+          animateIn: kToastAnimateIn,
+          animateOut: kToastAnimateOut,
           showCloseIconOnlyWhenHovered: false,
         ),
       ),
       darkTheme: ShadThemeData(
         colorScheme: const ShadGreenColorScheme.dark(),
-        radius: BorderRadius.circular(20),
+        radius: BorderRadius.circular(26),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.inter),
         inputTheme: const ShadInputTheme(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: ShadDecoration(
-            border: ShadBorder(radius: BorderRadius.all(Radius.circular(10))),
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
             focusedBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(10)),
+              radius: BorderRadius.all(Radius.circular(16)),
             ),
             errorBorder: ShadBorder(
-              radius: BorderRadius.all(Radius.circular(10)),
+              radius: BorderRadius.all(Radius.circular(16)),
             ),
+          ),
+        ),
+        selectTheme: const ShadSelectTheme(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: ShadDecoration(
+            border: ShadBorder(radius: BorderRadius.all(Radius.circular(16))),
+          ),
+        ),
+        buttonSizesTheme: const ShadButtonSizesTheme(
+          regular: ShadButtonSizeTheme(
+            height: 48,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+          sm: ShadButtonSizeTheme(
+            height: 40,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          ),
+          lg: ShadButtonSizeTheme(
+            height: 52,
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          ),
+          icon: ShadButtonSizeTheme(
+            height: 44,
+            width: 44,
+            padding: EdgeInsets.zero,
           ),
         ),
         primaryToastTheme: const ShadToastTheme(
           alignment: Alignment.bottomCenter,
-          duration: Duration(milliseconds: 500),
+          duration: UiConstants.toastDuration,
+          animateIn: kToastAnimateIn,
+          animateOut: kToastAnimateOut,
           showCloseIconOnlyWhenHovered: false,
         ),
         destructiveToastTheme: const ShadToastTheme(
           alignment: Alignment.bottomCenter,
-          duration: Duration(milliseconds: 500),
+          duration: UiConstants.toastDuration,
+          animateIn: kToastAnimateIn,
+          animateOut: kToastAnimateOut,
           showCloseIconOnlyWhenHovered: false,
         ),
       ),

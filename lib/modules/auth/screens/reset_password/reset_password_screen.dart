@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/auth/providers/reset_password_form_controller.dart';
 import 'package:slipwise/modules/auth/providers/reset_password_controller.dart';
 import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
@@ -24,14 +25,10 @@ class ResetPasswordScreen extends HookConsumerWidget {
       provider: resetPasswordControllerProvider,
       errorTitle: 'Reset Failed',
       onSuccess: (context, state) {
-        ShadToaster.of(context).show(
-          const ShadToast(
-            duration: Duration(milliseconds: 500),
-            title: Text('Password Reset'),
-            description: Text(
+        context.showToast(
+          title: 'Password Reset',
+          description:
               'Your password has been successfully reset. Please log in.',
-            ),
-          ),
         );
         context.go('/login');
       },
@@ -248,10 +245,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
               width: double.infinity,
               child: isLoading
                   ? const SizedBox(
-                      child: SpinKitThreeBounce(
-                        size: 16,
-                        color: Colors.white,
-                      ),
+                      child: SpinKitThreeBounce(size: 16, color: Colors.white),
                     )
                   : const Text('Reset Password'),
             );

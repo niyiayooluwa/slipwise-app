@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/tickets/providers/track_form_controller.dart';
 import 'package:slipwise/core/ui/gradient_sliver_app_bar.dart';
 import 'package:slipwise/modules/tickets/screens/track/widgets/track_input_form.dart';
@@ -37,12 +38,9 @@ class TrackScreen extends HookConsumerWidget {
       next,
     ) {
       if (next != null) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            duration: const Duration(milliseconds: 500),
-            title: Text(formState.isTimeout ? 'Timeout' : 'Error'),
-            description: Text(next),
-          ),
+        context.showErrorToast(
+          title: formState.isTimeout ? 'Timeout' : 'Error',
+          description: next,
         );
       }
     });
@@ -52,12 +50,9 @@ class TrackScreen extends HookConsumerWidget {
       next,
     ) {
       if (next == true) {
-        ShadToaster.of(context).show(
-          const ShadToast(
-            duration: Duration(milliseconds: 500),
-            title: Text('Success'),
-            description: Text('Ticket tracked successfully!'),
-          ),
+        context.showToast(
+          title: 'Success',
+          description: 'Ticket tracked successfully!',
         );
         formNotifier.resetSuccess();
         if (context.mounted) {
@@ -96,12 +91,16 @@ class TrackScreen extends HookConsumerWidget {
                     const SizedBox(height: 24),
 
                     ShadButton(
-                      onPressed: formState.isPreviewing
-                          ? null
-                          : () => formNotifier.previewTicket(
-                              codeController.text.trim(),
-                              selectedProvider.value,
-                            ),
+                      size: ShadButtonSize.lg,
+                      width: double.infinity,
+                      enabled:
+                          !formState.isPreviewing &&
+                          !formState.isSuccess &&
+                          codeController.text.trim().isNotEmpty,
+                      onPressed: () => formNotifier.previewTicket(
+                        codeController.text.trim(),
+                        selectedProvider.value,
+                      ),
                       child: formState.isPreviewing
                           ? const SizedBox(
                               height: 20,
@@ -129,6 +128,7 @@ class TrackScreen extends HookConsumerWidget {
                       children: [
                         Expanded(
                           child: ShadButton.outline(
+                            size: ShadButtonSize.lg,
                             onPressed: () {
                               formNotifier.clearPreview();
                             },
@@ -138,10 +138,12 @@ class TrackScreen extends HookConsumerWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: ShadButton(
-                            onPressed: formState.canSubmitTrack(
-                              stake: stakeController.text,
-                              description: descriptionController.text,
-                            )
+                            size: ShadButtonSize.lg,
+                            onPressed:
+                                formState.canSubmitTrack(
+                                  stake: stakeController.text,
+                                  description: descriptionController.text,
+                                )
                                 ? () => formNotifier.trackTicket(
                                     stakeController.text,
                                     descriptionController.text,

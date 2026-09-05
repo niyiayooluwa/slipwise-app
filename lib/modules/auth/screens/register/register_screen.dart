@@ -214,7 +214,7 @@ class RegisterScreen extends HookConsumerWidget {
             decoration: ShadDecoration(
               border: ShadBorder.all(color: theme.colorScheme.primary),
             ),
-            foregroundColor: Colors.white,
+            foregroundColor: theme.colorScheme.foreground,
             size: ShadButtonSize.lg,
             onPressed: isGoogleLoading
                 ? null

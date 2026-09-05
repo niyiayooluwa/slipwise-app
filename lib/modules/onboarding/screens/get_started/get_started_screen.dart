@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/auth/providers/google_auth_notifier.dart';
 import 'package:slipwise/core/providers/user_notifier.dart';
 
@@ -35,12 +36,9 @@ class GetStartedScreen extends HookConsumerWidget {
 
     ref.listen(googleAuthProvider, (previous, next) {
       if (next is AsyncError) {
-        ShadToaster.of(context).show(
-          ShadToast.destructive(
-            duration: const Duration(milliseconds: 500),
-            title: const Text('Google Sign-In Failed'),
-            description: Text(next.error.toString()),
-          ),
+        context.showErrorToast(
+          title: 'Google Sign-In Failed',
+          description: next.error.toString(),
         );
       } else if (next is AsyncData &&
           !next.isLoading &&

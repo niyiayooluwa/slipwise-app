@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 
 class AuthErrorListener<T> extends ConsumerWidget {
   final dynamic provider; // Use dynamic to avoid import issues
@@ -26,12 +26,9 @@ class AuthErrorListener<T> extends ConsumerWidget {
         final handled = onError?.call(context, error) ?? false;
 
         if (!handled) {
-          ShadToaster.of(context).show(
-            ShadToast.destructive(
-              duration: const Duration(milliseconds: 500),
-              title: Text(errorTitle),
-              description: Text(error.toString()),
-            ),
+          context.showErrorToast(
+            title: errorTitle,
+            description: error.toString(),
           );
         }
       } else if (onSuccess != null &&

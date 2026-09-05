@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/profile/providers/profile_controller.dart';
 
 class FeedbackModal extends HookConsumerWidget {
@@ -34,6 +35,8 @@ class FeedbackModal extends HookConsumerWidget {
         ),
         const SizedBox(height: 32),
         ShadButton(
+          size: ShadButtonSize.lg,
+          width: double.infinity,
           enabled: isValid && !isSubmitting.value,
           onPressed: () async {
             FocusScope.of(context).unfocus();
@@ -46,29 +49,17 @@ class FeedbackModal extends HookConsumerWidget {
             if (context.mounted) {
               if (error == null) {
                 Navigator.pop(context);
-                ShadToaster.of(context).show(
-                  const ShadToast(
-                    duration: Duration(milliseconds: 500),
-                    title: Text('Success'),
-                    description: Text('Thank you for your feedback!'),
-                  ),
+                context.showToast(
+                  title: 'Success',
+                  description: 'Thank you for your feedback!',
                 );
               } else {
-                ShadToaster.of(context).show(
-                  ShadToast(
-                    duration: const Duration(milliseconds: 500),
-                    title: const Text('Error'),
-                    description: Text(error),
-                  ),
-                );
+                context.showErrorToast(title: 'Error', description: error);
               }
             }
           },
           child: isSubmitting.value
-              ? const SpinKitThreeBounce(
-                  size: 16,
-                  color: Colors.white,
-                )
+              ? const SpinKitThreeBounce(size: 16, color: Colors.white)
               : const Text('Send Feedback'),
         ),
       ],

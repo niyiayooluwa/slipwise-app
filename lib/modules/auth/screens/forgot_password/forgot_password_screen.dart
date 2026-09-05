@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/auth/providers/forgot_password_form_controller.dart';
 import 'package:slipwise/modules/auth/providers/forgot_password_controller.dart';
 import 'package:slipwise/modules/auth/screens/shared/auth_error_listener.dart';
@@ -20,12 +21,9 @@ class ForgotPasswordScreen extends HookConsumerWidget {
     return AuthErrorListener<void>(
       provider: forgotPasswordControllerProvider,
       onSuccess: (context, state) {
-        ShadToaster.of(context).show(
-          const ShadToast(
-            duration: Duration(milliseconds: 500),
-            title: Text('OTP Sent'),
-            description: Text('Check your email for the reset code.'),
-          ),
+        context.showToast(
+          title: 'OTP Sent',
+          description: 'Check your email for the reset code.',
         );
         context.push(
           '/reset-password',

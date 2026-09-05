@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/profile/providers/profile_controller.dart';
 
 class SecurityModal extends HookConsumerWidget {
@@ -23,6 +24,8 @@ class SecurityModal extends HookConsumerWidget {
         ),
         const SizedBox(height: 32),
         ShadButton(
+          size: ShadButtonSize.lg,
+          width: double.infinity,
           enabled: !isSubmitting.value,
           onPressed: () async {
             isSubmitting.value = true;
@@ -38,13 +41,7 @@ class SecurityModal extends HookConsumerWidget {
                 Navigator.pop(context);
                 context.go('/reset-password', extra: email);
               } else {
-                ShadToaster.of(context).show(
-                  ShadToast(
-                    duration: const Duration(milliseconds: 500),
-                    title: const Text('Error'),
-                    description: Text(error),
-                  ),
-                );
+                context.showErrorToast(title: 'Error', description: error);
               }
             }
           },
@@ -52,10 +49,7 @@ class SecurityModal extends HookConsumerWidget {
               ? const SizedBox(
                   height: 16,
                   width: 16,
-                  child: SpinKitThreeBounce(
-                    size: 16,
-                    color: Colors.white,
-                  ),
+                  child: SpinKitThreeBounce(size: 16, color: Colors.white),
                 )
               : const Text('Send Reset Code'),
         ),
