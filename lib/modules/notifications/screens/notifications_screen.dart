@@ -22,24 +22,7 @@ class NotificationsScreen extends HookConsumerWidget {
       backgroundColor: theme.colorScheme.background,
       body: CustomScrollView(
         slivers: [
-          GradientSliverAppBar(
-            title: 'Inbox',
-
-            actions: [
-              IconButton(
-                icon: Icon(
-                  LucideIcons.checkCheck,
-                  color: colorScheme.primaryForeground,
-                ),
-                onPressed: () {
-                  ref
-                      .read(notificationControllerProvider.notifier)
-                      .markAllAsRead();
-                },
-                tooltip: 'Mark all as read',
-              ),
-            ],
-          ),
+          const GradientSliverAppBar(title: 'Inbox'),
           notificationsAsync.when(
             data: (notifications) {
               if (notifications.isEmpty) {
@@ -52,11 +35,71 @@ class NotificationsScreen extends HookConsumerWidget {
                 );
               }
 
-              return SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final notif = notifications[index];
-                  return _NotificationTile(notif: notif);
-                }, childCount: notifications.length),
+              final unreadCount = notifications.where((n) => !n.isRead).length;
+
+              return SliverMainAxisGroup(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            unreadCount > 0
+                                ? '$unreadCount unread'
+                                : 'All caught up',
+                            style: theme.textTheme.small.copyWith(
+                              color: colorScheme.mutedForeground,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (unreadCount > 0)
+                            InkWell(
+                              borderRadius: BorderRadius.circular(6),
+                              onTap: () {
+                                ref
+                                    .read(
+                                      notificationControllerProvider.notifier,
+                                    )
+                                    .markAllAsRead();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      LucideIcons.checkCheck,
+                                      size: 16,
+                                      color: colorScheme.primary,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Mark all as read',
+                                      style: theme.textTheme.small.copyWith(
+                                        color: colorScheme.primary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final notif = notifications[index];
+                      return _NotificationTile(notif: notif);
+                    }, childCount: notifications.length),
+                  ),
+                ],
               );
             },
             loading: () => const SliverFillRemaining(
@@ -88,7 +131,7 @@ class _NotificationTile extends ConsumerWidget {
     return InkWell(
       onTap: () {
         ref.read(notificationControllerProvider.notifier).markAsRead(notif.id);
-        if (notif.ticketId != null) {
+        if (notif.ticketId != null && notif.ticketId!.isNotEmpty) {
           context.push('/ticket-details?id=${notif.ticketId}');
         }
       },
