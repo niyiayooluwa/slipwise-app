@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:slipwise/modules/tickets/data/models/preview.dart';
 import 'package:slipwise/modules/tickets/data/models/track.dart';
 import 'package:slipwise/modules/tickets/providers/history_controller.dart';
-import 'package:slipwise/modules/tickets/providers/ticket_action_controller.dart';
+import 'package:slipwise/modules/tickets/data/repositories/ticket_repository.dart';
 
 part 'track_form_controller.g.dart';
 
@@ -22,6 +22,13 @@ class TrackFormState {
     this.isTimeout = false,
     this.isSuccess = false,
   });
+
+  bool canSubmitTrack({required String stake, required String description}) {
+    return !isTracking &&
+        previewResponse != null &&
+        stake.trim().isNotEmpty &&
+        description.trim().isNotEmpty;
+  }
 
   TrackFormState copyWith({
     PreviewResponse? previewResponse,
@@ -69,15 +76,33 @@ class TrackFormController extends _$TrackFormController {
     state = state.copyWith(isPreviewing: true, clearError: true);
 
     try {
-      final preview = await ref
-          .read(ticketActionsProvider.notifier)
-          .previewTicket(PreviewRequest(code: code, provider: provider));
+      final repository = ref.read(ticketRepositoryProvider);
+      final result = await repository.previewTicket(
+        PreviewRequest(code: code, provider: provider),
+      );
 
-      if (preview != null) {
-        state = state.copyWith(previewResponse: preview, isPreviewing: false);
-      } else {
-        state = state.copyWith(isPreviewing: false);
-      }
+      result.fold(
+        ifLeft: (failure) {
+          state = state.copyWith(
+            isPreviewing: false,
+            errorMessage: failure.message,
+          );
+        },
+        ifRight: (preview) {
+          if (preview.selections.isEmpty) {
+            state = state.copyWith(
+              isPreviewing: false,
+              errorMessage:
+                  'Hmmm... Your code has either expired or is invalid',
+            );
+          } else {
+            state = state.copyWith(
+              previewResponse: preview,
+              isPreviewing: false,
+            );
+          }
+        },
+      );
     } catch (e) {
       _handleError(e);
       state = state.copyWith(isPreviewing: false);
@@ -98,22 +123,27 @@ class TrackFormController extends _$TrackFormController {
           ? null
           : descriptionText!.trim();
 
-      final response = await ref
-          .read(ticketActionsProvider.notifier)
-          .trackTicket(
-            TrackRequest(
-              bookingCodeId: preview.bookingCodeId,
-              stake: stake,
-              description: description,
-            ),
-          );
+      final repository = ref.read(ticketRepositoryProvider);
+      final result = await repository.trackTicket(
+        TrackRequest(
+          bookingCodeId: preview.bookingCodeId,
+          stake: stake,
+          description: description,
+        ),
+      );
 
-      if (response != null) {
-        state = state.copyWith(isTracking: false, isSuccess: true);
-        ref.invalidate(historyControllerProvider('ALL'));
-      } else {
-        state = state.copyWith(isTracking: false);
-      }
+      result.fold(
+        ifLeft: (failure) {
+          state = state.copyWith(
+            isTracking: false,
+            errorMessage: failure.message,
+          );
+        },
+        ifRight: (response) {
+          state = state.copyWith(isTracking: false, isSuccess: true);
+          ref.invalidate(historyControllerProvider('ALL'));
+        },
+      );
     } catch (e) {
       _handleError(e);
       state = state.copyWith(isTracking: false);

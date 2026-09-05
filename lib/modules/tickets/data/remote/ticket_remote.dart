@@ -86,6 +86,17 @@ class TicketRemote {
         '/v1/tickets/preview',
         data: request.toJson(),
       );
+      final data = response.data;
+      if (data is Map) {
+        final selections = data['selections'];
+        if (selections == null || (selections is List && selections.isEmpty)) {
+          return const Left(
+            BadRequestFailure(
+              'Hmmm... Your code has either expired or is invalid',
+            ),
+          );
+        }
+      }
       return Right(PreviewResponse.fromJson(response.data));
     } on DioException catch (e) {
       return Left(mapDioException(e));

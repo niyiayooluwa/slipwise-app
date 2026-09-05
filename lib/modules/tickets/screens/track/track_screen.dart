@@ -103,12 +103,12 @@ class TrackScreen extends HookConsumerWidget {
                               selectedProvider.value,
                             ),
                       child: formState.isPreviewing
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 20,
                               width: 20,
                               child: SpinKitThreeBounce(
                                 size: 16,
-                                color: Colors.white,
+                                color: colorScheme.primary,
                               ),
                             )
                           : const Text('Preview Ticket'),
@@ -138,22 +138,22 @@ class TrackScreen extends HookConsumerWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: ShadButton(
-                            onPressed:
-                                formState.isTracking ||
-                                    stakeController.text.trim().isEmpty ||
-                                    descriptionController.text.trim().isEmpty
-                                ? null
-                                : () => formNotifier.trackTicket(
+                            onPressed: formState.canSubmitTrack(
+                              stake: stakeController.text,
+                              description: descriptionController.text,
+                            )
+                                ? () => formNotifier.trackTicket(
                                     stakeController.text,
                                     descriptionController.text,
-                                  ),
+                                  )
+                                : null,
                             child: formState.isTracking
-                                ? const SizedBox(
+                                ? SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: SpinKitThreeBounce(
                                       size: 16,
-                                      color: Colors.white,
+                                      color: colorScheme.primary,
                                     ),
                                   )
                                 : const Text('Track Ticket'),
