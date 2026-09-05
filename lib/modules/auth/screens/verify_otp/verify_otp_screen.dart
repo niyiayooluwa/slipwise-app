@@ -88,6 +88,12 @@ class VerifyOtpScreen extends HookConsumerWidget {
             height: 40,
             width: 40,
             semanticsLabel: 'Splash Screen Logo',
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).brightness == Brightness.light 
+                  ? theme.colorScheme.primary 
+                  : theme.colorScheme.foreground,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         const SizedBox(height: 24),
