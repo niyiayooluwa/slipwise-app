@@ -57,27 +57,42 @@ class TrackPreviewCard extends HookWidget {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(8),
+                      if (preview.provider.toLowerCase() == 'sportybet')
+                        SvgPicture.asset(
+                          'assets/drawables/sportybet.svg',
+                          height: 20,
+                          alignment: Alignment.centerLeft,
+                          colorFilter: ColorFilter.mode(
+                            colorScheme.foreground,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      else ...[
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondary,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Icon(
+                            LucideIcons.ticket,
+                            size: 13,
+                            color: colorScheme.foreground,
+                          ),
                         ),
-                        child: Icon(
-                          LucideIcons.ticket,
-                          size: 14,
-                          color: colorScheme.foreground,
+                        const SizedBox(width: 6),
+                        Text(
+                          preview.provider.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.small.copyWith(
+                            color: colorScheme.mutedForeground,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            letterSpacing: 0.5,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        preview.provider.toUpperCase(),
-                        style: theme.textTheme.small.copyWith(
-                          color: colorScheme.mutedForeground,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
+                      ],
                     ],
                   ),
                   Container(

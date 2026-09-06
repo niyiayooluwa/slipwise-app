@@ -20,5 +20,5 @@ class ApiConstants {
 
 class UiConstants {
   /// Centralized duration for toast notifications across the entire application.
-  static const Duration toastDuration = Duration(milliseconds: 2000);
+  static const Duration toastDuration = Duration(milliseconds: 2500);
 }

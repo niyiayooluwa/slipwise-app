@@ -219,25 +219,6 @@ class TicketDetailsScreen extends HookConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
-                ),
-                child: Text(
-                  ticket.overallStatus.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: statusColor,
-                  ),
-                ),
-              ),
               if (ticket.provider.toLowerCase() == 'sportybet')
                 SvgPicture.asset(
                   'assets/drawables/sportybet.svg',
@@ -267,9 +248,33 @@ class TicketDetailsScreen extends HookConsumerWidget {
                     ),
                   ),
                 ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
+                ),
+                child: Text(
+                  ticket.overallStatus.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: statusColor,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
+
+          if (ticket.description != null && ticket.description!.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(ticket.description!, style: theme.textTheme.muted),
+          ],
           Text(
             ticket.code,
             style: theme.textTheme.h3.copyWith(
@@ -277,11 +282,7 @@ class TicketDetailsScreen extends HookConsumerWidget {
               letterSpacing: 1,
             ),
           ),
-          if (ticket.description != null && ticket.description!.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(ticket.description!, style: theme.textTheme.muted),
-          ],
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

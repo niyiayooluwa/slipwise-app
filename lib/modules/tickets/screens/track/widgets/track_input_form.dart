@@ -93,38 +93,6 @@ class TrackInputForm extends StatelessWidget {
             color: colorScheme.mutedForeground,
           ),
         ),
-        if (errorMessage != null) ...[
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: colorScheme.destructive.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: colorScheme.destructive.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  LucideIcons.alertCircle,
-                  size: 14,
-                  color: colorScheme.destructive,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    errorMessage!,
-                    style: theme.textTheme.small.copyWith(
-                      color: colorScheme.destructive,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
         const SizedBox(height: 12),
         Text(
           'Enter the 6-character alphanumeric booking code',
