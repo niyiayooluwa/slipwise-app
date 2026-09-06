@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class TrackInputForm extends StatelessWidget {
@@ -75,6 +76,12 @@ class TrackInputForm extends StatelessWidget {
           controller: codeController,
           placeholder: const Text('e.g., J6J2TN'),
           textCapitalization: TextCapitalization.characters,
+          inputFormatters: [
+            TextInputFormatter.withFunction(
+              (oldValue, newValue) =>
+                  newValue.copyWith(text: newValue.text.toUpperCase()),
+            ),
+          ],
           onChanged: (_) {
             if (errorMessage != null) {
               onClearError?.call();
