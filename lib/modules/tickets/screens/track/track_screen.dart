@@ -140,6 +140,10 @@ class TrackScreen extends HookConsumerWidget {
                         Expanded(
                           child: ShadButton(
                             size: ShadButtonSize.lg,
+                            enabled: formState.canSubmitTrack(
+                              stake: stakeController.text,
+                              description: descriptionController.text,
+                            ),
                             onPressed:
                                 formState.canSubmitTrack(
                                   stake: stakeController.text,

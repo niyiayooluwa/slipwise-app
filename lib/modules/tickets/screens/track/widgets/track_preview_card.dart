@@ -26,6 +26,15 @@ class TrackPreviewCard extends HookWidget {
         ? preview.selections
         : preview.selections.take(3).toList();
 
+    final hasUnknownLegs = preview.selections.any((s) {
+      final sel = s.selection.toLowerCase();
+      final market = s.marketType.toLowerCase();
+      final display = s.displaySelection?.toLowerCase() ?? '';
+      return sel.contains('unknown') ||
+          market.contains('unknown') ||
+          display.contains('unknown');
+    });
+
     String formatMarketType(String market) {
       return market
           .split('_')
@@ -141,6 +150,40 @@ class TrackPreviewCard extends HookWidget {
           style: theme.textTheme.large.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
+        if (hasUnknownLegs) ...[
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.amber.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: Icon(
+                    LucideIcons.alertCircle,
+                    size: 16,
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Notice: Some selections contain unknown or unverified markets from the provider. Tracking accuracy for those specific legs may be affected.',
+                    style: theme.textTheme.small.copyWith(
+                      color: colorScheme.foreground,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
         ...displayedSelections.map((selection) {
           return Container(
             margin: const EdgeInsets.only(bottom: 8),

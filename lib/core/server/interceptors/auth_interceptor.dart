@@ -122,14 +122,26 @@ class AuthInterceptor extends Interceptor {
       } on DioException catch (retryErr) {
         return handler.next(retryErr);
       }
-    } catch (_) {
-      // Refresh failed — reject all queued requests and log the user out
+    } on DioException catch (refreshErr) {
+      // Refresh failed — reject all queued requests
       for (final completer in _pendingRequests) {
         completer.completeError('refresh_failed');
       }
       _pendingRequests.clear();
       _isRefreshing = false;
-      await _clearAndRedirect();
+
+      // Only log out if refresh token is genuinely revoked/expired (401 / 403)
+      final status = refreshErr.response?.statusCode;
+      if (status == 401 || status == 403) {
+        await _clearAndRedirect();
+      }
+      return handler.next(err);
+    } catch (_) {
+      for (final completer in _pendingRequests) {
+        completer.completeError('refresh_failed');
+      }
+      _pendingRequests.clear();
+      _isRefreshing = false;
       return handler.next(err);
     }
   }
