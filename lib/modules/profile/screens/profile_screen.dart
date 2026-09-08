@@ -211,7 +211,9 @@ class ProfileScreen extends HookConsumerWidget {
                           context,
                           'Help & Support',
                           const Center(
-                            child: Text('Contact us at 16tolu@gmail.com'),
+                            child: Text(
+                              'Contact us at support@mail.slipwise.niyiayo.com',
+                            ),
                           ),
                         ),
                       ),
