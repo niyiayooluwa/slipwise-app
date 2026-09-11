@@ -37,19 +37,30 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           Text(
             'Advanced Filters',
             style: theme.textTheme.h4,
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 20),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildCutsSlider(context, currentFilter, ref, theme),
+                  const SizedBox(height: 24),
+                  _buildOddsRange(context, currentFilter, ref, theme),
+                  const SizedBox(height: 24),
+                  _buildStakeRange(context, currentFilter, ref, theme),
+                  const SizedBox(height: 24),
+                  _buildDateRange(context, currentFilter, ref, theme),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 24),
-          _buildOddsRange(context, currentFilter, ref, theme),
-          const SizedBox(height: 24),
-          _buildStakeRange(context, currentFilter, ref, theme),
-          const SizedBox(height: 24),
-          _buildDateRange(context, currentFilter, ref, theme),
-          const SizedBox(height: 32),
           Row(
             children: [
               Expanded(
@@ -72,6 +83,144 @@ class HistoryFilterBottomSheet extends HookConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCutsSlider(
+    BuildContext context,
+    TicketFilter filter,
+    WidgetRef ref,
+    ShadThemeData theme,
+  ) {
+    final scheme = theme.colorScheme;
+    final currentCuts = filter.cuts ?? 0;
+    const labels = [
+      'All',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10+',
+    ];
+
+    String getBadgeText() {
+      if (currentCuts == 0) return 'All (Any)';
+      if (currentCuts == 10) return '10+ Cut';
+      return '$currentCuts Cut';
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Cuts Filter (Lost Matches)',
+                  style: theme.textTheme.small.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Filter tickets by number of lost legs',
+                  style: theme.textTheme.muted.copyWith(fontSize: 11),
+                ),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: currentCuts == 0
+                    ? scheme.secondary
+                    : scheme.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(
+                  color: currentCuts == 0
+                      ? scheme.border
+                      : scheme.primary.withValues(alpha: 0.4),
+                ),
+              ),
+              child: Text(
+                getBadgeText(),
+                style: theme.textTheme.small.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: currentCuts == 0
+                      ? scheme.mutedForeground
+                      : scheme.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        ShadSlider(
+          key: ValueKey(currentCuts),
+          min: 0,
+          max: 10,
+          divisions: 10,
+          initialValue: currentCuts.toDouble(),
+          onChanged: (val) {
+            final intVal = val.round();
+            ref
+                .read(historyFilterStateProvider.notifier)
+                .updateFilter(
+                  filter.copyWith(
+                    cuts: intVal == 0 ? null : intVal,
+                    clearCuts: intVal == 0,
+                  ),
+                );
+          },
+        ),
+        const SizedBox(height: 6),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(labels.length, (index) {
+              final isSelected = currentCuts == index;
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  ref
+                      .read(historyFilterStateProvider.notifier)
+                      .updateFilter(
+                        filter.copyWith(
+                          cuts: index == 0 ? null : index,
+                          clearCuts: index == 0,
+                        ),
+                      );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 3.0,
+                    vertical: 4.0,
+                  ),
+                  child: Text(
+                    labels[index],
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected
+                          ? scheme.primary
+                          : scheme.mutedForeground,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
     );
   }
 

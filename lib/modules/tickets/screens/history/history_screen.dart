@@ -21,6 +21,8 @@ class HistoryScreen extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
     final colorScheme = theme.colorScheme;
     final selectedTab = useState<String>('ALL');
+    final filter = ref.watch(historyFilterStateProvider);
+    final hasActiveFilter = !filter.isEmpty;
 
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -77,33 +79,120 @@ class HistoryScreen extends HookConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: colorScheme.card,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: colorScheme.border),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        LucideIcons.slidersHorizontal,
-                        size: 18,
-                        color: colorScheme.foreground,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: hasActiveFilter
+                              ? colorScheme.primary.withValues(alpha: 0.1)
+                              : colorScheme.card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: hasActiveFilter
+                                ? colorScheme.primary
+                                : colorScheme.border,
+                          ),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            LucideIcons.slidersHorizontal,
+                            size: 18,
+                            color: hasActiveFilter
+                                ? colorScheme.primary
+                                : colorScheme.foreground,
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) =>
+                                  const HistoryFilterBottomSheet(),
+                            );
+                          },
+                        ),
                       ),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) =>
-                              const HistoryFilterBottomSheet(),
-                        );
-                      },
-                    ),
+                      if (hasActiveFilter)
+                        Positioned(
+                          right: -2,
+                          top: -2,
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: colorScheme.background,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
+          if (filter.cuts != null && filter.cuts! > 0)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: colorScheme.primary.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            LucideIcons.slidersHorizontal,
+                            size: 12,
+                            color: colorScheme.primary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Filtered: ${filter.cuts == 10 ? "10+" : filter.cuts} Cut',
+                            style: theme.textTheme.small.copyWith(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(historyFilterStateProvider.notifier)
+                                  .updateFilter(
+                                    filter.copyWith(clearCuts: true),
+                                  );
+                            },
+                            child: Icon(
+                              LucideIcons.x,
+                              size: 14,
+                              color: colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
           SliverFillRemaining(
             child: IndexedStack(

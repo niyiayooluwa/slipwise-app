@@ -11,6 +11,7 @@ class TicketFilter {
   final double? minStake;
   final double? maxStake;
   final DateTimeRange? dateRange;
+  final int? cuts;
 
   const TicketFilter({
     this.minOdds,
@@ -18,6 +19,7 @@ class TicketFilter {
     this.minStake,
     this.maxStake,
     this.dateRange,
+    this.cuts,
   });
 
   TicketFilter copyWith({
@@ -26,11 +28,13 @@ class TicketFilter {
     double? minStake,
     double? maxStake,
     DateTimeRange? dateRange,
+    int? cuts,
     bool clearMinOdds = false,
     bool clearMaxOdds = false,
     bool clearMinStake = false,
     bool clearMaxStake = false,
     bool clearDateRange = false,
+    bool clearCuts = false,
   }) {
     return TicketFilter(
       minOdds: clearMinOdds ? null : (minOdds ?? this.minOdds),
@@ -38,6 +42,7 @@ class TicketFilter {
       minStake: clearMinStake ? null : (minStake ?? this.minStake),
       maxStake: clearMaxStake ? null : (maxStake ?? this.maxStake),
       dateRange: clearDateRange ? null : (dateRange ?? this.dateRange),
+      cuts: clearCuts ? null : (cuts ?? this.cuts),
     );
   }
 
@@ -46,7 +51,8 @@ class TicketFilter {
       maxOdds == null &&
       minStake == null &&
       maxStake == null &&
-      dateRange == null;
+      dateRange == null &&
+      (cuts == null || cuts == 0);
 }
 
 @Riverpod(keepAlive: true)
@@ -72,6 +78,13 @@ AsyncValue<List<HistoryItem>> filteredHistory(Ref ref, String status) {
     if (filter.isEmpty) return tickets;
 
     return tickets.where((ticket) {
+      if (filter.cuts != null && filter.cuts! > 0) {
+        if (filter.cuts == 10) {
+          if (ticket.lostLegs < 10) return false;
+        } else {
+          if (ticket.lostLegs != filter.cuts) return false;
+        }
+      }
       if (filter.minOdds != null && ticket.totalOdds < filter.minOdds!) {
         return false;
       }

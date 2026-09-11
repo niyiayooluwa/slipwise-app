@@ -6,11 +6,8 @@ part 'filtered_tickets_provider.g.dart';
 
 @riverpod
 List<HistoryItem> pendingTickets(Ref ref) {
-  final ticketsAsync = ref.watch(historyControllerProvider('ALL'));
-  return ticketsAsync.value
-          ?.where((t) => t.overallStatus == 'pending')
-          .toList() ??
-      [];
+  final ticketsAsync = ref.watch(historyControllerProvider('PENDING'));
+  return ticketsAsync.value ?? [];
 }
 
 @riverpod

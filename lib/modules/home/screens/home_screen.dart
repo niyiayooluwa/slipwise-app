@@ -22,13 +22,13 @@ class HomeScreen extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final ticketAsync = ref.watch(historyControllerProvider('ALL'));
+    final ticketAsync = ref.watch(historyControllerProvider('PENDING'));
     final pendingCount = ref.watch(pendingTicketsCountProvider);
 
     final scrollController = useScrollController();
 
     // Show errors as SnackBar
-    ref.listen(historyControllerProvider('ALL'), (previous, next) {
+    ref.listen(historyControllerProvider('PENDING'), (previous, next) {
       next.when(
         error: (error, stack) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -49,7 +49,7 @@ class HomeScreen extends HookConsumerWidget {
         if (scrollController.position.pixels >=
             scrollController.position.maxScrollExtent - 200) {
           final controller = ref.read(
-            historyControllerProvider('ALL').notifier,
+            historyControllerProvider('PENDING').notifier,
           );
           if (controller.hasMorePages && !controller.isLoadingMore) {
             controller.loadMore();
@@ -63,12 +63,15 @@ class HomeScreen extends HookConsumerWidget {
 
     // Conditional Polling: Only poll if there are pending/live tickets
     final shouldPoll =
-        ticketAsync.value?.any((t) => t.overallStatus == 'pending') ?? false;
+        ticketAsync.value?.any(
+          (t) => t.overallStatus.toLowerCase() == 'pending',
+        ) ??
+        false;
 
     // Setup smart polling timer
     useSmartPolling(
       fetchUpdates: () =>
-          ref.read(historyControllerProvider('ALL').notifier).fetchUpdates(),
+          ref.read(historyControllerProvider('PENDING').notifier).fetchUpdates(),
       shouldPoll: shouldPoll,
     );
 
@@ -222,7 +225,7 @@ class HomeScreen extends HookConsumerWidget {
                             Row(
                               children: [
                                 Text(
-                                  'Recent Tickets',
+                                  'Active Tickets',
                                   style: theme.textTheme.large.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -277,7 +280,7 @@ class HomeScreen extends HookConsumerWidget {
                   child: RefreshIndicator(
                     onRefresh: () async {
                       await ref
-                          .read(historyControllerProvider('ALL').notifier)
+                          .read(historyControllerProvider('PENDING').notifier)
                           .refresh();
                     },
                     color: colorScheme.primary,
@@ -285,8 +288,9 @@ class HomeScreen extends HookConsumerWidget {
                       data: (tickets) {
                         if (tickets.isEmpty) {
                           return EmptyStateWidget(
-                            title: 'No tickets yet',
-                            message: 'Track your first ticket to see it here',
+                            title: 'No active tickets',
+                            message:
+                                'Track a ticket to monitor it live, or view your history',
                             buttonText: 'Track a Ticket',
                             onButtonPressed: () {
                               context.go('/track');
@@ -305,7 +309,7 @@ class HomeScreen extends HookConsumerWidget {
                           itemBuilder: (context, index) {
                             if (index == tickets.length) {
                               final controller = ref.watch(
-                                historyControllerProvider('ALL').notifier,
+                                historyControllerProvider('PENDING').notifier,
                               );
                               return controller.hasMorePages
                                   ? Padding(
@@ -356,7 +360,7 @@ class HomeScreen extends HookConsumerWidget {
                       error: (error, stack) => ErrorStateWidget(
                         error: error,
                         onRetry: () {
-                          ref.invalidate(historyControllerProvider('ALL'));
+                          ref.invalidate(historyControllerProvider('PENDING'));
                         },
                       ),
                     ),
