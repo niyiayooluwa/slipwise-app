@@ -57,12 +57,14 @@ class SplashScreen extends HookConsumerWidget {
             context.go('/home');
 
             // Check for pending deep links from push notifications
-            final pendingId = ref
-                .read(pushNotificationServiceProvider)
-                .pendingTicketId;
+            final pushService = ref.read(pushNotificationServiceProvider);
+            final pendingId = pushService.pendingTicketId;
             if (pendingId != null) {
-              context.push('/ticket-details?id=$pendingId');
-              ref.read(pushNotificationServiceProvider).pendingTicketId = null;
+              pushService.pendingTicketId = null;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!context.mounted) return;
+                context.push('/ticket-details?id=$pendingId');
+              });
             }
           }
         } else {
