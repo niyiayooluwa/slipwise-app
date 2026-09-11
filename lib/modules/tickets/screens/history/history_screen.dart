@@ -164,7 +164,7 @@ class HistoryScreen extends HookConsumerWidget {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            'Filtered: ${filter.cuts == 10 ? "10+" : filter.cuts} Cut',
+                            'Filtered: ${filter.cuts == 4 ? "4+" : filter.cuts} Cut',
                             style: theme.textTheme.small.copyWith(
                               color: colorScheme.primary,
                               fontWeight: FontWeight.bold,

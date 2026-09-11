@@ -70,8 +70,9 @@ class HomeScreen extends HookConsumerWidget {
 
     // Setup smart polling timer
     useSmartPolling(
-      fetchUpdates: () =>
-          ref.read(historyControllerProvider('PENDING').notifier).fetchUpdates(),
+      fetchUpdates: () => ref
+          .read(historyControllerProvider('PENDING').notifier)
+          .fetchUpdates(),
       shouldPoll: shouldPoll,
     );
 

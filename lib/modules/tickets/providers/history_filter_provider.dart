@@ -79,8 +79,8 @@ AsyncValue<List<HistoryItem>> filteredHistory(Ref ref, String status) {
 
     return tickets.where((ticket) {
       if (filter.cuts != null && filter.cuts! > 0) {
-        if (filter.cuts == 10) {
-          if (ticket.lostLegs < 10) return false;
+        if (filter.cuts == 4) {
+          if (ticket.lostLegs < 4) return false;
         } else {
           if (ticket.lostLegs != filter.cuts) return false;
         }
