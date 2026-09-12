@@ -67,6 +67,8 @@ class TicketDetailController extends _$TicketDetailController {
 
 @riverpod
 Future<HistoryItem> singleTicket(Ref ref, String ticketId) async {
+  final queryId = ticketId.trim().toLowerCase();
+
   // 1. Check local Hive caches first for instant (0ms) resolution
   final cacheBoxes = [
     'tickets_cache_ALL',
@@ -78,9 +80,12 @@ Future<HistoryItem> singleTicket(Ref ref, String ticketId) async {
   for (final boxName in cacheBoxes) {
     if (Hive.isBoxOpen(boxName)) {
       final box = Hive.box<HistoryItem>(boxName);
-      final cachedTicket = box.values
-          .where((t) => t.ticketId == ticketId || t.code == ticketId)
-          .firstOrNull;
+      final cachedTicket = box.values.where((t) {
+        final tid = t.ticketId.toLowerCase();
+        final c = t.code.toLowerCase();
+        return tid == queryId || c == queryId;
+      }).firstOrNull;
+
       if (cachedTicket != null) {
         return cachedTicket;
       }
@@ -89,62 +94,64 @@ Future<HistoryItem> singleTicket(Ref ref, String ticketId) async {
 
   final repo = ref.read(ticketRepositoryProvider);
 
-  // 2. Fetch from remote tickets list
-  final historyResult = await repo.getTickets();
+  // 2. Fetch specific ticket details directly (fast, targeted)
+  final detailsResult = await repo.getTicketDetails(ticketId);
+  final detailsResponse = detailsResult.fold(
+    ifLeft: (_) => null,
+    ifRight: (resp) => resp,
+  );
+
+  if (detailsResponse != null && detailsResponse.selections.isNotEmpty) {
+    final selections = detailsResponse.selections;
+    final summary = detailsResponse.summary;
+    final overallStatus = summary.lostLegs > 0
+        ? 'LOST'
+        : (summary.wonLegs == summary.totalLegs && summary.totalLegs > 0
+              ? 'WON'
+              : 'PENDING');
+
+    final totalOdds = selections.fold<double>(
+      1.0,
+      (acc, item) => acc * (item.odds > 0 ? item.odds : 1.0),
+    );
+
+    final sortedDates = selections.map((s) => s.startTime).toList()..sort();
+    final trackedAt = sortedDates.isNotEmpty
+        ? sortedDates.first
+        : DateTime.now().toUtc();
+
+    return HistoryItem(
+      ticketId: ticketId,
+      code: ticketId.length > 8
+          ? ticketId.substring(0, 8).toUpperCase()
+          : ticketId.toUpperCase(),
+      provider: 'SPORTYBET',
+      overallStatus: overallStatus,
+      totalOdds: double.parse(totalOdds.toStringAsFixed(2)),
+      stake: null,
+      description: null,
+      trackedAt: trackedAt,
+      totalLegs: summary.totalLegs,
+      wonLegs: summary.wonLegs,
+      lostLegs: summary.lostLegs,
+      pendingLegs: summary.pendingLegs,
+    );
+  }
+
+  // 3. Fallback: Search remote tickets list (checking up to 50 tickets)
+  final historyResult = await repo.getTickets(limit: 50);
   final foundTicket = historyResult.fold(
     ifLeft: (_) => null,
-    ifRight: (resp) => resp.data
-        .where((t) => t.ticketId == ticketId || t.code == ticketId)
-        .firstOrNull,
+    ifRight: (resp) => resp.data.where((t) {
+      final tid = t.ticketId.toLowerCase();
+      final c = t.code.toLowerCase();
+      return tid == queryId || c == queryId;
+    }).firstOrNull,
   );
 
   if (foundTicket != null) {
     return foundTicket;
   }
 
-  // 3. Fallback: If not found in list, fetch specific ticket details directly
-  final detailsResult = await repo.getTicketDetails(ticketId);
-  return detailsResult.fold(
-    ifLeft: (failure) => throw Exception(failure.message),
-    ifRight: (detailsResponse) {
-      final selections = detailsResponse.selections;
-      if (selections.isEmpty) {
-        throw Exception('Ticket not found or has no selections');
-      }
-
-      final summary = detailsResponse.summary;
-      final overallStatus = summary.lostLegs > 0
-          ? 'LOST'
-          : (summary.wonLegs == summary.totalLegs && summary.totalLegs > 0
-                ? 'WON'
-                : 'PENDING');
-
-      final totalOdds = selections.fold<double>(
-        1.0,
-        (acc, item) => acc * (item.odds > 0 ? item.odds : 1.0),
-      );
-
-      final sortedDates = selections.map((s) => s.startTime).toList()..sort();
-      final trackedAt = sortedDates.isNotEmpty
-          ? sortedDates.first
-          : DateTime.now().toUtc();
-
-      return HistoryItem(
-        ticketId: ticketId,
-        code: ticketId.length > 8
-            ? ticketId.substring(0, 8).toUpperCase()
-            : ticketId.toUpperCase(),
-        provider: 'SPORTYBET',
-        overallStatus: overallStatus,
-        totalOdds: double.parse(totalOdds.toStringAsFixed(2)),
-        stake: null,
-        description: null,
-        trackedAt: trackedAt,
-        totalLegs: summary.totalLegs,
-        wonLegs: summary.wonLegs,
-        lostLegs: summary.lostLegs,
-        pendingLegs: summary.pendingLegs,
-      );
-    },
-  );
+  throw Exception('Ticket not found or has no active matches.');
 }
