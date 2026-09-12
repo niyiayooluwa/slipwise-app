@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,56 +27,89 @@ class UserNotifier extends _$UserNotifier {
     if (token == null) return null;
 
     final userCacheBox = Hive.box<UserModel>('user_cache');
+    final cachedUser = userCacheBox.get('current_user');
 
-    // If token exists, fetch user details
+    // Cache-first: return cached user immediately for 0ms startup
+    if (cachedUser != null) {
+      // Revalidate in background
+      unawaited(_revalidateInBackground());
+      return cachedUser;
+    }
+
+    // If no cache, perform remote fetch
+    return _fetchFromRemote();
+  }
+
+  Future<UserModel?> _fetchFromRemote() async {
     final result = await ref.read(authRepositoryProvider).getMe();
+    final userCacheBox = Hive.box<UserModel>('user_cache');
 
     return result.fold(
       ifLeft: (failure) {
-        // If /me fails (e.g. offline), fallback to the cached user!
-        final cachedUser = userCacheBox.get('current_user');
-        if (cachedUser != null) {
-          return cachedUser;
-        }
-        return null; // Only null if no cache and no network
+        final cached = userCacheBox.get('current_user');
+        if (cached != null) return cached;
+        return null;
       },
       ifRight: (user) {
-        // Save to cache for next time
         userCacheBox.put('current_user', user);
-
-        // Tie device to user after successful session load
         ref.read(pushNotificationServiceProvider).registerCurrentToken();
         return user;
       },
     );
   }
 
-  // This is weird... But ehh, it works... Basically the same as above
-  Future<void> fetch() async {
-    state = const AsyncValue.loading();
+  Future<void> _revalidateInBackground() async {
+    try {
+      final result = await ref.read(authRepositoryProvider).getMe();
+      result.fold(
+        ifLeft: (_) {},
+        ifRight: (user) {
+          final userCacheBox = Hive.box<UserModel>('user_cache');
+          userCacheBox.put('current_user', user);
+          state = AsyncValue.data(user);
+          ref.read(pushNotificationServiceProvider).registerCurrentToken();
+        },
+      );
+    } catch (_) {}
+  }
 
-    final result = await ref.read(authRepositoryProvider).getMe();
+  Future<void> fetch({Duration? timeout}) async {
+    final userCacheBox = Hive.box<UserModel>('user_cache');
+    final cachedUser = userCacheBox.get('current_user');
 
-    state = result.fold(
-      ifLeft: (failure) {
-        // Fallback to cache on error
-        final userCacheBox = Hive.box<UserModel>('user_cache');
-        final cachedUser = userCacheBox.get('current_user');
-        if (cachedUser != null) {
-          return AsyncValue.data(cachedUser);
-        }
-        return AsyncValue.error(failure.message, StackTrace.current);
-      },
-      ifRight: (user) {
-        // Save to cache for next time
-        final userCacheBox = Hive.box<UserModel>('user_cache');
-        userCacheBox.put('current_user', user);
+    // Keep cached user data visible rather than blanking to loading
+    if (cachedUser != null) {
+      state = AsyncValue.data(cachedUser);
+    } else {
+      state = const AsyncValue.loading();
+    }
 
-        // Tie device to user after successful session fetch/login
-        ref.read(pushNotificationServiceProvider).registerCurrentToken();
-        return AsyncValue.data(user);
-      },
-    );
+    try {
+      final fetchFuture = ref.read(authRepositoryProvider).getMe();
+      final result = timeout != null
+          ? await fetchFuture.timeout(timeout)
+          : await fetchFuture;
+
+      state = result.fold(
+        ifLeft: (failure) {
+          if (cachedUser != null) {
+            return AsyncValue.data(cachedUser);
+          }
+          return AsyncValue.error(failure.message, StackTrace.current);
+        },
+        ifRight: (user) {
+          userCacheBox.put('current_user', user);
+          ref.read(pushNotificationServiceProvider).registerCurrentToken();
+          return AsyncValue.data(user);
+        },
+      );
+    } catch (e, st) {
+      if (cachedUser != null) {
+        state = AsyncValue.data(cachedUser);
+      } else {
+        state = AsyncValue.error(e, st);
+      }
+    }
   }
 
   Future<void> logout() async {

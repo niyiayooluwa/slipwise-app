@@ -10,7 +10,6 @@ import 'package:slipwise/core/storage/hive_adapters.dart';
 import 'package:slipwise/modules/auth/data/models/user_model.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/router/router.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:slipwise/core/services/push_notification_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -20,28 +19,52 @@ import 'package:slipwise/core/providers/theme_mode_provider.dart';
 import 'package:slipwise/core/constants/constants.dart';
 import 'package:slipwise/core/utils/toast_utils.dart';
 
+// Helper to safely open Hive box with corruption recovery
+Future<void> _safeOpenBox<T>(String boxName) async {
+  try {
+    if (!Hive.isBoxOpen(boxName)) {
+      await Hive.openBox<T>(boxName);
+    }
+  } catch (_) {
+    try {
+      await Hive.deleteBoxFromDisk(boxName);
+      await Hive.openBox<T>(boxName);
+    } catch (_) {
+      // Degrade gracefully if local storage fails
+    }
+  }
+}
+
 // Main entrypoint to the application
 Future<void> main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Hive for insanely fast offline caching
+  // Initialize Hive for offline caching
   await Hive.initFlutter();
   Hive.registerAdapter(HistoryItemAdapter());
   Hive.registerAdapter(UserModelAdapter());
 
-  // Open cache boxes synchronously on boot
-  await Hive.openBox<HistoryItem>('tickets_cache_ALL');
-  await Hive.openBox<HistoryItem>('tickets_cache_PENDING');
-  await Hive.openBox<HistoryItem>('tickets_cache_WON');
-  await Hive.openBox<HistoryItem>('tickets_cache_LOST');
-  await Hive.openBox<String>('sync_cache'); // for storing lastSyncTime strings
-  await Hive.openBox<UserModel>('user_cache'); // for offline user data
-
   // Disable Google Fonts runtime fetching to force offline fonts
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Open cache boxes and initialize Firebase concurrently
+  await Future.wait([
+    _safeOpenBox<HistoryItem>('tickets_cache_ALL'),
+    _safeOpenBox<HistoryItem>('tickets_cache_PENDING'),
+    _safeOpenBox<HistoryItem>('tickets_cache_WON'),
+    _safeOpenBox<HistoryItem>('tickets_cache_LOST'),
+    _safeOpenBox<String>('sync_cache'),
+    _safeOpenBox<UserModel>('user_cache'),
+    () async {
+      try {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      } catch (_) {
+        // Degrade gracefully if Firebase fails to init
+      }
+    }(),
+  ]);
 
   final container = ProviderContainer();
   runApp(
