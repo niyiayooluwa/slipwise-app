@@ -53,6 +53,7 @@ Future<void> main() async {
     _safeOpenBox<HistoryItem>('tickets_cache_PENDING'),
     _safeOpenBox<HistoryItem>('tickets_cache_WON'),
     _safeOpenBox<HistoryItem>('tickets_cache_LOST'),
+    _safeOpenBox<HistoryItem>('tickets_cache_ARCHIVED'),
     _safeOpenBox<String>('sync_cache'),
     _safeOpenBox<UserModel>('user_cache'),
     () async {

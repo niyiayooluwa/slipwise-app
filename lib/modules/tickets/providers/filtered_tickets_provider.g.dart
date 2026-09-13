@@ -54,7 +54,7 @@ final class PendingTicketsProvider
   }
 }
 
-String _$pendingTicketsHash() => r'6632ac4054376cf24774ea68d5bea550ce447620';
+String _$pendingTicketsHash() => r'e9d069a97a1922ae02ccae2d714341e4b7cfccf6';
 
 @ProviderFor(wonTickets)
 const wonTicketsProvider = WonTicketsProvider._();

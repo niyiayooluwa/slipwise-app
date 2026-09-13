@@ -163,7 +163,7 @@ final class SingleTicketProvider
   }
 }
 
-String _$singleTicketHash() => r'38f7cf399120115b457ae5591faeb385d398f4d3';
+String _$singleTicketHash() => r'f8e50cffad9763fe9056314b07cf566c25f05e49';
 
 final class SingleTicketFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<HistoryItem>, String> {

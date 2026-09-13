@@ -93,11 +93,13 @@ class HistoryController extends _$HistoryController {
     required String status,
   }) async {
     final repository = ref.read(ticketRepositoryProvider);
-    final result = await repository.getTickets(
-      page: page,
-      limit: 20,
-      status: status == 'ALL' ? null : status,
-    );
+    final result = status == 'ARCHIVED'
+        ? await repository.getArchivedTickets(page: page, limit: 20)
+        : await repository.getTickets(
+            page: page,
+            limit: 20,
+            status: status == 'ALL' ? null : status,
+          );
 
     return result.fold(
       ifLeft: (failure) => throw Exception(failure.message),
@@ -139,13 +141,17 @@ class HistoryController extends _$HistoryController {
 
     _isLoadingMore = true;
     try {
-      final result = await ref
-          .read(ticketRepositoryProvider)
-          .getTickets(
-            page: _currentPage + 1,
-            limit: 20,
-            status: _currentStatus == 'ALL' ? null : _currentStatus,
-          );
+      final repository = ref.read(ticketRepositoryProvider);
+      final result = _currentStatus == 'ARCHIVED'
+          ? await repository.getArchivedTickets(
+              page: _currentPage + 1,
+              limit: 20,
+            )
+          : await repository.getTickets(
+              page: _currentPage + 1,
+              limit: 20,
+              status: _currentStatus == 'ALL' ? null : _currentStatus,
+            );
 
       return result.fold(
         ifLeft: (failure) => throw Exception(failure.message),
@@ -164,6 +170,124 @@ class HistoryController extends _$HistoryController {
       throw Exception(e.toString());
     } finally {
       _isLoadingMore = false;
+    }
+  }
+
+  Future<bool> archiveTickets(List<String> ticketIds) async {
+    final idSet = ticketIds.toSet();
+    final archivedItems = _allTickets
+        .where((t) => idSet.contains(t.ticketId))
+        .toList();
+    _allTickets.removeWhere((t) => idSet.contains(t.ticketId));
+    state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
+
+    // Update active cache boxes
+    final activeBoxes = [
+      'tickets_cache_ALL',
+      'tickets_cache_PENDING',
+      'tickets_cache_WON',
+      'tickets_cache_LOST',
+    ];
+    for (final boxName in activeBoxes) {
+      if (Hive.isBoxOpen(boxName)) {
+        final box = Hive.box<HistoryItem>(boxName);
+        final keysToRemove = box.keys.where((k) {
+          final item = box.get(k);
+          return item != null && idSet.contains(item.ticketId);
+        }).toList();
+        for (final k in keysToRemove) {
+          await box.delete(k);
+        }
+      }
+    }
+
+    // Add to archived cache box
+    if (Hive.isBoxOpen('tickets_cache_ARCHIVED')) {
+      final archiveBox = Hive.box<HistoryItem>('tickets_cache_ARCHIVED');
+      for (final item in archivedItems) {
+        await archiveBox.put(item.ticketId, item.copyWith(isArchived: true));
+      }
+    }
+
+    ref.invalidate(historyControllerProvider);
+
+    try {
+      final repo = ref.read(ticketRepositoryProvider);
+      final res = await repo.bulkArchiveTickets(ticketIds);
+      return res.isRight;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> unarchiveTickets(List<String> ticketIds) async {
+    final idSet = ticketIds.toSet();
+    final restoredItems = _allTickets
+        .where((t) => idSet.contains(t.ticketId))
+        .toList();
+    _allTickets.removeWhere((t) => idSet.contains(t.ticketId));
+    state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
+
+    // Remove from archived cache box
+    if (Hive.isBoxOpen('tickets_cache_ARCHIVED')) {
+      final archiveBox = Hive.box<HistoryItem>('tickets_cache_ARCHIVED');
+      for (final id in ticketIds) {
+        await archiveBox.delete(id);
+      }
+    }
+
+    // Add back to active cache boxes
+    if (Hive.isBoxOpen('tickets_cache_ALL')) {
+      final allBox = Hive.box<HistoryItem>('tickets_cache_ALL');
+      for (final item in restoredItems) {
+        await allBox.put(item.ticketId, item.copyWith(isArchived: false));
+      }
+    }
+
+    ref.invalidate(historyControllerProvider);
+
+    try {
+      final repo = ref.read(ticketRepositoryProvider);
+      final res = await repo.bulkUnarchiveTickets(ticketIds);
+      return res.isRight;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteTickets(List<String> ticketIds) async {
+    final idSet = ticketIds.toSet();
+    _allTickets.removeWhere((t) => idSet.contains(t.ticketId));
+    state = AsyncValue.data(List<HistoryItem>.from(_allTickets));
+
+    final allBoxes = [
+      'tickets_cache_ALL',
+      'tickets_cache_PENDING',
+      'tickets_cache_WON',
+      'tickets_cache_LOST',
+      'tickets_cache_ARCHIVED',
+    ];
+    for (final boxName in allBoxes) {
+      if (Hive.isBoxOpen(boxName)) {
+        final box = Hive.box<HistoryItem>(boxName);
+        final keysToRemove = box.keys.where((k) {
+          final item = box.get(k);
+          return item != null && idSet.contains(item.ticketId);
+        }).toList();
+        for (final k in keysToRemove) {
+          await box.delete(k);
+        }
+      }
+    }
+
+    ref.invalidate(historyControllerProvider);
+
+    try {
+      final repo = ref.read(ticketRepositoryProvider);
+      final res = await repo.bulkDeleteTickets(ticketIds);
+      return res.isRight;
+    } catch (_) {
+      return false;
     }
   }
 
