@@ -19,6 +19,10 @@ _HistoryItem _$HistoryItemFromJson(Map<String, dynamic> json) => _HistoryItem(
   wonLegs: (json['won_legs'] as num?)?.toInt() ?? 0,
   lostLegs: (json['lost_legs'] as num?)?.toInt() ?? 0,
   pendingLegs: (json['pending_legs'] as num?)?.toInt() ?? 0,
+  isArchived: json['is_archived'] as bool? ?? false,
+  archivedAt: json['archived_at'] == null
+      ? null
+      : DateTime.parse(json['archived_at'] as String),
 );
 
 Map<String, dynamic> _$HistoryItemToJson(_HistoryItem instance) =>
@@ -35,6 +39,8 @@ Map<String, dynamic> _$HistoryItemToJson(_HistoryItem instance) =>
       'won_legs': instance.wonLegs,
       'lost_legs': instance.lostLegs,
       'pending_legs': instance.pendingLegs,
+      'is_archived': instance.isArchived,
+      'archived_at': instance.archivedAt?.toIso8601String(),
     };
 
 _PaginationMeta _$PaginationMetaFromJson(Map<String, dynamic> json) =>

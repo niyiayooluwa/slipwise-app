@@ -5,6 +5,7 @@ import 'package:slipwise/core/errors/failures.dart';
 import 'package:slipwise/modules/auth/data/models/message_response.dart';
 import 'package:slipwise/modules/tickets/data/remote/ticket_remote.dart';
 
+import '../models/bulk_action.dart';
 import '../models/history.dart';
 import '../models/preview.dart';
 import '../models/ticket_detail.dart';
@@ -34,6 +35,38 @@ class TicketRepository {
 
   Future<Either<Failure, MessageResponse>> deleteTicket(String id) async {
     return _ticketRemote.deleteTicket(id);
+  }
+
+  Future<Either<Failure, BulkActionResponse>> bulkArchiveTickets(
+    List<String> ticketIds,
+  ) async {
+    return _ticketRemote.bulkArchiveTickets(ticketIds);
+  }
+
+  Future<Either<Failure, BulkActionResponse>> bulkUnarchiveTickets(
+    List<String> ticketIds,
+  ) async {
+    return _ticketRemote.bulkUnarchiveTickets(ticketIds);
+  }
+
+  Future<Either<Failure, BulkActionResponse>> bulkDeleteTickets(
+    List<String> ticketIds,
+  ) async {
+    return _ticketRemote.bulkDeleteTickets(ticketIds);
+  }
+
+  Future<Either<Failure, PaginatedHistoryResponse>> getArchivedTickets({
+    int page = 1,
+    int limit = 20,
+    String? status,
+    String? since,
+  }) async {
+    return _ticketRemote.getArchivedTickets(
+      page: page,
+      limit: limit,
+      status: status,
+      since: since,
+    );
   }
 
   Future<Either<Failure, TicketDetailsResponse>> getTicketDetails(

@@ -8,6 +8,7 @@ import 'package:slipwise/core/errors/failures.dart';
 import 'package:slipwise/core/server/dio_client.dart';
 import 'package:slipwise/modules/auth/data/models/message_response.dart';
 
+import '../models/bulk_action.dart';
 import '../models/history.dart';
 import '../models/preview.dart';
 import '../models/ticket_detail.dart';
@@ -57,6 +58,96 @@ class TicketRemote {
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, BulkActionResponse>> bulkArchiveTickets(
+    List<String> ticketIds,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/v1/tickets/archive',
+        data: {'ticket_ids': ticketIds},
+      );
+      return Right(BulkActionResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, BulkActionResponse>> bulkUnarchiveTickets(
+    List<String> ticketIds,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/v1/tickets/unarchive',
+        data: {'ticket_ids': ticketIds},
+      );
+      return Right(BulkActionResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, BulkActionResponse>> bulkDeleteTickets(
+    List<String> ticketIds,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/v1/tickets/delete',
+        data: {'ticket_ids': ticketIds},
+      );
+      return Right(BulkActionResponse.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e) {
+      return Left(mapException(e));
+    }
+  }
+
+  Future<Either<Failure, PaginatedHistoryResponse>> getArchivedTickets({
+    int page = 1,
+    int limit = 20,
+    String? status,
+    String? since,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/v1/tickets/archived',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          if (status != null && status.isNotEmpty) 'status': status,
+          'since': ?since,
+        },
+      );
+
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return Right(PaginatedHistoryResponse.fromJson(data));
+      } else if (data is Map) {
+        return Right(
+          PaginatedHistoryResponse.fromJson(Map<String, dynamic>.from(data)),
+        );
+      } else {
+        return Left(
+          const ServerFailure(
+            'Unexpected data format from server for archived tickets',
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (e, stack) {
+      developer.log(
+        'Exception in getArchivedTickets: $e\n$stack',
+        name: 'TicketRemote',
+      );
       return Left(mapException(e));
     }
   }
