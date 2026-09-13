@@ -12,6 +12,7 @@ import 'package:slipwise/modules/profile/screens/widgets/security_modal.dart';
 import 'package:slipwise/modules/profile/providers/app_version_provider.dart';
 import 'package:slipwise/modules/profile/screens/widgets/app_update_modal.dart';
 import 'package:slipwise/core/providers/theme_mode_provider.dart';
+import 'package:slipwise/core/ui/app_confirmation_dialog.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
@@ -355,27 +356,14 @@ class ProfileScreen extends HookConsumerWidget {
                     height: 54,
                     child: ShadButton.destructive(
                       onPressed: () async {
-                        final confirmed = await showDialog<bool>(
-                          context: context,
-                          builder: (ctx) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ShadDialog(
-                              title: const Text('Log Out'),
-                              description: const Text(
-                                'Are you sure you want to log out of your account?',
-                              ),
-                              actions: [
-                                ShadButton.outline(
-                                  child: const Text('Cancel'),
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                ),
-                                ShadButton.destructive(
-                                  child: const Text('Log Out'),
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                ),
-                              ],
-                            ),
-                          ),
+                        final confirmed = await AppConfirmationDialog.show(
+                          context,
+                          title: 'Log Out',
+                          description:
+                              'Are you sure you want to log out of your account?',
+                          cancelText: 'Cancel',
+                          confirmText: 'Log Out',
+                          isDestructive: true,
                         );
 
                         if (confirmed == true) {
