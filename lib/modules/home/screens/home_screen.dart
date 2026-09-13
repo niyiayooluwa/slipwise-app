@@ -380,16 +380,17 @@ class HomeScreen extends HookConsumerWidget {
                                   }
                                 },
                                 onDelete: () async {
-                                  final confirmed = await AppConfirmationDialog.show(
-                                    context,
-                                    title: 'Delete Ticket',
-                                    description:
-                                        'Are you sure you want to delete ticket #${ticket.code}? This action cannot be undone.',
-                                    confirmText: 'Delete',
-                                    isDestructive: true,
-                                    disclaimer:
-                                        'Note: Deleting a ticket removes it from your feeds, but your overall betting stats, win rates, and profit records will remain preserved.',
-                                  );
+                                  final confirmed =
+                                      await AppConfirmationDialog.show(
+                                        context,
+                                        title: 'Delete Ticket',
+                                        description:
+                                            'Are you sure you want to delete ticket #${ticket.code}? This action cannot be undone.',
+                                        disclaimer:
+                                            'Note, your stats will not change',
+                                        confirmText: 'Delete',
+                                        isDestructive: true,
+                                      );
                                   if (confirmed == true && context.mounted) {
                                     final success = await ref
                                         .read(

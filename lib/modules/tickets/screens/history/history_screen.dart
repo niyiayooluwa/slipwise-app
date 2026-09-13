@@ -439,10 +439,10 @@ class HistoryScreen extends HookConsumerWidget {
                                 title: 'Delete Tickets',
                                 description:
                                     'Are you sure you want to delete ${selectedIds.length} ticket(s)? This action cannot be undone.',
+                                disclaimer:
+                                    'Note, your stats will not change',
                                 confirmText: 'Delete',
                                 isDestructive: true,
-                                disclaimer:
-                                    'Note: Deleting a ticket removes it from your feeds, but your overall betting stats, win rates, and profit records will remain preserved.',
                               );
                               if (confirmed == true && context.mounted) {
                                 final ids = selectedIds.toList();
@@ -703,10 +703,10 @@ class _TicketList extends HookConsumerWidget {
                           title: 'Delete Ticket',
                           description:
                               'Are you sure you want to delete ticket #${ticket.code}? This action cannot be undone.',
+                          disclaimer:
+                              'Note, your stats will not change',
                           confirmText: 'Delete',
                           isDestructive: true,
-                          disclaimer:
-                              'Note: Deleting a ticket removes it from your feeds, but your overall betting stats, win rates, and profit records will remain preserved.',
                         );
                         if (confirmed == true && context.mounted) {
                           final success = await ref

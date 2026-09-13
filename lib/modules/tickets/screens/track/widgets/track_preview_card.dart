@@ -151,36 +151,24 @@ class TrackPreviewCard extends HookWidget {
         ),
         const SizedBox(height: 12),
         if (hasUnknownLegs) ...[
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 2),
-                  child: Icon(
-                    LucideIcons.alertCircle,
-                    size: 16,
-                    color: Colors.amber,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                LucideIcons.alertCircle,
+                size: 16,
+                color: Colors.amber,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  "Heads up, some of your selections have markets we don't track right now. It will affect tracking...",
+                  style: theme.textTheme.small.copyWith(
+                    color: colorScheme.mutedForeground,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Notice: Some selections contain unknown or unverified markets from the provider. Tracking accuracy for those specific legs may be affected.',
-                    style: theme.textTheme.small.copyWith(
-                      color: colorScheme.foreground,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
         ],
