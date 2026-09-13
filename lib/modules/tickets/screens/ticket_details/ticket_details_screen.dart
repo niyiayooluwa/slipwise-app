@@ -4,8 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:slipwise/core/ui/app_confirmation_dialog.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/tickets/data/models/history.dart';
 import 'package:slipwise/modules/tickets/data/models/ticket_detail.dart';
+import 'package:slipwise/modules/tickets/providers/history_controller.dart';
 import 'package:slipwise/modules/tickets/providers/ticket_detail_controller.dart';
 import 'package:slipwise/modules/tickets/screens/ticket_details/widgets/edit_ticket_modal.dart';
 import 'package:slipwise/core/hooks/use_smart_polling.dart';
@@ -68,7 +71,12 @@ class TicketDetailsScreen extends HookConsumerWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(LucideIcons.pencil, color: colorScheme.foreground),
+            icon: Icon(
+              LucideIcons.pencil,
+              size: 20,
+              color: colorScheme.foreground,
+            ),
+            tooltip: 'Edit Ticket',
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -83,6 +91,148 @@ class TicketDetailsScreen extends HookConsumerWidget {
               );
             },
           ),
+          Theme(
+            data: Theme.of(context).copyWith(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+            ),
+            child: PopupMenuButton<String>(
+              icon: Icon(
+                LucideIcons.ellipsisVertical,
+                size: 20,
+                color: colorScheme.foreground,
+              ),
+              color: colorScheme.card,
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: colorScheme.border),
+              ),
+              onSelected: (value) async {
+                if (value == 'archive') {
+                  final isArchived = ticket.isArchived;
+                  final confirmed = await AppConfirmationDialog.show(
+                    context,
+                    title: isArchived ? 'Restore Ticket' : 'Archive Ticket',
+                    description: isArchived
+                        ? 'Restore ticket #${ticket.code} back to your active tickets?'
+                        : 'Archive ticket #${ticket.code}? It will be moved to the Archived tab and notification alerts will be muted.',
+                    confirmText: isArchived ? 'Restore' : 'Archive',
+                  );
+                  if (confirmed == true && context.mounted) {
+                    final success = isArchived
+                        ? await ref
+                              .read(
+                                historyControllerProvider('ARCHIVED').notifier,
+                              )
+                              .unarchiveTickets([ticket.ticketId])
+                        : await ref
+                              .read(historyControllerProvider('ALL').notifier)
+                              .archiveTickets([ticket.ticketId]);
+                    if (context.mounted) {
+                      if (success) {
+                        AppToast.show(
+                          context,
+                          title: isArchived
+                              ? 'Ticket restored'
+                              : 'Ticket archived',
+                          description: isArchived
+                              ? 'Ticket restored to active feeds.'
+                              : 'Ticket moved to Archived tab. Notifications muted.',
+                        );
+                        context.pop();
+                      } else {
+                        AppToast.error(
+                          context,
+                          title: 'Action failed',
+                          description: 'Could not update ticket.',
+                        );
+                      }
+                    }
+                  }
+                } else if (value == 'delete') {
+                  final confirmed = await AppConfirmationDialog.show(
+                    context,
+                    title: 'Delete Ticket',
+                    description:
+                        'Are you sure you want to delete ticket #${ticket.code}? This action cannot be undone.',
+                    confirmText: 'Delete',
+                    isDestructive: true,
+                    disclaimer:
+                        'Note: Deleting a ticket removes it from your feeds, but your overall betting stats, win rates, and profit records will remain preserved.',
+                  );
+                  if (confirmed == true && context.mounted) {
+                    final success = await ref
+                        .read(historyControllerProvider('ALL').notifier)
+                        .deleteTickets([ticket.ticketId]);
+                    if (context.mounted) {
+                      if (success) {
+                        AppToast.show(
+                          context,
+                          title: 'Ticket deleted',
+                          description: 'Ticket removed from feeds.',
+                        );
+                        context.pop();
+                      } else {
+                        AppToast.error(
+                          context,
+                          title: 'Delete failed',
+                          description: 'Could not delete ticket.',
+                        );
+                      }
+                    }
+                  }
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'archive',
+                  height: 40,
+                  child: Row(
+                    children: [
+                      Icon(
+                        ticket.isArchived
+                            ? LucideIcons.archiveRestore
+                            : LucideIcons.archive,
+                        size: 16,
+                        color: colorScheme.foreground,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        ticket.isArchived ? 'Restore Ticket' : 'Archive Ticket',
+                        style: theme.textTheme.small.copyWith(
+                          color: colorScheme.foreground,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  height: 40,
+                  child: Row(
+                    children: [
+                      Icon(
+                        LucideIcons.trash2,
+                        size: 16,
+                        color: colorScheme.mutedForeground,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Delete Ticket',
+                        style: theme.textTheme.small.copyWith(
+                          color: colorScheme.mutedForeground,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(

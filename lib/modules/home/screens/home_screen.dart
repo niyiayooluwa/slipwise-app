@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:slipwise/core/providers/user_notifier.dart';
+import 'package:slipwise/core/ui/app_confirmation_dialog.dart';
 import 'package:slipwise/core/ui/ticket_card.dart';
 import 'package:slipwise/core/ui/theme_gradients.dart';
 import 'package:slipwise/core/ui/empty_state_widget.dart';
 import 'package:slipwise/core/ui/error_state_widget.dart';
+import 'package:slipwise/core/utils/toast_utils.dart';
 import 'package:slipwise/modules/tickets/providers/filtered_tickets_provider.dart';
 import 'package:slipwise/modules/tickets/providers/history_controller.dart';
 import 'package:slipwise/modules/notifications/providers/notification_controller.dart';
@@ -341,6 +343,80 @@ class HomeScreen extends HookConsumerWidget {
                                 wonLegs: ticket.wonLegs,
                                 lostLegs: ticket.lostLegs,
                                 pendingLegs: ticket.pendingLegs,
+                                onArchive: () async {
+                                  final confirmed =
+                                      await AppConfirmationDialog.show(
+                                        context,
+                                        title: 'Archive Ticket',
+                                        description:
+                                            'Archive ticket #${ticket.code}? It will be moved to the Archived tab and notification alerts will be muted.',
+                                        confirmText: 'Archive',
+                                      );
+                                  if (confirmed == true && context.mounted) {
+                                    final success = await ref
+                                        .read(
+                                          historyControllerProvider(
+                                            'PENDING',
+                                          ).notifier,
+                                        )
+                                        .archiveTickets([ticket.ticketId]);
+                                    if (context.mounted) {
+                                      if (success) {
+                                        AppToast.show(
+                                          context,
+                                          title: 'Ticket archived',
+                                          description:
+                                              'Ticket moved to Archived tab. Notifications muted.',
+                                        );
+                                      } else {
+                                        AppToast.error(
+                                          context,
+                                          title: 'Archive failed',
+                                          description:
+                                              'Could not archive ticket.',
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
+                                onDelete: () async {
+                                  final confirmed = await AppConfirmationDialog.show(
+                                    context,
+                                    title: 'Delete Ticket',
+                                    description:
+                                        'Are you sure you want to delete ticket #${ticket.code}? This action cannot be undone.',
+                                    confirmText: 'Delete',
+                                    isDestructive: true,
+                                    disclaimer:
+                                        'Note: Deleting a ticket removes it from your feeds, but your overall betting stats, win rates, and profit records will remain preserved.',
+                                  );
+                                  if (confirmed == true && context.mounted) {
+                                    final success = await ref
+                                        .read(
+                                          historyControllerProvider(
+                                            'PENDING',
+                                          ).notifier,
+                                        )
+                                        .deleteTickets([ticket.ticketId]);
+                                    if (context.mounted) {
+                                      if (success) {
+                                        AppToast.show(
+                                          context,
+                                          title: 'Ticket deleted',
+                                          description:
+                                              'Ticket removed from feeds.',
+                                        );
+                                      } else {
+                                        AppToast.error(
+                                          context,
+                                          title: 'Delete failed',
+                                          description:
+                                              'Could not delete ticket.',
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
                                 onTap: () {
                                   context.push(
                                     '/ticket-details',
