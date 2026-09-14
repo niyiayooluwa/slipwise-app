@@ -60,14 +60,14 @@ jobs:
 
       - name: Shorebird Release
         if: ${{ github.event.inputs.build_type == 'release' }}
-        run: shorebird release android --artifact=apk --target-platform=android-arm64
+        run: shorebird release android --artifact=apk --target-platform=android-arm64 -- --no-tree-shake-icons
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Shorebird Patch
         if: ${{ github.event.inputs.build_type == 'patch' }}
-        run: shorebird patch android
+        run: shorebird patch android -- --no-tree-shake-icons
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
