@@ -1,3 +1,4 @@
+import "package:cached_network_image/cached_network_image.dart";
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:slipwise/modules/profile/screens/legal_document_screen.dart';
@@ -27,7 +28,7 @@ class ProfileScreen extends HookConsumerWidget {
 
     final username = user?.username ?? 'Guest';
     final email = user?.email ?? '';
-    final profileUrl = 'https://api.dicebear.com/10.x/blobs/svg?seed=$username';
+    final profileUrl = 'https://api.dicebear.com/10.x/blobs/png?seed=$username';
 
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -52,21 +53,24 @@ class ProfileScreen extends HookConsumerWidget {
                     child: Row(
                       children: [
                         Container(
-                          width: 72,
-                          height: 72,
+                          height: 80,
+                          width: 80,
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: colorScheme.primary.withValues(alpha: 0.5),
-                              width: 2,
+                              width: 3,
                             ),
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(40),
-                            child: SvgPicture.network(
-                              profileUrl,
+                            child: CachedNetworkImage(
+                              imageUrl: profileUrl,
                               fit: BoxFit.cover,
+                              placeholder: (context, url) => const SizedBox(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(LucideIcons.user, size: 40),
                             ),
                           ),
                         ),
